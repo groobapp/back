@@ -44,13 +44,15 @@ const server = http.createServer(app)
 //     }
 // })
 
-// const errorHandler = (error, req, res, next) => {
-//     console.log(error)
-//     res.status(500).json(`Algo ha salido mal: ${error.message}`)
-//     next()
-// };
+const errorHandler = (error, req, res, next) => {
+    console.log(error)
+    res.status(500).json(`Algo ha salido mal: ${error.message}`)
+    next()
+};
 
-// app.use(errorHandler);
+
+
+app.use(errorHandler);
 // Settings
 app.set('port', process.env.PORT || 8080)
 // Middlewares

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 // import { LoginBodyType, SignupBodyType } from "../schemas/auth..schema";
 
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
     try {
         const { userName, password, email } = req.body
         const userNameExist = await User.findOne({ userName })
@@ -15,7 +15,7 @@ export const signup = async (req, res) => {
         if (emailExist) {
             return res.json({ message: "The email is already in use."})
         }
-        else {
+        else { 
             if(password.length >= 6 && password.length < 16) {
                 const user = new User({ userName, password, email })
                 user.password = await user.encryptPassword(user.password)

@@ -1,26 +1,10 @@
-import { NextFunction, Request, Response } from "express";
-import { AnyZodObject, ZodError } from "zod";
-
-export const schemaValidation =
-  (schema: AnyZodObject) =>
-  (req: Request, res: Response, next: NextFunction) => {
+export const schemaValidator = (schema) => {
+  return async (req, res, next) => {
     try {
-      schema.parse({
-        body: req.body,
-        params: req.params,
-        query: req.query,
-      });
-      next();
+      await schema.validateAsync(req.body);
+      next()
     } catch (error) {
-      console.log(error);
-      if (error instanceof ZodError) {
-        return res.status(400).json(
-          error.issues.map((issue) => ({
-            path: issue.path,
-            message: issue.message,
-          }))
-        );
-      }
-      return res.status(400).json({ message: "internal server error" });
+      res.send(error.message)
     }
-  };
+  }
+}

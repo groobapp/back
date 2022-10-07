@@ -1,10 +1,20 @@
 import { Schema, model } from 'mongoose'
 import bcrypt from "bcryptjs"
 
+const validateEmail = function(email) {
+  const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return re.test(email)
+};
+
+const validatePassword = function(password) {
+  const re = /^(?=(.*[a-zA-Z].*){2,})(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9 \S]{6,18}$/;
+  return re.test(password)
+};
+
 const userSchema = new Schema({
   userName: {
     type: String,
-    min: 3,
+    minlength: 2,
     maxlength: 16,
     requiered: true,
     lowercase: true,
@@ -14,12 +24,17 @@ const userSchema = new Schema({
     type: String,
     requiered: [true, 'Please enter an email'],
     unique: true,
-    lowercase: true
+    lowercase: true,
+    validate: [validateEmail, 'Please fill a valid email address'],
+    match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
   },
   password: {
     type: String,
     requiered: [true, 'Please enter a password'],
-    minlength: 6
+    minlength: 6,
+    maxlength: 18,
+    validate: [validatePassword, 'Please fill a valid password'],
+    match: [/^(?=(.*[a-zA-Z].*){2,})(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9 \S]{6,18}$/, 'Please fill a valid password']
   },
   birthday: {
     type: Date,
