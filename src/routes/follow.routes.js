@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { TokenValidator } from '../libs/tokenValidator';
+import { TokenValidator } from '../libs/tokenValidator.js';
 import { follow, getFollowings, getFollowers, unfollow } from '../controllers/follow_up.controller.js';
 
 const router = Router()

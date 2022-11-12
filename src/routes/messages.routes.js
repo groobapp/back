@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { addMessage, getMessages } from '../controllers/chat/messages.controller.js';
-import { TokenValidator } from '../libs/tokenValidator';
+import { TokenValidator } from '../libs/tokenValidator.js';
 
 const router = Router()
 

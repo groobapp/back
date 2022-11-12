@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { createPost, getPostById, deletePost, commentPost, likePost, dislikePost } from '../controllers/publications.controller.js';
 import { getAllPostsByFollowings } from '../controllers/interaction/getAllPostsByFollowings.controller.js'
-import { TokenValidator } from '../libs/tokenValidator';
+import { TokenValidator } from '../libs/tokenValidator.js';
 // import { schemaValidation } from '../libs/schemasValidator';
 import multer from "../libs/multer"
 // import { CreatePublicationSchema, GetOrDeletePublicationByIdSchema } from '../schemas/publications.schema';

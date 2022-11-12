@@ -3,7 +3,7 @@ import { mPayment } from '../controllers/payments/checkout.controller.js'
 import { verifyAccountPay } from '../controllers/payments/verification.controller.js'
 // import { webHook } from '../controllers/payments/webHooks.controller.js'
 
-import { TokenValidator } from '../libs/tokenValidator';
+import { TokenValidator } from '../libs/tokenValidator.js';
 
 const router = Router()
 
