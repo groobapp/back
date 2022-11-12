@@ -47,16 +47,12 @@ export const verifyAccountPay = async (req, res) => {
       },
       
       back_urls: {
-        "success": "http://localhost:3000/success",
-        "pending": "http://localhost:3000/pending",
-        "failure": "http://localhost:3000/error",
-        // "success": "https://groob.com.ar/notifications/success",
-        // "pending": "https://groob.com.ar/notifications/pending",
-        // "failure": "https://groob.com.ar/notifications/error",
+        "success": "https://groob.com.ar/notifications/success",
+        "pending": "https://groob.com.ar/notifications/pending",
+        "failure": "https://groob.com.ar/notifications/error",
       },
-      // auto_return: "approved",
-      // notification_url: "https://groob-backend-production.up.railway.app/notifications",
-      notification_url: "http://localhost:8080/notifications",
+      auto_return: "approved",
+      notification_url: "https://groob-backend-production.up.railway.app/notifications",
     };
 
     mercadopago.preferences.create(preference)
