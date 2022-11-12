@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { createChat, userChats, findChat } from '../controllers/chat/chat.controller.js';
-import { TokenValidator } from '../libs/tokenValidator';
+import { TokenValidator } from '../libs/tokenValidator.js';
 
 const router = Router()
 
