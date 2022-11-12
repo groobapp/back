@@ -14,7 +14,6 @@ import axios from "axios"
 //     }
 
 export const webHooks = async (req, res, next) => {
-    console.log(req.body)
     const { type, user_id, data } = req.body
     try {
 
@@ -24,7 +23,7 @@ export const webHooks = async (req, res, next) => {
                 Authorization: `Bearer ${process.env.ACCESS_TOKEN_PRUE_MP}`
             }
         })
-        console.log(compra.data)
+        console.log("FETCH A PAYMENTS", compra.data)
         
         if (type === "payment" &&
             compra.data.status === "approved" &&
@@ -34,7 +33,6 @@ export const webHooks = async (req, res, next) => {
             })
             await user.save()
         }
-        res.status(200).send('ok')
     } catch (error) {
         console.log(error)
         next()
