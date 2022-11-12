@@ -23,9 +23,9 @@ export const verifyAccountPay = async (req, res) => {
       items: [
         {
           title: title,
-          unit_price: precio,
-          quantity: cantidad,
-          description: descripcion,
+          unit_price: 2999,
+          quantity: 1,
+          description: "Con la verificación de la cuenta obtenés el check azul en tu perfil. Además, en nuestro algoritmo damos múltiples beneficios a estos perfiles.",
           currency_id: "ARS",
           picture_url: picURL,
         }
@@ -51,7 +51,7 @@ export const verifyAccountPay = async (req, res) => {
         "pending": "https://groob.com.ar/notifications/pending",
         "failure": "https://groob.com.ar/notifications/error",
       },
-      auto_return: "approved",
+      // auto_return: "approved",
       notification_url: "https://groob-backend-production.up.railway.app/notifications",
     };
 
