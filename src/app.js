@@ -25,26 +25,26 @@ const server = http.createServer(app)
 
 // export instance for new sockets in endpoints
 
-// let io = new SocketServer(server, {
-//     cors: {
-//         origin: ['https://groob.com.ar', 'https://groob.vercel.app', 'https://groob.online', 'https://groob.store',
-//             'https://www.groob.store', 'https://www.groob.online', 'https://www.groob.com.ar', 'http://localhost:3000'],
-//         optionsSuccessStatus: 200,
-//         // credentials: true,
-//         // methods: ['GET','POST','DELETE','PUT','PATCH', 'OPTIONS'],
-//         // allowedHeaders: [
-//         //     'Origin',
-//         //     'X-Requested-With',
-//         //     'Content-Type',
-//         //     'Access-Control-Allow-Origin',
-//         //     'Access-Control-Allow-Headers',
-//         //     'Access-Control-Allow-Credentials',
-//         //     'Accept',
-//         //     'X-Access-Token',
-//         //     'authtoken'
-//         //   ],
-//     }
-// })
+let io = new SocketServer(server, {
+    cors: {
+        origin: ['https://groob.com.ar', 'https://groob.vercel.app', 'https://groob.online', 'https://groob.store',
+            'https://www.groob.store', 'https://www.groob.online', 'https://www.groob.com.ar', 'http://localhost:3000'],
+        optionsSuccessStatus: 200,
+        // credentials: true,
+        // methods: ['GET','POST','DELETE','PUT','PATCH', 'OPTIONS'],
+        // allowedHeaders: [
+        //     'Origin',
+        //     'X-Requested-With',
+        //     'Content-Type',
+        //     'Access-Control-Allow-Origin',
+        //     'Access-Control-Allow-Headers',
+        //     'Access-Control-Allow-Credentials',
+        //     'Accept',
+        //     'X-Access-Token',
+        //     'authtoken'
+        //   ],
+    }
+})
 
 const errorHandler = (error, req, res, next) => {
     console.log(error)

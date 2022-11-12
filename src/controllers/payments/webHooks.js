@@ -2,8 +2,8 @@
 // import Sales from "../../models/Sales.js";
 // // import mercadopago from 'mercadopago'
 
-export const webHook = async (req, res) => {
-//     try {
+export const webHooks = async (req, res, next) => {
+    try {
 
         console.log(req.body)
 //         let data = req.body
@@ -12,9 +12,10 @@ export const webHook = async (req, res) => {
 //             fs.writeFileSync(`${__dirname}/../webHookResponses.json`, JSON.stringify(data))
 //         }
 
-//         res.status(200).send({ result: 'ok', message: 'Gracias' })
-//     } catch (error) {
-//         console.log(error)
-//     }
+        res.status(200).send('ok')
+    } catch (error) {
+        console.log(error)
+        next()
+    }
 
 }
