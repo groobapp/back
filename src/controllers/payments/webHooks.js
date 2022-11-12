@@ -16,7 +16,6 @@ export const webHooks = async (req, res, next) => {
     try {
 
         const { data } = req.body
-
         const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data.id}`, {
             headers: {
                 "Content-Type": "application/json",
