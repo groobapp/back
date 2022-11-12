@@ -1,6 +1,6 @@
-import { closeConnectionInMongoose } from '../../libs/constants';
-import Chat from "../../models/Chat"
-import User from "../../models/User"
+import { closeConnectionInMongoose } from '../../libs/constants.js';
+import Chat from "../../models/Chat.js"
+import User from "../../models/User.js"
 
 export const createChat = async (req, res, next) => {
     try {

@@ -1,6 +1,6 @@
-import Message from "../../models/Message";
-import Chat from "../../models/Chat"
-import { closeConnectionInMongoose } from "../../libs/constants";
+import Message from "../../models/Message.js";
+import Chat from "../../models/Chat.js"
+import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 
 
