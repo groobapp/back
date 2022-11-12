@@ -29,7 +29,7 @@ export const webHooks = async (req, res, next) => {
         if (type === "payment" &&
             compra.data.status === "approved" &&
             compra.data.status_detail === "accredited") {
-            const user = await User.findByIdAndUpdate({ _id: compra.data.metadata.userId }, {
+            const user = await User.findByIdAndUpdate({ _id: "636f1fe16f43851ff63d0a7d" }, {
                 verificationPay: true
             })
             await user.save()
