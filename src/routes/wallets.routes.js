@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createFiatWallet, getFiatWallet, updateFiatWallet } from '../controllers/bussines/fiatWallet.controller';
+import { createFiatWallet, getFiatWallet, updateFiatWallet } from '../controllers/wallets/fiatWallet.controller';
 import { TokenValidator } from '../libs/tokenValidator.js';
 
 const router = Router()

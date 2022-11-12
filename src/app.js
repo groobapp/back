@@ -7,13 +7,15 @@ import cookieParser from "cookie-parser"
 import morgan from 'morgan'
 import cors from 'cors'
 import authRoute from './routes/auth.routes.js'
+import chatRoute from './routes/chat.routes.js'
+import feedRoute from './routes/feed.routes.js'
+import followRoute from './routes/follow.routes.js'
+import messagesRoute from './routes/messages.routes.js'
+import paymentsRoute from './routes/payments.routes.js'
 import profileRoute from './routes/profile.routes.js'
-// import feedRoute from './routes/feed.routes.js'
-// import searchRoute from './routes/search.routes.js'
-// import followRoute from './routes/follow.routes.js'
-// import chatRoute from './routes/chat.routes.js'
-// import messagesRoute from './routes/messages.routes.js'
-// import walletsRoute from './routes/wallets.routes.js'
+import searchRoute from './routes/search.routes.js'
+import walletsRoute from './routes/wallets.routes.js'
+
 import { Server as SocketServer } from "socket.io"
 dotenv.config() 
 
@@ -46,7 +48,7 @@ const server = http.createServer(app)
 
 const errorHandler = (error, req, res, next) => {
     console.log(error)
-    res.status(500).json(`Algo ha salido mal: ${error.message}`)
+    res.status(500).json(`Algo ha salido mal: ${error}`)
     next()
 };
 
@@ -83,12 +85,13 @@ app.use(express.json({ limit: "85mb" }));
 // Routes
 app.use(authRoute)
 app.use(profileRoute)
-// app.use(feedRoute)
-// app.use(searchRoute)
-// app.use(followRoute)
-// app.use(chatRoute)
-// app.use(messagesRoute)
-// app.use(walletsRoute)
+app.use(feedRoute)
+app.use(searchRoute)
+app.use(followRoute)
+app.use(chatRoute)
+app.use(messagesRoute)
+app.use(walletsRoute)
+app.use(paymentsRoute)
 
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));

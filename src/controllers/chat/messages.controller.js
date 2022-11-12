@@ -1,11 +1,10 @@
-import { Request, Response } from "express";
 import Message from "../../models/Message";
 import Chat from "../../models/Chat"
 import { closeConnectionInMongoose } from "../../libs/constants";
 
 
 
-export const addMessage = async (req: Request, res: Response) => {
+export const addMessage = async (req, res, next) => {
     try {
         const { chatId, senderId, text } = req.body
         const newMessage = new Message({ chatId, senderId, text })
@@ -25,7 +24,7 @@ export const addMessage = async (req: Request, res: Response) => {
 }
 
 
-export const getMessages = async (req: Request, res: Response) => {    
+export const getMessages = async (req, res, next) => {    
     try {
         const myId = req.userId?.toString()
 

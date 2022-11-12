@@ -2,7 +2,7 @@ import mercadopago from 'mercadopago'
 
 // Agrega credenciales
 mercadopago.configure({
-  access_token: 'APP_USR-6317427424180639-042414-47e969706991d3a442922b0702a0da44-469485398'
+  access_token: process.env.ACCESS_TOKEN_PRUE_MP
 });
 
 export const mPayment = async (req, res) => {

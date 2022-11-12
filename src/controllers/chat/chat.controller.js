@@ -2,7 +2,7 @@ import { closeConnectionInMongoose } from '../../libs/constants';
 import Chat from "../../models/Chat"
 import User from "../../models/User"
 
-export const createChat = async (req, res) => {
+export const createChat = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId)
         const chat = await Chat.findOne({
@@ -31,7 +31,7 @@ export const createChat = async (req, res) => {
     }
 }
 
-export const userChats = async (req, res) => {
+export const userChats = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId)
         const chats = await Chat.find({
@@ -82,7 +82,7 @@ export const userChats = async (req, res) => {
 }
 
 
-export const findChat = async (req, res) => {
+export const findChat = async (req, res, next) => {
     try {
         const myId = req.userId?.toString()
         const chat = await Chat.findOne({

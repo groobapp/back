@@ -9,9 +9,7 @@ import { closeConnectionInMongoose } from "../libs/constants";
 
 
 
-export const getProfile = async (
-    req,
-    res) => {
+export const getProfile = async (req, res, next) => {
     try {
         const profileData = await User.findById(req.userId, { password: 0 }).populate({
             path: 'publications',
@@ -28,7 +26,7 @@ export const getProfile = async (
 }
 
 
-export const getReducedUser = async (req, res) => {
+export const getReducedUser = async (req, res, next) => {
     try {
 
         const myUser = await User.findById(req.userId, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0 })
@@ -42,7 +40,7 @@ export const getReducedUser = async (req, res) => {
 }
 
 
-export const getReducedUserById = async (req, res) => {
+export const getReducedUserById = async (req, res, next) => {
     try {
         const { id } = req.params
         const user = await User.findById(id, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0 })
@@ -55,7 +53,7 @@ export const getReducedUserById = async (req, res) => {
     }
 }
 
-export const getAllProfiles = async (req, res) => {
+export const getAllProfiles = async (req, res, next) => {
     try {
 
         const allProfiles = await User.find()
@@ -68,7 +66,7 @@ export const getAllProfiles = async (req, res) => {
     }
 }
 
-export const getProfileById = async (req, res) => {
+export const getProfileById = async (req, res, next) => {
     try {
         const { id } = req.params
         const profileData = await User.findById(id, { password: 0 })
@@ -88,9 +86,7 @@ export const getProfileById = async (req, res) => {
     }
 }
 
-export const updateProfile = async (
-    req,
-    res) => {
+export const updateProfile = async (req, res, next) => {
     try {
         const { userName, description, birthday, firstName, lastName,
             online, premium, verified, explicitContent } = req.body;
@@ -112,9 +108,7 @@ export const updateProfile = async (
 }
 
 
-export const pictureProfile = async (
-    req,
-    res) => {
+export const pictureProfile = async (req, res, next) => {
     try {
         const { id } = req.params
         const user = await User.findById(id, { password: 0 })
@@ -147,7 +141,7 @@ export const pictureProfile = async (
 }
 
 
-export const deleteProfile = async (req, res) => {
+export const deleteProfile = async (req, res, next) => {
     try {
         const { id } = req.params;
         const myUser = await User.findById({ _id: id })
@@ -170,7 +164,7 @@ export const deleteProfile = async (req, res) => {
     }
 }
 
-export const getAllPostsByUser = async (req, res) => {
+export const getAllPostsByUser = async (req, res, next) => {
     // Hacer paginado cada 7 posts así en el front se realiza infinity scroll
     try {
         const { id } = req.params

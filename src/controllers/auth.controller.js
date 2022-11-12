@@ -42,11 +42,14 @@ export const signup = async (req, res, next) => {
     }
 }
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     try {
         const { email, userName, password } = req.body
         if (email !== undefined && email.length > 0 && password.length > 0) {
             const user = await User.findOne({ email })
+            if (!user) {
+                throw new Error("No se encontró el usuario");
+              }
             const passwordFromLogin = await user.validatePassword(password)
             if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
             user.online = true
@@ -62,8 +65,12 @@ export const login = async (req, res) => {
             res.status(200).json({ message: 'Success', token: token })
             await user.save()
         }
+        
         if (userName !== undefined && userName.length > 0 && password.length > 0) {
             const user = await User.findOne({ userName })
+            if (!user) {
+                throw new Error("No se encontró el usuario");
+              }
             const passwordFromLogin = await user.validatePassword(password)
             if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
             user.online = true
@@ -87,9 +94,12 @@ export const login = async (req, res) => {
     }
 }
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId)
+        if (!user) {
+            throw new Error("No se encontró el usuario");
+          }
         user.online = false
         await user.save()
         res.clearCookie('authtoken');

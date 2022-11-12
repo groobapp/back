@@ -3,10 +3,10 @@ import User from "../models/User";
 import fs from "fs-extra"
 import { uploadImage, deleteImage } from "../libs/cloudinary";
 import { closeConnectionInMongoose } from "../libs/constants";
-import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
+// import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 
-export const createPost = async (req, res) => {
+export const createPost = async (req, res, next) => {
     try {
         const { content, price, explicitContent } = req.body
         const priceValue = parseInt(price)
@@ -42,7 +42,7 @@ export const createPost = async (req, res) => {
     }
 }
 
-export const getPostById = async (req, res) => {
+export const getPostById = async (req, res, next) => {
     try {
         const { id } = req.params
         const post = await Publication.findById({ _id: id })
@@ -56,7 +56,7 @@ export const getPostById = async (req, res) => {
 }
 
 
-export const deletePost = async (req, res) => {
+export const deletePost = async (req, res, next) => {
     try {
         const { id } = req.params
         const post = await Publication.findById(id)
@@ -81,7 +81,7 @@ export const deletePost = async (req, res) => {
     }
 }
 
-export const commentPost = async (req, res) => {
+export const commentPost = async (req, res, next) => {
     try {
         const { id } = req.params
         const { value } = req.body
@@ -99,7 +99,7 @@ export const commentPost = async (req, res) => {
     }
 }
 
-export const likePost = async (req, res) => {
+export const likePost = async (req, res, next) => {
     try {
         const { id } = req.params
         const { idPostLiked } = req.body
@@ -115,7 +115,7 @@ export const likePost = async (req, res) => {
     }
 }
 
-export const dislikePost = async (req, res) => {
+export const dislikePost = async (req, res, next) => {
     try {
         const { id } = req.params
         const post = await Publication.findById({ _id: id })

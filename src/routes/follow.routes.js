@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { TokenValidator } from '../libs/tokenValidator';
-import { follow, getFollowings, getFollowers, unfollow } from '../controllers/follow_up.controller';
+import { follow, getFollowings, getFollowers, unfollow } from '../controllers/follow_up.controller.js';
 
 const router = Router()
 

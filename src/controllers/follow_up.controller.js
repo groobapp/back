@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 const closeConnectionInMongoose = mongoose.connection.close();
 
-export const follow = async (req, res) => {
+export const follow = async (req, res, next) => {
     try {
         const { followTo } = req.body;
         const myUser = await User.findById(req.userId)
@@ -26,7 +26,7 @@ export const follow = async (req, res) => {
     }
 }
 
-export const unfollow = async (req, res) => {
+export const unfollow = async (req, res, next) => {
     try {
         const { idOfTheUserToUnfollow } = req.body;
         const otherUser = await User.findById(idOfTheUserToUnfollow)
@@ -52,7 +52,7 @@ export const unfollow = async (req, res) => {
     }
 }
 
-export const getFollowers = async (req, res) => { // AL FIN ANDAA
+export const getFollowers = async (req, res, next) => { // AL FIN ANDAA
     try {
         const myUser = await User.findById(req.userId)
         if (myUser !== undefined) {
@@ -78,7 +78,7 @@ export const getFollowers = async (req, res) => { // AL FIN ANDAA
     }
 }
 
-export const getFollowings = async (req, res) => {
+export const getFollowings = async (req, res, next) => {
     try {
         const myUser = await User.findById(req.userId)
         if (myUser !== undefined) {
