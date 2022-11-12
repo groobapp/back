@@ -15,9 +15,9 @@ import axios from "axios"
 
 export const webHooks = async (req, res, next) => {
     const { type, user_id, data } = req.body
+
     try {
 
-        console.log(req.body)
         const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data.id}`, {
             headers: {
                 "Content-Type": "application/json",
@@ -25,14 +25,15 @@ export const webHooks = async (req, res, next) => {
             }
         })
         console.log(compra.data)
-
-        if(compra.data.status === "approved" && compra.data.status_detail === "accredited") {
-            const user = await User.findByIdAndUpdate({_id: compra.data.metadata.userId}, {
+        
+        if (type === "payment" &&
+            compra.data.status === "approved" &&
+            compra.data.status_detail === "accredited") {
+            const user = await User.findByIdAndUpdate({ _id: compra.data.metadata.userId }, {
                 verificationPay: true
             })
             await user.save()
         }
-
         res.status(200).send('ok')
     } catch (error) {
         console.log(error)
