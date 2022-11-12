@@ -17,14 +17,13 @@ export const webHooks = async (req, res, next) => {
 
         console.log(req.body)
         const { data } = req.body
-        console.log("holi", data.id)
-        // const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data.id}`, {
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         Authorization: `Bearer ${process.env.ACCESS_TOKEN_PRUE_MP}`
-        //     }
-        // })
-        // console.log(compra.data)
+        const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data.id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${process.env.ACCESS_TOKEN_PRUE_MP}`
+            }
+        })
+        console.log(compra.data)
 
         // if(compra.data.status === "approved" && compra.data.status_detail === "accredited") {
         //     const user = await User.findByIdAndUpdate({_id: compra.data.items.id}, {

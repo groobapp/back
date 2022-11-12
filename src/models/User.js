@@ -41,9 +41,9 @@ const userSchema = new Schema({
     secure_url: String
   },
   gender: { type: String, default: "Other" },
+  verificationPay: {type: Boolean, default: false},
+  verificationInProcess: {type: Boolean, default: false},
   verified: { type: Boolean, default: false }, 
-  verifiedPay: {type: Boolean, default: false},
-  verifiedInProcess: {type: Boolean, default: false},
   online: { type: Boolean, default: false },
   premium: { type: Boolean, default: false },
   visits: { type: [String] },
