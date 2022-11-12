@@ -28,16 +28,24 @@ export const webHooks = async (req, res, next) => {
         if (type === "payment" &&
             compra.data.status === "approved" &&
             compra.data.status_detail === "accredited") {
-            const user = await User.findByIdAndUpdate({ _id: "636f1fe16f43851ff63d0a7d" }, {
+            const user = await User.findByIdAndUpdate({ _id: compra.data.metadata.user_id }, {
                 verificationPay: true
             })
             await user.save()
         }
+    res.status(200).send('ok')
+
     } catch (error) {
         console.log(error)
         next()
     }
-
+    //Probar con esto sin el res anterior
+    // Además, ahora recibo las notificaciones
+    // Motrar la notificacion con los datos o hacer un cartel
+    // Continuar proceso de verificación (DB y back)
+    // Hacer formulario para el usuario
+    // Una vez llenado el form, actualizar la DB
+    // Aplicar la insignia al usuario
     res.status(200).send('ok')
 
 }
