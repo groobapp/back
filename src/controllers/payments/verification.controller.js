@@ -52,7 +52,7 @@ export const verifyAccountPay = async (req, res) => {
         "failure": "https://groob.com.ar/notifications/error",
       },
       auto_return: "approved",
-      notification_url: "https://groob-backend-production.up.railway.app/notifications",
+      notification_url: "https://groob-back-production.up.railway.app/notifications",
     };
 
     mercadopago.preferences.create(preference)
