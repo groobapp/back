@@ -1,5 +1,5 @@
 // import User from "../../models/User"
-
+import axios from "axios"
 // {
 //     action: 'test.created',
 //     api_version: 'v1',
@@ -16,6 +16,7 @@ export const webHooks = async (req, res, next) => {
     try {
 
         const { data } = req.body
+
         const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data.id}`, {
             headers: {
                 "Content-Type": "application/json",
@@ -29,7 +30,7 @@ export const webHooks = async (req, res, next) => {
         //         verificationPay: true
         //     })
         // }
-        
+
         res.status(200).send('ok')
     } catch (error) {
         console.log(error)
