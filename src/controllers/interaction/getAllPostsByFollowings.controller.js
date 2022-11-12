@@ -1,6 +1,6 @@
-import User from '../../models/User'
-import Publication from "../../models/Publication";
-import { closeConnectionInMongoose } from "../../libs/constants";
+import User from '../../models/User.js'
+import Publication from "../../models/Publication.js";
+import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 export const getAllPostsByFollowings = async (req, res, next) => {
     try {

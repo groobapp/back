@@ -1,4 +1,4 @@
-import User from '../../models/User'
+import User from '../../models/User.js'
 
 export const searchUser = async (req, res, next) => {
     try {
@@ -26,6 +26,7 @@ export const searchUser = async (req, res, next) => {
         }
     } catch (error) {
         console.log(error)
+        next()
     }
 
 }

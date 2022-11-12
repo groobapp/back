@@ -3,7 +3,7 @@ import { createPost, getPostById, deletePost, commentPost, likePost, dislikePost
 import { getAllPostsByFollowings } from '../controllers/interaction/getAllPostsByFollowings.controller.js'
 import { TokenValidator } from '../libs/tokenValidator.js';
 // import { schemaValidation } from '../libs/schemasValidator';
-import multer from "../libs/multer"
+import multer from "../libs/multer.js"
 // import { CreatePublicationSchema, GetOrDeletePublicationByIdSchema } from '../schemas/publications.schema';
 import { getAllPostsByUser } from '../controllers/profile.controller.js';
 const router = Router()

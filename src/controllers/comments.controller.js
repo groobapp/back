@@ -1,8 +1,8 @@
-import Publication from '../models/Publication'
-import User from "../models/User";
+import Publication from '../models/Publication.js'
+import User from "../models/User.js";
 import fs from "fs-extra"
-import { uploadImage, deleteImage } from "../libs/cloudinary";
-import { closeConnectionInMongoose } from "../libs/constants";
+import { uploadImage, deleteImage } from "../libs/cloudinary.js";
+import { closeConnectionInMongoose } from "../libs/constants.js";
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 export const commentPost = async (req, res, next) => {

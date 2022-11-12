@@ -1,8 +1,8 @@
-import { closeConnectionInMongoose } from '../../libs/constants';
-import User from "../../models/User"
-import Crypto from "../../models/Crypto"
+import { closeConnectionInMongoose } from '../../libs/constants.js';
+import User from "../../models/User.js"
+import Crypto from "../../models/Crypto.js"
 
-export const createCryptoWallet = async (req, res) => {
+export const createCryptoWallet = async (req, res, next) => {
     try {
         const { entity, CBU, CVU, alias } = req.body
         const userCBU = parseInt(CBU)

@@ -1,9 +1,9 @@
-import User from '../models/User'
-import Publication from '../models/Publication'
+import User from '../models/User.js'
+import Publication from '../models/Publication.js'
 import fs from "fs-extra"
-import { uploadImage } from "../libs/cloudinary";
+import { uploadImage } from "../libs/cloudinary.js";
 // import {  deleteImage } from "../libs/cloudinary";
-import { closeConnectionInMongoose } from "../libs/constants";
+import { closeConnectionInMongoose } from "../libs/constants.js";
 // import { UpdateProfileBodyType, ValidateProfileParamsType } from "../schemas/profile.schema";
 
 

@@ -1,8 +1,8 @@
-import { closeConnectionInMongoose } from '../../libs/constants';
-import User from "../../models/User"
-import Fiat from "../../models/Fiat"
+import { closeConnectionInMongoose } from '../../libs/constants.js';
+import User from "../../models/User.js"
+import Fiat from "../../models/Fiat.js"
 
-export const createFiatWallet = async (req, res) => {
+export const createFiatWallet = async (req, res, next) => {
     try {
         const { entity, CBU, CVU, alias } = req.body
 

@@ -1,6 +1,6 @@
-import Publication from '../models/Publication'
-import User from "../models/User";
-import { closeConnectionInMongoose } from "../libs/constants";
+import Publication from '../models/Publication.js'
+import User from "../models/User.js";
+import { closeConnectionInMongoose } from "../libs/constants.js";
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 export const likePost = async (req, res, next) => {

@@ -4,7 +4,7 @@ import { getProfile, deleteProfile, updateProfile, pictureProfile, getProfileByI
 import { TokenValidator } from '../libs/tokenValidator.js';
 // import { schemaValidation } from '../libs/schemasValidator.js';
 // import { UpdateProfileSchema, ValidateProfileParamsSchema } from '../schemas/profile.schema';
-import multer from "../libs/multer"
+import multer from "../libs/multer.js"
 
 const router = Router()
 
