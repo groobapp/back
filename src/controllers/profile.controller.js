@@ -20,7 +20,7 @@ export const getProfile = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Cannot get profile", error)
-        return res.status(404).json(error)
+        res.status(404).json(error)
         next()
     }
 }
@@ -34,7 +34,7 @@ export const getReducedUser = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Cannot get profile", error)
-        return res.status(404).json(error)
+        res.status(404).json(error)
         next()
     }
 }
@@ -48,7 +48,7 @@ export const getReducedUserById = async (req, res, next) => {
 
     } catch (error) {
         console.log("Cannot get profile", error)
-        return res.status(404).json(error)
+        res.status(404).json(error)
         next()
     }
 }
@@ -81,7 +81,7 @@ export const getProfileById = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Cannot get profile", error)
-        return res.status(404).json(error)
+        res.status(404).json(error)
         next()
     }
 }
@@ -100,6 +100,7 @@ export const updateProfile = async (req, res, next) => {
             })
         res.status(200).json({ message: "User updated!", userUpdated });
         return closeConnectionInMongoose
+
     } catch (error) {
         console.log("Error:", error)
         res.status(500).json(error)

@@ -30,5 +30,6 @@ export const discoverUsers = async (req, res, next) => {
         return closeConnectionInMongoose;
     } catch (error) {
         console.log(error)
+        next()
     }
 }

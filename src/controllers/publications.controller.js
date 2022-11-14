@@ -3,6 +3,7 @@ import User from "../models/User.js";
 import fs from "fs-extra"
 import { uploadImage, deleteImage } from "../libs/cloudinary.js";
 import { closeConnectionInMongoose } from "../libs/constants.js";
+import { mPayment } from "./payments/checkout.controller.js"
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 
@@ -15,7 +16,7 @@ export const createPost = async (req, res, next) => {
         if (!user) return res.status(404).json("No user found")
         const publication = new Publication({
             content, price: priceValue, explicitContent: myBoolean, user: user?._id, userName: user?.userName,
-            profilePicture: user?.profilePicture.secure_url
+            profilePicture: user?.profilePicture.secure_url, userVerified: user?.verified
         })
         if (req.files) {
             const files = req.files['images']
@@ -31,9 +32,11 @@ export const createPost = async (req, res, next) => {
         }
         const publicationSaved = await publication.save()
         const postIdForTheUser = publicationSaved?._id
-        if (user != undefined) user.publications = user.publications.concat(postIdForTheUser)
-        await user.save()
-        res.status(201).json({"success": true, publicationSaved})
+        if (user != undefined) {
+            user.publications = user.publications.concat(postIdForTheUser)
+            await user.save()
+        }
+        res.status(201).json({ "success": true, publicationSaved })
         closeConnectionInMongoose
     } catch (error) {
         console.log(error)

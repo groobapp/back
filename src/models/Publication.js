@@ -16,6 +16,9 @@ const publicationSchema = new Schema({
         type: Number, default: 0,
     },
     explicitContent: { type: Boolean, default: false},
+    buyers: {
+        type: [String], default: []
+    },
     comments: {
         type: [String], default: [],  maxlength: 500,
     },
@@ -26,6 +29,9 @@ const publicationSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
+    },
+    userVerified: {
+        type: Boolean, default: false
     },
     userName: {type: String},
     profilePicture: {type: String}
