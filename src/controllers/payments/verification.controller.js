@@ -5,7 +5,7 @@ mercadopago.configure({
 });
 
 export const verifyAccountPay = async (req, res) => {
-  const { idToVerify, title, picURL, 
+  const { idToVerify, title, quantity, price, descripcion, picURL, 
     nombre, apellido, email, direccion, numeroDireccion, area, tel, postal, } = req.body
     
   try {
@@ -16,9 +16,9 @@ export const verifyAccountPay = async (req, res) => {
       items: [
         {
           title: title,
-          unit_price: 2999,
-          quantity: 1,
-          description: "Con la verificación de la cuenta obtenés el check azul en tu perfil. Además, en nuestro algoritmo damos múltiples beneficios a estos perfiles.",
+          unit_price: parseInt(price),
+          quantity: parseInt(quantity),
+          description: descripcion, 
           currency_id: "ARS",
           picture_url: picURL,
         }
@@ -50,14 +50,11 @@ export const verifyAccountPay = async (req, res) => {
 
     mercadopago.preferences.create(preference)
       .then((response) => {
-        console.log(response)
         res.json(response)
       })
-
-
   } catch (error) {
     console.log(error);
-    res.json({ message: error });
+    res.json({ "message": error });
   }
 
 }
