@@ -39,13 +39,9 @@ export const webHooks = async (req, res, next) => {
         console.log(error)
         next()
     }
-    //Probar con esto sin el res anterior
-    // Además, ahora recibo las notificaciones
-    // Motrar la notificacion con los datos o hacer un cartel
     // Continuar proceso de verificación (DB y back)
     // Hacer formulario para el usuario
     // Una vez llenado el form, actualizar la DB
     // Aplicar la insignia al usuario
-    res.status(200).send('ok')
 
 }
