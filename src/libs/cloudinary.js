@@ -3,8 +3,8 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
+    cloud_name: "groob",
+    api_key: "212115414392645",
     api_secret: "17C_wVZf2cpw7lVydqBDGULuHeU",
     secure: true,
 })
