@@ -19,7 +19,7 @@ mercadopago.configure({
 
 export const mPayment = async (req, res) => {
   const { userName, postId, user_id, profilePicture, price, quantity, descripcion, 
-    nombre, apellido, email, direccion, numeroDireccion, area, tel, postal, } = req.body
+    nombre, apellido, email, direccion, numeroDireccion, area, tel, codPostal, } = req.body
   
     try {
       let preference = {
@@ -46,7 +46,7 @@ export const mPayment = async (req, res) => {
             "number": tel
           },
           "address": {
-            "zip_code": postal,
+            "zip_code": codPostal,
             "street_name": direccion,
             "street_number": numeroDireccion
           },
