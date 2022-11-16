@@ -8,7 +8,7 @@ export const webHooks = async (req, res, next) => {
         const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data?.id}`, {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PRUE_MP}`
+                "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
             }
         })
         
