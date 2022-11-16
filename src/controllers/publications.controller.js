@@ -3,7 +3,6 @@ import User from "../models/User.js";
 import fs from "fs-extra"
 import { uploadImage, deleteImage } from "../libs/cloudinary.js";
 import { closeConnectionInMongoose } from "../libs/constants.js";
-import { mPayment } from "./payments/checkout.controller.js"
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 
@@ -11,11 +10,10 @@ export const createPost = async (req, res, next) => {
     try {
         const { content, price, explicitContent } = req.body
         const priceValue = parseInt(price)
-        const myBoolean = explicitContent === 'true'
         const user = await User.findById(req.userId, { password: 0 })
         if (!user) return res.status(404).json("No user found")
         const publication = new Publication({
-            content, price: priceValue, explicitContent: myBoolean, user: user?._id, userName: user?.userName,
+            content, price: priceValue, explicitContent, user: user?._id, userName: user?.userName,
             profilePicture: user?.profilePicture.secure_url, userVerified: user?.verified
         })
         if (req.files) {
