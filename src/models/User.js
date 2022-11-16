@@ -73,6 +73,10 @@ const userSchema = new Schema({
     },
     { timestamps: true, versionKey: false },
   ],
+  mpAccount: {
+    type: Schema.Types.ObjectId,
+    ref: "MpAccount",
+  },
   chats: [{
     type: Schema.Types.ObjectId,
     ref: "Chat",

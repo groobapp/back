@@ -1,4 +1,6 @@
 import User from "../../models/User.js"
+import MpAccout from "../../models/MpAccount.js"
+
 import axios from "axios"
 
 const CLIENT_SECRET = process.env.CLIENT_SECRET_MP
@@ -7,7 +9,7 @@ const CLIENT_ID = process.env.CLIENT_ID_MP
 export const redirectUrlMp = async (req, res, next) => {
     const { code, state } = req.query
     try {
-        const result = await axios.post(`https://api.mercadopago.com/oauth/token`, {
+        const { data } = await axios.post(`https://api.mercadopago.com/oauth/token`, {
             client_secret: CLIENT_SECRET,
             client_id: CLIENT_ID,
             grant_type: "authorization_code",
@@ -20,7 +22,24 @@ export const redirectUrlMp = async (req, res, next) => {
                 "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
             }
         })
-        console.log(result)
+
+        
+        const newMpAccount = new MpAccout({
+            access_token: data.access_token,
+            token_type: data.token_type,
+            user_id: data.user_id,
+            refresh_token: data.refresh_token,
+            public_key: data.public_key,
+            user: state,
+        })
+        console.log(newMpAccount)
+
+        const user = await User.findByIdAndUpdate({ _id: state }, {
+            mpAccount: newMpAccount._id
+        })
+
+        console.log(user)
+
         res.status(200).json("veamos q tul")
 
     } catch (error) {
