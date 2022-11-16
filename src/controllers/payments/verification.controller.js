@@ -1,7 +1,7 @@
 import mercadopago from 'mercadopago'
 
 mercadopago.configure({
-  access_token: process.env.ACCESS_TOKEN_PRUE_MP
+  access_token: process.env.ACCESS_TOKEN_PROD_MP
 });
 
 export const verifyAccountPay = async (req, res) => {

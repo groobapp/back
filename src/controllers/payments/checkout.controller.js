@@ -17,21 +17,15 @@ mercadopago.configure({
 
 
 
-
-
-
-
-
-
-
 export const mPayment = async (req, res) => {
-  const { userName, profilePicture, price, quantity, descripcion, 
+  const { userName, postId, user_id, profilePicture, price, quantity, descripcion, 
     nombre, apellido, email, direccion, numeroDireccion, area, tel, postal, } = req.body
   
     try {
       let preference = {
         metadata: {
-          userId: idToVerify,
+          postToBuy: postId,     
+          userId: user_id,
         },
         items: [
           {
@@ -70,6 +64,7 @@ export const mPayment = async (req, res) => {
   
       mercadopago.preferences.create(preference)
         .then((response) => {
+          console.log(response.body)
           res.json(response)
         })
     } catch (error) {
