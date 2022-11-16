@@ -79,8 +79,8 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.set("trust proxy", 1);
 app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true, limit: "85mb" }));
-app.use(express.json({ limit: "85mb" }));
+app.use(express.urlencoded({ extended: true, limit: "100mb" }));
+app.use(express.json({ limit: "100mb" }));
 
 // Routes
 app.use(authRoute)

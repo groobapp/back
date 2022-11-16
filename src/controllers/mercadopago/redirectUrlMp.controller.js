@@ -11,6 +11,7 @@ export const redirectUrlMp = async (req, res, next) => {
             client_secret: CLIENT_SECRET,
             client_id: CLIENT_ID,
             grant_type: "authorization_code",
+            redirect_uri: "https://auth.mercadopago.com/authorization?client_id=6604225923180824&response_type=code&platform_id=mp&state=${id}&redirect_uri=https://groob-back-production.up.railway.app/mp-connect",
             code: code,
 
         }, {
