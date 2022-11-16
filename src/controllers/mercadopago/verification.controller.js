@@ -5,13 +5,13 @@ mercadopago.configure({
 });
 
 export const verifyAccountPay = async (req, res) => {
-  const { idToVerify, title, quantity, price, descripcion, picURL, 
+  const { userId, title, quantity, price, descripcion, picURL, 
     nombre, apellido, email, direccion, numeroDireccion, area, tel, postal, } = req.body
     
   try {
     let preference = {
       metadata: {
-        userId: idToVerify,
+        user_id: userId,
       },
       items: [
         {

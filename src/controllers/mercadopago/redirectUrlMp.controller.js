@@ -22,7 +22,6 @@ export const redirectUrlMp = async (req, res, next) => {
                 "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
             }
         })
-
         
         const newMpAccount = new MpAccout({
             access_token: data.access_token,
@@ -32,15 +31,13 @@ export const redirectUrlMp = async (req, res, next) => {
             public_key: data.public_key,
             user: state,
         })
-        console.log(newMpAccount)
 
-        const user = await User.findByIdAndUpdate({ _id: state }, {
-            mpAccount: newMpAccount._id
+        await User.findByIdAndUpdate({ _id: state }, {
+            mpAccount: newMpAccount._id,
+            mpAccessToken: data.access_token
         })
 
-        console.log(user)
-
-        res.status(200).json("veamos q tul")
+        res.redirect("https://groob.com.ar/user")
 
     } catch (error) {
         console.log(error)

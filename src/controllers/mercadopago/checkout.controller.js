@@ -1,15 +1,7 @@
 import mercadopago from 'mercadopago'
 
 // Agrega credenciales
-mercadopago.configure({
-  access_token: process.env.ACCESS_TOKEN_PRUE_MP
-});
 
-// Usuario conecta su cuenta de MP
-// Obtengo sus datos para crear preferencias
-// Obtengo sus datos para enviarle la plata
-// Sube un contenido
-// Un usuario da click en "Comprar"
 // Creo la preferencia con el tipo de metadata:
 // - ID del post
 // - ID del usuario a comprar el contenido
@@ -18,14 +10,18 @@ mercadopago.configure({
 
 
 export const mPayment = async (req, res) => {
-  const { userName, postId, user_id, profilePicture, price, quantity, descripcion, 
+  const { userName, postId, ACCESS_TOKEN, userId, profilePicture, price, quantity, descripcion, 
     nombre, apellido, email, direccion, numeroDireccion, area, tel, codPostal, } = req.body
-  
+
+    mercadopago.configure({
+      access_token: ACCESS_TOKEN
+    });
+
     try {
       let preference = {
         metadata: {
           postToBuy: postId,     
-          userId: user_id,
+          user_id: userId,
         },
         items: [
           {
@@ -52,7 +48,7 @@ export const mPayment = async (req, res) => {
           },
   
         },
-        
+        marketplace_fee: 1,
         back_urls: {
           "success": "https://groob.com.ar/notifications/success",
           "pending": "https://groob.com.ar/notifications/pending",

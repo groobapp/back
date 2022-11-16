@@ -33,6 +33,7 @@ const publicationSchema = new Schema({
     userVerified: {
         type: Boolean, default: false
     },
+    mpAccessToken: {type: String},
     userName: {type: String},
     profilePicture: {type: String}
 }, { timestamps: true, versionKey: false })
