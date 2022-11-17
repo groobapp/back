@@ -1,27 +1,28 @@
 import mercadopago from 'mercadopago'
+import User from '../../models/User'
 
 export const usersProductsMP = async (req, res) => {
-  const { userName, postId, userId, creatorId, profilePicture, price, quantity, descripcion, 
-    nombre, apellido, email, direccion, numeroDireccion, area, tel, codPostal, } = req.body
+  const { 
+    userName, postId, creatorId, profilePicture, price, quantity, descripcion, 
+     direccion, numeroDireccion, area, tel, codPostal 
+  } = req.body
 
 
-    console.log("postID", postId)
-    console.log("userID", userId)
-    console.log("creatorID", creatorId)
 
-    const userMP = await User.findById({_id: creatorId}, { password: 0 })
+    const userCreatorMP = await User.findById({_id: creatorId}, { password: 0 })
     mercadopago.configure({
-      access_token: userMP?.mpAccessToken
+      access_token: userCreatorMP?.mpAccessToken
     });
-    
-    console.log(userMP?.mpAccessToken)
+
+    const payer = await User.findById(req.userId, { password: 0 })
+  
 
     try {
       let preference = {
         metadata: {
           creator_id: creatorId,
           post_to_buy: postId,     
-          user_id: userId,
+          user_id: payer?._id,
         },
         items: [
           {
@@ -34,9 +35,9 @@ export const usersProductsMP = async (req, res) => {
           }
         ],
         payer: {
-          "name": nombre,
-          "surname": apellido,
-          "email": email,
+          "name": payer?.firstName,
+          "surname": payer?.lastName,
+          "email": payer?.email,
           "phone": {
             "area_code": area,
             "number": tel

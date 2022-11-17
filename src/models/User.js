@@ -33,8 +33,9 @@ const userSchema = new Schema({
     type: Date,
     default: new Date()
   },
-  firstName: { type: String, default: "", lowercase: true, },
-  lastName: { type: String, default: "", lowercase: true,},
+  firstName: { type: String, lowercase: true, },
+  lastName: { type: String, lowercase: true,},
+  phone: {type: Number},
   description: { type: String, default: "", lowercase: true,},
   profilePicture: {
     public_id: String,
