@@ -47,7 +47,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
-            res.status(200).json({ data, myId: myUser?._id, myUserExplicitContent: myUser?.explicitContent })
+            res.status(200).json({ data, myId: myUser?._id, myUserExplicitContent: myUser?.explicitContent, mpAccountAsociated: myUser?.mpAccountAsociated })
 
         }
         closeConnectionInMongoose

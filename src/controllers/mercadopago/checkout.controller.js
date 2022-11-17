@@ -7,8 +7,6 @@ export const usersProductsMP = async (req, res) => {
      direccion, numeroDireccion, area, tel, codPostal 
   } = req.body
 
-
-
     const userCreatorMP = await User.findById({_id: creatorId}, { password: 0 })
     mercadopago.configure({
       access_token: userCreatorMP?.mpAccessToken
@@ -16,7 +14,6 @@ export const usersProductsMP = async (req, res) => {
 
     const payer = await User.findById(req.userId, { password: 0 })
   
-
     try {
       let preference = {
         metadata: {
