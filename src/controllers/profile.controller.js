@@ -69,7 +69,7 @@ export const getAllProfiles = async (req, res, next) => {
 export const getProfileById = async (req, res, next) => {
     try {
         const { id } = req.params
-        const profileData = await User.findById(id, { password: 0 })
+        const profileData = await User.findById(id, { password: 0, purchases: 0, mpAccount: 0, mpAccessToken: 0, verificationPay: 0, verificationInProcess: 0 })
 
         const myId = req.userId?.toString()
         if (profileData !== undefined) {
@@ -88,15 +88,19 @@ export const getProfileById = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
     try {
-        const { userName, description, birthday, firstName, lastName,
-            online, premium, verified, explicitContent } = req.body;
+        const {
+            userName, description, birthday, firstName, lastName,
+            online, premium, verified, verificationPay, verificationInProcess,
+            mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
+        } = req.body;
         const { id } = req.params
         const user = await User.findById(id, { password: 0 })
         const userUpdated = await User.findOneAndUpdate(
             { _id: user._id },
             {
                 userName, description, birthday, firstName, lastName,
-                online, premium, verified, explicitContent
+                online, premium, verified, verificationPay, verificationInProcess,
+                mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
             })
         res.status(200).json({ message: "User updated!", userUpdated });
         return closeConnectionInMongoose

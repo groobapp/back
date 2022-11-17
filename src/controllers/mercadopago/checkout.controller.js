@@ -9,7 +9,7 @@ import mercadopago from 'mercadopago'
 
 
 
-export const mPayment = async (req, res) => {
+export const usersProductsMP = async (req, res) => {
   const { userName, postId,  ACCESS_TOKEN, userId, profilePicture, price, quantity, descripcion, 
     nombre, apellido, email, direccion, numeroDireccion, area, tel, codPostal, } = req.body
 
