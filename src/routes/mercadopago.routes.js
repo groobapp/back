@@ -11,9 +11,10 @@ const router = Router()
 
 router.post('/preferenceVerification', TokenValidator, verifyAccountPay)
 router.post('/preferenceProduct', TokenValidator, usersProductsMP)
-router.get('/marketplace', marketplace)
-router.get('/mp-connect', redirectUrlMp)
-
 router.post('/notifications', webHooks)
+
+router.get('/mp-connect', redirectUrlMp)
+router.get('/products/:id', TokenValidator, marketplace)
+
 
 export default router;

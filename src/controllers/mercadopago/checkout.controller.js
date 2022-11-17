@@ -1,25 +1,25 @@
 import mercadopago from 'mercadopago'
 
-// Agrega credenciales
-
-// Creo la preferencia con el tipo de metadata:
-// - ID del post
-// - ID del usuario a comprar el contenido
-// - Datos del usuario a comprar (enviarlos del back )
-
-
-
 export const usersProductsMP = async (req, res) => {
-  const { userName, postId,  ACCESS_TOKEN, userId, profilePicture, price, quantity, descripcion, 
+  const { userName, postId, userId, creatorId, profilePicture, price, quantity, descripcion, 
     nombre, apellido, email, direccion, numeroDireccion, area, tel, codPostal, } = req.body
 
+
+    console.log("postID", postId)
+    console.log("userID", userId)
+    console.log("creatorID", creatorId)
+
+    const userMP = await User.findById({_id: creatorId}, { password: 0 })
     mercadopago.configure({
-      access_token: ACCESS_TOKEN
+      access_token: userMP?.mpAccessToken
     });
+    
+    console.log(userMP?.mpAccessToken)
 
     try {
       let preference = {
         metadata: {
+          creator_id: creatorId,
           post_to_buy: postId,     
           user_id: userId,
         },

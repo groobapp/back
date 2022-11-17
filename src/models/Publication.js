@@ -36,7 +36,6 @@ const publicationSchema = new Schema({
     buyers: {
         type: [String]
     },
-    mpAccessToken: {type: String},
     userName: {type: String},
     profilePicture: {type: String}
 }, { timestamps: true, versionKey: false })

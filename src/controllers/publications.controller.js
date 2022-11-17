@@ -20,7 +20,6 @@ export const createPost = async (req, res, next) => {
             userName: user?.userName,
             profilePicture: user?.profilePicture.secure_url, 
             userVerified: user?.verified, 
-            mpAccessToken: user?.mpAccessToken
         })
         if (req.files) {
             const files = req.files['images']
