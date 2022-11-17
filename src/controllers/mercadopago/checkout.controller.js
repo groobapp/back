@@ -10,7 +10,7 @@ import mercadopago from 'mercadopago'
 
 
 export const mPayment = async (req, res) => {
-  const { userName, postId, ACCESS_TOKEN, userId, profilePicture, price, quantity, descripcion, 
+  const { userName, postId,  ACCESS_TOKEN, userId, profilePicture, price, quantity, descripcion, 
     nombre, apellido, email, direccion, numeroDireccion, area, tel, codPostal, } = req.body
 
     mercadopago.configure({
@@ -20,7 +20,7 @@ export const mPayment = async (req, res) => {
     try {
       let preference = {
         metadata: {
-          postToBuy: postId,     
+          post_to_buy: postId,     
           user_id: userId,
         },
         items: [

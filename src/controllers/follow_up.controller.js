@@ -7,12 +7,12 @@ export const follow = async (req, res, next) => {
     try {
         const { followTo } = req.body;
         const myUser = await User.findById(req.userId)
-        if (myUser != undefined) {
+        if (myUser !== undefined) {
             myUser.followings = myUser.followings.concat(followTo)
         }
         await myUser.save()
         const userWithNewFollower = await User.findById(followTo)
-        if (userWithNewFollower != undefined) {
+        if (userWithNewFollower !== undefined) {
             userWithNewFollower.followers = userWithNewFollower.followers.concat(myUser?._id)
         }
         await userWithNewFollower.save()

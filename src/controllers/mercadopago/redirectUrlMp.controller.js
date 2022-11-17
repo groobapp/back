@@ -34,7 +34,8 @@ export const redirectUrlMp = async (req, res, next) => {
 
         await User.findByIdAndUpdate({ _id: state }, {
             mpAccount: newMpAccount._id,
-            mpAccessToken: data.access_token
+            mpAccessToken: data.access_token,
+            mpAccountAsociated: true,
         })
 
         res.redirect("https://groob.com.ar/user")

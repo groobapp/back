@@ -33,6 +33,9 @@ const publicationSchema = new Schema({
     userVerified: {
         type: Boolean, default: false
     },
+    buyers: {
+        type: [String]
+    },
     mpAccessToken: {type: String},
     userName: {type: String},
     profilePicture: {type: String}

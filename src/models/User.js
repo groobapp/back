@@ -51,6 +51,9 @@ const userSchema = new Schema({
   followers: { type: [String], default: [], trim: true },
   followings: { type: [String], default: [], trim: true },
   likes: { type: [String]},
+  purchases: {
+    type: [String]
+  },
   publications: [
     {
       type: Schema.Types.ObjectId,
