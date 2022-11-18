@@ -6,7 +6,8 @@ export const usersProductsMP = async (req, res) => {
     userName, postId, creatorId, profilePicture, price, quantity, descripcion,
     direccion, numeroDireccion, area, tel, codPostal
   } = req.body
-  console.log(creatorId)
+  console.log("preciooo:", price)  
+  console.log("cantidad:", quantity)
   const userCreatorMP = await User.findById({ _id: creatorId }, { password: 0 })
 
   mercadopago.configure({
