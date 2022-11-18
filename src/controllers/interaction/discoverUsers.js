@@ -25,7 +25,7 @@ export const discoverUsers = async (req, res, next) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
-            res.status(200).json(orderByDate)
+            res.status(200).json({orderByDate, mpAccountAsociated: user?.mpAccountAsociated})
         }
         return closeConnectionInMongoose;
     } catch (error) {
