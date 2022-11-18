@@ -15,8 +15,6 @@ export const usersProductsMP = async (req, res) => {
 
   const payer = await User.findById(req.userId, { password: 0 })
 
-  console.log(postId)
-  console.log(payer?._id)
   try {
     let preference = {
       metadata: {
