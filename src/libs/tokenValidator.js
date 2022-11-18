@@ -8,9 +8,7 @@ export const TokenValidator = async (req, res, next) => {
         message: 'Access denied'
     })
     try {
-        console.log(token)
         const payload = jwt.verify(token, process.env.TOKEN_KEY_JWT || 'tokentest')
-        console.log(payload) 
         req.userId = payload._id
         next()
     } catch (error) {
