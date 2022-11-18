@@ -11,7 +11,8 @@ import chatRoute from './routes/chat.routes.js'
 import feedRoute from './routes/feed.routes.js'
 import followRoute from './routes/follow.routes.js'
 import messagesRoute from './routes/messages.routes.js'
-import paymentsRoute from './routes/mercadopago.routes.js'
+import mercadopagoRoute from './routes/mercadopago.routes.js'
+import paymentsRoute from './routes/payments.routes.js'
 import profileRoute from './routes/profile.routes.js'
 import searchRoute from './routes/search.routes.js'
 import walletsRoute from './routes/wallets.routes.js'
@@ -91,8 +92,8 @@ app.use(followRoute)
 app.use(chatRoute)
 app.use(messagesRoute)
 app.use(walletsRoute)
+app.use(mercadopagoRoute)
 app.use(paymentsRoute)
-
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)
