@@ -6,12 +6,16 @@ export const bringAllPurchasesByUser = async (req, res, next) => {
         const user = await User.findById(req.userId)
         const userPurchases = user?.purchases
 
-        const postsPurchases = await Publication.find({
+        const findPostsPurchases = await Publication.find({
             _id: {
                 $in: userPurchases
             }
         })
-        console.log(postsPurchases)
+
+        const postsPurchases = findPostsPurchases.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        })
 
         res.status(200).json(postsPurchases)
     } catch (error) {
