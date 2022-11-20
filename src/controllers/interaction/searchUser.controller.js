@@ -2,6 +2,8 @@ import User from '../../models/User.js'
 
 export const searchUser = async (req, res, next) => {
     try {
+
+        // Recibir mi id por params o enviar token en cada consulta
         const { input } = req.query
         console.log(input)
         if (input === undefined || input === null || input === "") return
@@ -20,7 +22,10 @@ export const searchUser = async (req, res, next) => {
                 if (a.verified < b.verified) return 1;
                 if (a.verified > b.verified) return -1;
             })
-
+            
+            // una vez realizada la búsqueda
+            // el resultado de usuarios compararlo con mi lista de seguidos
+            // ordenar y poner arriba primero a los que coincidan con esa lista
             res.status(200).json(result)
             return res.status(200).json(result)
         }
@@ -30,3 +35,4 @@ export const searchUser = async (req, res, next) => {
     }
 
 }
+

@@ -102,6 +102,8 @@ export const updateProfile = async (req, res, next) => {
                 online, premium, verified, verificationPay, verificationInProcess,
                 mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
             })
+            await Publication.updateMany({ userName: user.userName }, { userName: userName})
+
         res.status(200).json({ message: "User updated!", userUpdated });
         return closeConnectionInMongoose
 
@@ -135,6 +137,7 @@ export const pictureProfile = async (req, res, next) => {
             user.profilePicture = obj
             const userUpdated = await user.save()
             const pictureUpdated = userUpdated.profilePicture
+            await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url})
             res.status(200).json({ pictureUpdated });
         }
         return closeConnectionInMongoose
