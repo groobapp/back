@@ -183,6 +183,10 @@ export const getAllPostsByUser = async (req, res, next) => {
             if (userId === post.user.toString()) {
                 return post;
             }
+        }).filter(post => {
+            if(post.price === 0) {
+                return post
+            }
         })
         const data = postsByUser.sort((a, b) => {
             if (a.createdAt < b.createdAt) return 1;
