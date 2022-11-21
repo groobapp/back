@@ -180,19 +180,14 @@ export const getAllPostsByUser = async (req, res, next) => {
         const posts = await Publication.find()
         const userId = user._id.toString()
         const postsByUser = posts.filter(post => {
-            if (userId === post.user.toString()) {
+            if (userId === post.user.toString() && post.price === 0) {
                 return post;
             }
-        }).filter(post => {
-            if(post.price === 0) {
-                return post
-            }
-        })
-        const data = postsByUser.sort((a, b) => {
+        }).sort((a, b) => {
             if (a.createdAt < b.createdAt) return 1;
             return -1;
         })
-        res.status(200).json(data)
+        res.status(200).json(postsByUser)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
