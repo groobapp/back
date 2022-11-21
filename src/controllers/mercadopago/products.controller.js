@@ -3,8 +3,7 @@ import Publication from '../models/Publication.js'
 
 export const postsWithPriceByUserId = async (req, res, next) => {
     try {
-        const {userId} = req.body
-        const user = await User.findById({_id: userId})
+        const user = await User.findById(req.userId)
         const publications = user?.publications
 
         
@@ -19,7 +18,6 @@ export const postsWithPriceByUserId = async (req, res, next) => {
                 return post
             }
         })
-        console.log(postsWithPrice)
         res.status(200).json(postsWithPrice)
     } catch (error) {
         console.log(error)
