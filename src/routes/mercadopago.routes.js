@@ -13,7 +13,7 @@ router.post('/preferenceVerification', TokenValidator, verifyAccountPay)
 router.post('/preferenceProduct', TokenValidator, usersProductsMP)
 router.post('/notifications', webHooks)
 
-router.get('productsByUser', TokenValidator, postsWithPriceByUserId)
+router.get('/productsByUser', TokenValidator, postsWithPriceByUserId)
 router.get('/mp-connect', redirectUrlMp)
 
 
