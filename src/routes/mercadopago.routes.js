@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { usersProductsMP } from '../controllers/mercadopago/checkout.controller.js'
 import { verifyAccountPay } from '../controllers/mercadopago/verification.controller.js'
-import { postsWithPriceByUserId } from "../controllers/mercadopago/products.controller"
+import { postsWithPriceByUserId } from "../controllers/mercadopago/products.controller.js"
 import { webHooks } from '../controllers/mercadopago/webHooks.js'
 import { redirectUrlMp } from '../controllers/mercadopago/redirectUrlMp.controller.js'
 import { TokenValidator } from '../libs/tokenValidator.js';
