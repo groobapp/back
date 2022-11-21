@@ -39,7 +39,12 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
-            res.status(200).json({ data, myId: myUser?._id, myUserExplicitContent: myUser?.explicitContent })
+            res.status(200).json({
+                data, 
+                myId: myUser?._id, 
+                myUserExplicitContent: myUser?.explicitContent,
+                mpAccountAsociated: myUser?.mpAccountAsociated
+            })
         } else {
             const postWithOutExplicitContent = postsByFollowings.filter(post => post.explicitContent === false)
             const allPosts = postsByMyUser.concat(postWithOutExplicitContent) // concateno los usuarios y los posts
@@ -47,9 +52,12 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
-            res.status(200).json({ data, myId: myUser?._id, 
-                myUserExplicitContent: myUser?.explicitContent, 
-                mpAccountAsociated: myUser?.mpAccountAsociated })
+            res.status(200).json({
+                data, 
+                myId: myUser?._id,
+                myUserExplicitContent: myUser?.explicitContent,
+                mpAccountAsociated: myUser?.mpAccountAsociated
+            })
 
         }
         closeConnectionInMongoose
