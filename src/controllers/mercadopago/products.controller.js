@@ -30,7 +30,7 @@ export const postsWithPriceByUser = async (req, res, next) => {
 
 export const postsWithPriceByUserId = async (req, res, next) => {
     try {
-        const { userId } = req.body
+        const { userId } = req.params
         const user = await User.findById({ _id: userId })
         const publications = user?.publications
 
