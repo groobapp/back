@@ -72,7 +72,7 @@ export const getProfileById = async (req, res, next) => {
         const profileData = await User.findById(id, { password: 0, purchases: 0, mpAccount: 0, mpAccessToken: 0, verificationPay: 0, verificationInProcess: 0 })
 
         const myId = req.userId?.toString()
-        if (profileData !== undefined) {
+        if (profileData !== undefined && myId !== undefined) {
             profileData.visits = profileData.visits.concat(myId)
         }
         await profileData.save()
