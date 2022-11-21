@@ -1,5 +1,5 @@
-import User from '../models/User.js'
-import Publication from '../models/Publication.js'
+import User from '../../models/User.js'
+import Publication from '../../models/Publication.js'
 
 export const postsWithPriceByUserId = async (req, res, next) => {
     try {
