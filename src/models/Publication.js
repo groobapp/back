@@ -13,8 +13,9 @@ const publicationSchema = new Schema({
         type: Number, required: false, trim: true, default: 0,
     },
     likes: {
-        type: Number, default: 0,
+        type: Number, default: 0
     },
+    liked: [String],
     explicitContent: { type: Boolean, default: false},
     buyers: {
         type: [String], default: []

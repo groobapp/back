@@ -111,15 +111,18 @@ export const commentPost = async (req, res, next) => {
 export const likePost = async (req, res, next) => {
     try {
         const { id } = req.params
-        const { idPostLiked } = req.body
-        console.log(idPostLiked)
         const post = await Publication.findById({ _id: id })
-        const updatedPost = await Publication.findByIdAndUpdate(id, { likes: post.likes + 1 }, { new: true })
-        res.status(200).json(updatedPost.likes)
+        const user = await User.findById(req.userId)
+        post.likes = post.likes + 1
+        post.liked = post.liked.concat(user._id)
+        await post.save()
+        console.log(post.liked)
+        console.log(post)
+        res.status(200).json(post)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
+        res.status(500).send(error);
         next()
     }
 }
@@ -127,13 +130,21 @@ export const likePost = async (req, res, next) => {
 export const dislikePost = async (req, res, next) => {
     try {
         const { id } = req.params
+        console.log(id)
+
         const post = await Publication.findById({ _id: id })
-        const updatedPost = await Publication.findByIdAndUpdate(id, { likes: post.likes - 1 }, { new: true })
-        res.status(200).json(updatedPost)
+        const user = req.userId
+        const userId = user?._id
+        post.likes = post.likes - 1
+        post.liked = post.liked.filter(id => {
+            id !== userId
+        })
+        await post.save()
+        res.status(200).json(post.likes)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
+        res.status(500).send(error);
         next()
     }
 }
