@@ -5,13 +5,12 @@ const commentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Publication",
     },
+    
     comment: {
         type: String,  maxlength: 500,
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-    },
+
+    userName: String,
     createdAt: {
         type: Date,
         default: new Date()

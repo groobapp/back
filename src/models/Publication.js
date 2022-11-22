@@ -19,9 +19,10 @@ const publicationSchema = new Schema({
     buyers: {
         type: [String], default: []
     },
-    comments: {
-        type: [String], default: [],  maxlength: 500,
-    },
+    comments: [{
+        value: String,
+        userName: String,
+    }],
     createdAt: {
         type: Date,
         default: new Date()
