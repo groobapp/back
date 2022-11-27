@@ -16,6 +16,7 @@ import paymentsRoute from './routes/payments.routes.js'
 import profileRoute from './routes/profile.routes.js'
 import searchRoute from './routes/search.routes.js'
 import walletsRoute from './routes/wallets.routes.js'
+import moderationRoute from './routes/moderation.routes.js'
 
 import { Server as SocketServer } from "socket.io"
 dotenv.config() 
@@ -94,6 +95,7 @@ app.use(messagesRoute)
 app.use(walletsRoute)
 app.use(mercadopagoRoute)
 app.use(paymentsRoute)
+app.use(moderationRoute)
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)

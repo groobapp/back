@@ -24,6 +24,7 @@ const publicationSchema = new Schema({
         value: String,
         userName: String,
     }],
+    denouncement: [String],
     createdAt: {
         type: Date,
         default: new Date()

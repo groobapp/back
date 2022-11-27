@@ -52,7 +52,8 @@ export const getPostById = async (req, res, next) => {
     try {
         const { id } = req.params
         const post = await Publication.findById({ _id: id })
-        res.status(200).json(post)
+        const user = await User.findById(req.userId)
+        res.status(200).json({post: post, userId: user?._id})
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
