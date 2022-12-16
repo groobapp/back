@@ -1,7 +1,7 @@
 import Publication from '../../models/Publication.js'
 import User from '../../models/User.js'
 
-export const surfing = async (req, res, next) => {
+export const postsRecomended = async (req, res, next) => {
     try {
 
         const allPublications = await Publication.find()
@@ -16,7 +16,12 @@ export const surfing = async (req, res, next) => {
                 if (a.userVerified < b.userVerified) return 1;
                 return -1;
             })
-            res.status(200).json(filterByPhoto)
+
+        // Evitar publicaciones repetidas
+        const noDuplicates = [...new Set(filterByPhoto.map(post => post._id))]
+        .map(id => filterByPhoto.find(post => post._id === id));
+
+        res.status(200).json(noDuplicates)
         
     } catch (error) {
         console.log(error)

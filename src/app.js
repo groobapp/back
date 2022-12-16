@@ -101,38 +101,34 @@ app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)
 // app.use(express.static(path.join(__dirname, 'public')))
 
+io.on("connection", (socket) => { // solo para mostrar usuarios online
+    socket.on("newUserAdded", (newUserId) => {
+        if (!activeUsers.some((user) => user.userId === newUserId)) {
+            activeUsers.push(
+                {
+                    userId: newUserId,
+                    socketId: socket.id
+                }
+            )
+        }
+        io.emit("getUsers", activeUsers) // send the users active
+    })
 
-// io.on("connection", (socket) => { // solo para mostrar usuarios online
-//     socket.on("newUserAdded", (newUserId) => {
-//         if (!activeUsers.some((user) => user.userId === newUserId)) {
-//             activeUsers.push(
-//                 {
-//                     userId: newUserId,
-//                     socketId: socket.id
-//                 }
-//             )
-//         }
-//         io.emit("getUsers", activeUsers) // send the users active
-//     })
+    socket.on("newMessage", (data) => {
+        if (data) {
+            console.log("1- data:", data)
+            const user = activeUsers.find((user) => user.userId === data.receiverId)
+            if (user) {
+                console.log("2- user: ", user)
+                io.to(user.socketId).emit("reciveMessage", data.newSocketMessage);
+            }
+        }
+    })
 
-//     socket.on("newMessage", (data) => {
-//         if (data) {
-//             console.log("1- data:", data)
-//             const user = activeUsers.find((user) => user.userId === data.reciverId)
-//             if (user) {
-//                 console.log("2- user: ", user)
-//                 // io.to(user.socketId).emit("reciveMessage", data.newSocketMessage);
-//                 io.emit("receiveMessage", data.newSocketMessage);
-//             }
-//         }
-//     })
-
-//     socket.on("disconnected", () => {
-//         activeUsers = activeUsers.filter((user) => user.socketId !== socket.id)
-//         console.log("user disconnected", activeUsers)
-//         io.emit("getUsers", activeUsers)
-//     })
-// })
-
-
+    socket.on("disconnected", () => {
+        activeUsers = activeUsers.filter((user) => user.socketId !== socket.id)
+        console.log("user disconnected", activeUsers)
+        io.emit("getUsers", activeUsers)
+    })
+})
 export default server;
