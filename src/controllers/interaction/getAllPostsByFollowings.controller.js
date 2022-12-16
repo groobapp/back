@@ -35,7 +35,9 @@ export const getAllPostsByFollowings = async (req, res, next) => {
 
         if (myUser.explicitContent === true) {
             const allPosts = postsByMyUser.concat(postsByFollowings) // concateno los usuarios y los posts
-            const data = allPosts.sort((a, b) => {
+            const noDuplicates = [...new Set(allPosts.map(post => post._id))]
+            .map(id => allPosts.find(post => post._id === id));
+            const data = noDuplicates.sort((a, b) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
@@ -48,7 +50,9 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         } else {
             const postWithOutExplicitContent = postsByFollowings.filter(post => post.explicitContent === false)
             const allPosts = postsByMyUser.concat(postWithOutExplicitContent) // concateno los usuarios y los posts
-            const data = allPosts.sort((a, b) => {
+            const noDuplicates = [...new Set(allPosts.map(post => post._id))]
+            .map(id => allPosts.find(post => post._id === id));
+            const data = noDuplicates.sort((a, b) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
