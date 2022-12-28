@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { createDenouncePost, updateDenouncePost, getDenouncePost, deleteDenouncePost } from '../controllers/admin/moderatePublications.controller'
-import {  createDenounceUser, updateDenounceUser, getDenounceUser, deleteDenounceUser } from '../controllers/admin/moderateUsers.controllers'
+import { createDenouncePost, updateDenouncePost, getDenouncePost, deleteDenouncePost } from '../controllers/admin/moderatePublications.controller.js'
+import {  createDenounceUser, updateDenounceUser, getDenounceUser, deleteDenounceUser } from '../controllers/admin/moderateUsers.controllers.js'
 import { TokenValidator } from '../libs/tokenValidator.js';
 
 const router = Router()
