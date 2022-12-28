@@ -69,8 +69,6 @@ export const userChats = async (req, res, next) => {
                 updatedAt: user.updatedAt,
             }
         })
-
-
         res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture, online, myId })
 
         return closeConnectionInMongoose
@@ -94,6 +92,23 @@ export const findChat = async (req, res, next) => {
         const online = user?.online
         closeConnectionInMongoose
         res.status(200).json({ chat, userName, profilePicture, online, myId })
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).json(error)
+        next()
+    }
+}
+
+export const deleteChat = async (req, res, next) => {
+    try {
+        const myId = req.userId?.toString()
+        const chat = await Chat.findByIdAndDelete({
+            members: { $all: [req.userId, req.params.secondId] }
+        })
+        // añadir la eliminación de todos los mensajes en el chat
+        closeConnectionInMongoose
+        res.status(200).json("Chat deleted")
 
     } catch (error) {
         console.log(error)

@@ -2,8 +2,6 @@ import Message from "../../models/Message.js";
 import Chat from "../../models/Chat.js"
 import { closeConnectionInMongoose } from "../../libs/constants.js";
 
-
-
 export const addMessage = async (req, res, next) => {
     try {
         const { chatId, senderId, text } = req.body
@@ -20,6 +18,7 @@ export const addMessage = async (req, res, next) => {
     } catch (error) {
         console.error(error)
         res.status(500).json(error)
+        next()
     }
 }
 
@@ -38,6 +37,7 @@ export const getMessages = async (req, res, next) => {
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
+        next()
     }
 }
 

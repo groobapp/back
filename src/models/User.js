@@ -41,6 +41,7 @@ const userSchema = new Schema({
     public_id: String,
     secure_url: String
   },
+  role: {type: String, default: "user"},
   denouncement: [],
   gender: { type: String, default: "Other" },
   verificationPay: {type: Boolean, default: false},
