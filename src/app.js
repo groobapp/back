@@ -100,7 +100,7 @@ app.use(moderationRoute)
 app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)
 // app.use(express.static(path.join(__dirname, 'public')))
-
+    let activeUsers = []
 io.on("connection", (socket) => { // solo para mostrar usuarios online
     socket.on("newUserAdded", (newUserId) => {
         if (!activeUsers.some((user) => user.userId === newUserId)) {

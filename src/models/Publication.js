@@ -36,9 +36,9 @@ const publicationSchema = new Schema({
     userVerified: {
         type: Boolean, default: false
     },
-    buyers: {
-        type: [String]
-    },
+    // Añadir el ID de su Preferencia en caso de que se sea un producto
+    // Esto va a permitir traer una preferencia de MP y editarle el fee
+    // Evaluar también asignar un array de "Beneficiarios" para no cobrarles el fee
     userName: {type: String},
     profilePicture: {type: String}
 }, { timestamps: true, versionKey: false })

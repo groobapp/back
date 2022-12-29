@@ -1,14 +1,19 @@
 import mercadopago from 'mercadopago'
 import User from '../../models/User.js'
 
-export const usersProductsMP = async (req, res) => {
+export const usersProductsMP = async (req, res, next) => {
   const {
     userName, postId, creatorId, profilePicture, price, quantity, descripcion,
     direccion, numeroDireccion, area, tel, codPostal
   } = req.body
+  console.log(postId)
+  console.log(creatorId)
+  console.log(quantity)
+  console.log(userName)
+  console.log(price)
   const userCreatorMP = await User.findById({ _id: creatorId }, { password: 0 })
 
-  mercadopago.configure({
+  mercadopago.configure({ 
     access_token: userCreatorMP?.mpAccessToken
   });
 
@@ -64,5 +69,6 @@ export const usersProductsMP = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.json({ "message": error });
+    next()
   }
 }
