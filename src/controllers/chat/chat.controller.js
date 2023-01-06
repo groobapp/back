@@ -43,7 +43,7 @@ export const userChats = async (req, res, next) => {
         const online = user?.online
         const profilePicture = user?.profilePicture?.secure_url
         const myId = user._id.toString()
-
+        const role = user?.role
         const usersInMyChat = chats.map(obj => obj.members).flat()
         const usersId = usersInMyChat.filter(member => member !== myId)
 
@@ -69,7 +69,7 @@ export const userChats = async (req, res, next) => {
                 updatedAt: user.updatedAt,
             }
         })
-        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture, online, myId })
+        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture, online, myId, role })
 
         return closeConnectionInMongoose
     } catch (error) {
@@ -82,6 +82,8 @@ export const userChats = async (req, res, next) => {
 
 export const findChat = async (req, res, next) => {
     try {
+        const myUser = await User.findById(req.userId)
+        const myRole = myUser?.role
         const myId = req.userId?.toString()
         const chat = await Chat.findOne({
             members: { $all: [req.userId, req.params.secondId] }
@@ -91,7 +93,7 @@ export const findChat = async (req, res, next) => {
         const profilePicture = user?.profilePicture?.secure_url
         const online = user?.online
         closeConnectionInMongoose
-        res.status(200).json({ chat, userName, profilePicture, online, myId })
+        res.status(200).json({ chat, userName, profilePicture, online, myId, myRole })
 
     } catch (error) {
         console.log(error)
