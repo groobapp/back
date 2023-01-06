@@ -15,15 +15,15 @@ export const transporter = nodemailer.createTransport({
     }
   });
 
-transporter.verify()
-.then((loquehaya) => {
-  console.log("connected to SMTP server")
-  console.log(loquehaya)
-})
-.catch((error) => {
-  console.log("failed to connect to SMTP server")
-  console.log(error)
-})
+// transporter.verify()
+// .then((loquehaya) => {
+//   console.log("connected to SMTP server")
+//   console.log(loquehaya)
+// })
+// .catch((error) => {
+//   console.log("failed to connect to SMTP server")
+//   console.log(error)
+// })
 
 // export const sendMail = async ({email, userName}) => {
 //   console.log(email, userName)

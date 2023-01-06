@@ -37,8 +37,8 @@ export const signup = async (req, res, next) => {
                     from: 'joeljuliandurand@gmail.com', // sender address
                     to: `${email}`, // list of receivers
                     subject: `Hola ${userName}, registro exitoso!`, // Subject line
-                    text: "Hello world?", // plain text body
-                    html: "<b>Hello world?</b>", // html body
+                    text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand.", // plain text body
+                    // html: "<b>Hello world?</b>", // html body
                 });
                 console.log(user)
                 res.status(200).json({ message: 'Success', token: token })
