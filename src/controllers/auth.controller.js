@@ -71,6 +71,13 @@ export const login = async (req, res, next) => {
             //     sameSite: 'none',
             //     secure: true,
             // }))
+            await transporter.sendMail({
+                from: 'joeljuliandurand@gmail.com',
+                to: `${user?.email}`,
+                subject: `Nuevo inicio de sesión.`,
+                text: `Hola! Gracias por volver a Groob, esto nos ayuda mucho a crecer 🥰. Un saludo!`,
+                // html: '<button> <a href=`https://www.groob.com.ar/reset-password/${token}`>Resetear contraseña</a></button>',
+            });
             res.status(200).json({ message: 'Success', token: token })
             await user.save()
         }
@@ -154,10 +161,10 @@ export const reset = async (req, res, next) => {
                 from: 'joeljuliandurand@gmail.com',
                 to: `${user?.email}`,
                 subject: `Recuperá tu contraseña.`,
-                text: `Tenés 15 minutos para cambiar la contraseña, si el botón no funciona prueba copiar y pegar el siguiente link: https://www.groob.com.ar/reset-password?token=${token}`,
+                text: `Hola! Alguien solicitó recuperar la contraseña de ingreso. Si no fuiste vos, ignora este email por favor. Tenés 15 minutos para cambiar la contraseña. Accede desde el siguiente link: https://groob.com.ar/change-password?token=${token}`,
                 // html: '<button> <a href=`https://www.groob.com.ar/reset-password/${token}`>Resetear contraseña</a></button>',
             });
-            res.json({success: true})
+            res.json({ success: true })
 
         }
         if (userName !== undefined && userName.length > 0) {
@@ -170,11 +177,11 @@ export const reset = async (req, res, next) => {
                 from: 'joeljuliandurand@gmail.com',
                 to: `${user?.email}`,
                 subject: `Recuperá tu contraseña.`,
-                text: `Tenés 15 minutos para cambiar la contraseña, si el botón no funciona prueba copiar y pegar el siguiente link: https://www.groob.com.ar/reset-password?token=${token}`,
+                text: `Tenés 15 minutos para cambiar la contraseña, si el botón no funciona prueba copiar y pegar el siguiente link: https://groob.com.ar/change-password?token=${token}`,
                 // html: '<button> <a href=`https://www.groob.com.ar/reset-password/${token}`>Resetear contraseña</a></button>',
 
             });
-            res.json({success: true})
+            res.json({ success: true })
         }
     } catch (error) {
         console.log(error)
@@ -184,7 +191,15 @@ export const reset = async (req, res, next) => {
 
 export const changePassword = async (req, res, next) => {
     try {
-
+        const { password } = req.body
+        console.log(password)
+        if (password.length >= 6 && password.length <= 16) {
+            const user = await User.findById(req.userId)
+            console.log(user)
+            user.password = await user.encryptPassword(password)
+            await user.save()
+            res.status(200).json("good")
+        }
     } catch (error) {
         console.log(error)
         next(error);
