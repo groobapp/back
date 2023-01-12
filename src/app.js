@@ -116,7 +116,7 @@ const getUser = (userId) => {
     return activeUsers.find(obj => obj.id === userId)
 }
 io.on("connection", (socket) => {
-
+    
 
     socket.on("newUserAdded", (newUserId) => {
     addNewUser(newUserId, socket.id)

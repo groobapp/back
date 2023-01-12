@@ -71,13 +71,6 @@ export const login = async (req, res, next) => {
             //     sameSite: 'none',
             //     secure: true,
             // }))
-            await transporter.sendMail({
-                from: 'joeljuliandurand@gmail.com',
-                to: `${user?.email}`,
-                subject: `Nuevo inicio de sesión.`,
-                text: `Hola! Gracias por volver a Groob, esto nos ayuda mucho a crecer 🥰. Un saludo!`,
-                // html: '<button> <a href=`https://www.groob.com.ar/reset-password/${token}`>Resetear contraseña</a></button>',
-            });
             res.status(200).json({ message: 'Success', token: token })
             await user.save()
         }
