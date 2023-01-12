@@ -88,7 +88,13 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Chat",
   }],
-}, { timestamps: true, versionKey: false });
+  notifications:[{
+    userName: String,
+    profilePic: String,
+    event: String,
+    link: String,
+  }]
+}, { timestamps: true, versionKey: false })
 
 
 userSchema.methods.toJSON = function () {

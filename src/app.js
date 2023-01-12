@@ -17,9 +17,10 @@ import profileRoute from './routes/profile.routes.js'
 import searchRoute from './routes/search.routes.js'
 import walletsRoute from './routes/wallets.routes.js'
 import moderationRoute from './routes/moderation.routes.js'
+import notifications from "./routes/notifications.routes.js"
 
 import { Server as SocketServer } from "socket.io"
-dotenv.config() 
+dotenv.config()
 
 // Inicialization
 const app = express()
@@ -64,19 +65,19 @@ app.use(cookieParser())
 app.use(morgan('dev'))
 var corsOptions = {
     origin: ['https://www.groob.com.ar', 'https://groob.com.ar', 'https://groob.vercel.app', 'https://groob.online', 'https://www.groob.online', 'https://groob.store', 'https://www.groob.store', 'http://localhost:3000'],
-   credentials: true,
-        methods: ['GET','POST','DELETE','PUT','PATCH', 'OPTIONS'],
-        allowedHeaders: [
-            'Origin',
-            'X-Requested-With',
-            'Content-Type',
-            'Access-Control-Allow-Origin',
-            'Access-Control-Allow-Headers',
-            'Access-Control-Allow-Credentials',
-            'Accept',
-            'X-Access-Token',
-            'authtoken'
-          ],
+    credentials: true,
+    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
+    allowedHeaders: [
+        'Origin',
+        'X-Requested-With',
+        'Content-Type',
+        'Access-Control-Allow-Origin',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Credentials',
+        'Accept',
+        'X-Access-Token',
+        'authtoken'
+    ],
 }
 app.use(cors(corsOptions));
 app.set("trust proxy", 1);
@@ -96,39 +97,47 @@ app.use(walletsRoute)
 app.use(mercadopagoRoute)
 app.use(paymentsRoute)
 app.use(moderationRoute)
+app.use(notifications)
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)
 // app.use(express.static(path.join(__dirname, 'public')))
-    let activeUsers = []
-io.on("connection", (socket) => { // solo para mostrar usuarios online
+
+let activeUsers = []
+const addNewUser = (userId, socketId) => {
+    !activeUsers.some(obj => obj.userId === userId) && activeUsers.push({ userId, socketId })
+}
+
+const removeUser = (socketId) => {
+    activeUsers = activeUsers.filter(obj => obj.socketId !== socketId)
+}
+
+const getUser = (userId) => {
+    return activeUsers.find(obj => obj.id === userId)
+}
+io.on("connection", (socket) => {
+
+
     socket.on("newUserAdded", (newUserId) => {
-        if (!activeUsers.some((user) => user.userId === newUserId)) {
-            activeUsers.push(
-                {
-                    userId: newUserId,
-                    socketId: socket.id
-                }
-            )
-        }
+    addNewUser(newUserId, socket.id)
         io.emit("getUsers", activeUsers) // send the users active
     })
 
     socket.on("newMessage", (data) => {
         if (data) {
-            console.log("1- data:", data)
             const user = activeUsers.find((user) => user.userId === data.receiverId)
             if (user) {
-                console.log("2- user: ", user)
                 io.to(user.socketId).emit("reciveMessage", data.newSocketMessage);
             }
         }
     })
 
+
+
     socket.on("disconnected", () => {
-        activeUsers = activeUsers.filter((user) => user.socketId !== socket.id)
-        console.log("user disconnected", activeUsers)
-        io.emit("getUsers", activeUsers)
+        removeUser(socket.id)
     })
 })
+
+
 export default server;

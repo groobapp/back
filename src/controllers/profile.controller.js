@@ -29,7 +29,7 @@ export const getProfile = async (req, res, next) => {
 export const getReducedUser = async (req, res, next) => {
     try {
 
-        const myUser = await User.findById(req.userId, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0 })
+        const myUser = await User.findById(req.userId, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0, mpAccessToken: 0 })
         res.status(200).json(myUser)
         return closeConnectionInMongoose
     } catch (error) {
