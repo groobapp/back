@@ -1,5 +1,5 @@
-import Publication from "../models/Publication"
-import User from "../models/User"
+import Publication from "../models/Publication.js"
+import User from "../models/User.js"
 
 export const notification = async (req, res, next) => {
     try {
