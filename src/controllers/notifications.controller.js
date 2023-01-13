@@ -87,6 +87,8 @@ export const getNotifications = async (req, res, next) => {
         )
         console.log(notificationsSorted)
         res.status(200).json(notificationsSorted)
+        user.notifications = []
+        await user.save()
     } catch (error) {
         console.log(error)
         next()

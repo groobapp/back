@@ -20,6 +20,7 @@ import moderationRoute from './routes/moderation.routes.js'
 import notifications from "./routes/notifications.routes.js"
 
 import { Server as SocketServer } from "socket.io"
+import User from "./models/User.js";
 dotenv.config()
 
 // Inicialization
@@ -104,6 +105,9 @@ app.use('/uploads', express.static(path.resolve('uploads')));
 // app.use(express.static(path.join(__dirname, 'public')))
 
 let activeUsers = []
+
+let connected = ""
+
 const addNewUser = (userId, socketId) => {
     !activeUsers.some(obj => obj.userId === userId) && activeUsers.push({ userId, socketId })
 }
@@ -116,7 +120,6 @@ const getUser = (userId) => {
     return activeUsers.find(obj => obj.id === userId)
 }
 io.on("connection", (socket) => {
-    
 
     socket.on("newUserAdded", (newUserId) => {
     addNewUser(newUserId, socket.id)
@@ -132,10 +135,7 @@ io.on("connection", (socket) => {
         }
     })
 
-
-
-    socket.on("disconnected", () => {
-        removeUser(socket.id)
+    socket.on("disconnect", () => {
     })
 })
 
