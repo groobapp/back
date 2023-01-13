@@ -93,6 +93,8 @@ const userSchema = new Schema({
     profilePic: String,
     event: String,
     link: String,
+    date: Date,
+    read: Boolean,
   }]
 }, { timestamps: true, versionKey: false })
 

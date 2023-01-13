@@ -19,7 +19,8 @@ export const notification = async (req, res, next) => {
                 profilePic: profilePic,
                 event: "ha dejado un comentario",
                 link: post._id,
-                date: new Date()
+                date: new Date(),
+                read: false,
             })
             await user.save()
         }
@@ -32,7 +33,9 @@ export const notification = async (req, res, next) => {
                 userName: `A ${userName}`,
                 event: "le ha gustado tu post",
                 link: post._id,
-                date: new Date()
+                date: new Date(),
+                read: false,
+
             })
             await user.save()
         }
@@ -43,7 +46,8 @@ export const notification = async (req, res, next) => {
                 userName: userName,
                 event: "te ha seguido!",
                 link: myUserId,
-                date: new Date()
+                date: new Date(),
+                read: false,
             })
             await user.save()
         }
@@ -54,7 +58,8 @@ export const notification = async (req, res, next) => {
                 profilePic: profilePic,
                 event: "ya no te sigue.",
                 link: myUserId,
-                date: new Date()
+                date: new Date(),
+                read: false,
             })
             await user.save()
         }
@@ -68,7 +73,12 @@ export const notification = async (req, res, next) => {
 export const getNotificationsLength = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId)
-        const notifications = user?.notifications
+        const notifications = user?.notifications.filter(notification => {
+            if (notification.read === false) {
+                return notification
+            }
+        })
+        console.log(notifications)
         res.status(200).json(notifications.length)
     } catch (error) {
         console.log(error)
@@ -80,14 +90,20 @@ export const getNotifications = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId)
         const notifications = user?.notifications
-        const notificationsSorted = notifications.sort((a, b) => {
+        const notificationsSorted = notifications.filter(notification => {
+            if (notification.read === false) {
+                return notification
+            }
+        }).sort((a, b) => {
             if (a.date - b.date) return 1;
             return -1;
-        }
-        )
+        })
         console.log(notificationsSorted)
         res.status(200).json(notificationsSorted)
-        user.notifications = []
+        const notificationsRead = user.notifications.map(notification => {
+            notification.read = true
+        })
+        console.log("notificaciones leidas deben estar en true", notificationsRead)
         await user.save()
     } catch (error) {
         console.log(error)
