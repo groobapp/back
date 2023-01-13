@@ -122,7 +122,7 @@ const getUser = (userId) => {
 io.on("connection", (socket) => {
 
     socket.on("newUserAdded", (newUserId) => {
-    addNewUser(newUserId, socket.id)
+        addNewUser(newUserId, socket.id)
         io.emit("getUsers", activeUsers) // send the users active
     })
 
@@ -130,12 +130,14 @@ io.on("connection", (socket) => {
         if (data) {
             const user = activeUsers.find((user) => user.userId === data.receiverId)
             if (user) {
-                io.to(user.socketId).emit("reciveMessage", data.newSocketMessage);
+                io.emit("reciveMessage", data.newSocketMessage);
             }
         }
     })
 
     socket.on("disconnect", () => {
+        activeUsers = activeUsers.filter((user) => user.socketId !== socket.id)
+        io.emit("getUsers", activeUsers)
     })
 })
 
