@@ -54,7 +54,7 @@ export const usersProductsMP = async (req, res, next) => {
         "failure": "https://groob.com.ar/notifications/error",
       },
       auto_return: "approved",
-      notification_url: "https://groob-back.onrender.com/notifications",
+      notification_url: "https://groob-back-production.up.railway.app/notifications",
     };
 
     mercadopago.preferences.create(preference)

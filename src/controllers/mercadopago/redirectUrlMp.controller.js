@@ -13,7 +13,7 @@ export const redirectUrlMp = async (req, res, next) => {
             client_secret: CLIENT_SECRET,
             client_id: CLIENT_ID,
             grant_type: "authorization_code",
-            redirect_uri: "https://groob-back.onrender.com/mp-connect",
+            redirect_uri: "https://groob-back-production.up.railway.app/mp-connect",
             code: code,
 
         }, {
