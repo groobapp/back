@@ -4,6 +4,7 @@ import axios from "axios"
 
 export const webHooks = async (req, res, next) => {
     const { type, data } = req.body
+    console.log(type, data)
     try {
 
         const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data?.id}`, {
