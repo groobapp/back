@@ -6,7 +6,6 @@ const validateEmail = function(email) {
   return re.test(email)
 };
 
-
 const userSchema = new Schema({
   userName: {
     type: String,

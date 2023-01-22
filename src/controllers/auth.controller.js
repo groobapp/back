@@ -149,7 +149,6 @@ export const reset = async (req, res, next) => {
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 900000
             })
-            // const verificationLink = `https://www.groob.com.ar/reset-password/${token}}`
             await transporter.sendMail({
                 from: 'joeljuliandurand@gmail.com',
                 to: `${user?.email}`,

@@ -99,6 +99,7 @@ app.use(mercadopagoRoute)
 app.use(paymentsRoute)
 app.use(moderationRoute)
 app.use(notifications)
+
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)

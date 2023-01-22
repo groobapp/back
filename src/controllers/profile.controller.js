@@ -176,18 +176,35 @@ export const getAllPostsByUser = async (req, res, next) => {
     // Hacer paginado cada 7 posts así en el front se realiza infinity scroll
     try {
         const { id } = req.params
+        const myUser = await User.findById(req.userId)
+        const myUserExplicit = myUser?.explicitContent
+
         const user = await User.findById(id)
-        const posts = await Publication.find()
-        const userId = user._id.toString()
-        const postsByUser = posts.filter(post => {
-            if (userId === post.user.toString() && post.price === 0) {
-                return post;
-            }
-        }).sort((a, b) => {
-            if (a.createdAt < b.createdAt) return 1;
-            return -1;
-        })
-        res.status(200).json(postsByUser)
+        if(myUserExplicit === false) {
+            const posts = await Publication.find()
+            const userId = user._id.toString()
+            const postsByUser = posts.filter(post => {
+                if (userId === post.user.toString() && post.price === 0 && post.explicitContent === false) {
+                    return post;
+                }
+            }).sort((a, b) => {
+                if (a.createdAt < b.createdAt) return 1;
+                return -1;
+            })
+            res.status(200).json(postsByUser)
+        } else {
+            const posts = await Publication.find()
+            const userId = user._id.toString()
+            const postsByUser = posts.filter(post => {
+                if (userId === post.user.toString() && post.price === 0) {
+                    return post;
+                }
+            }).sort((a, b) => {
+                if (a.createdAt < b.createdAt) return 1;
+                return -1;
+            })
+            res.status(200).json(postsByUser)
+        }
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)

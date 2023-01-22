@@ -12,7 +12,7 @@ export const commentPost = async (req, res, next) => {
         if (value === undefined) res.status(400).json("El comentario no puede estar vacío")
         if (value.length > 500) res.status(400).json("El comentario no puede superar los 500 caracteres")
 
-        const comment = await new Comment({
+        const comment = new Comment({
             comment: value,
             
         })

@@ -6,7 +6,6 @@ import { webHooks } from '../controllers/mercadopago/webHooks.js'
 import { redirectUrlMp } from '../controllers/mercadopago/redirectUrlMp.controller.js'
 import { TokenValidator } from '../libs/tokenValidator.js';
 
-
 const router = Router()
 
 router.post('/preferenceVerification', TokenValidator, verifyAccountPay)
