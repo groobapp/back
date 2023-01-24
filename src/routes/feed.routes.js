@@ -17,7 +17,7 @@ router.post('/dislike/:id', TokenValidator, dislikePost)
 router.post('/post/:id', TokenValidator, commentPost)
 router.get('/posts', TokenValidator, getAllPostsByFollowings)
 router.get('/posts/:id', TokenValidator, getAllPostsByUser)
-router.get('/post/:id', getPostById)
+router.get('/post/:id', TokenValidator, getPostById)
 router.delete('/post/:id', TokenValidator, deletePost)
 
 export default router;

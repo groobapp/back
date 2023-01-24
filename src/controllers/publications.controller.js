@@ -5,7 +5,6 @@ import { uploadImage, deleteImage } from "../libs/cloudinary.js";
 import { closeConnectionInMongoose } from "../libs/constants.js";
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
-
 export const createPost = async (req, res, next) => {
     try {
         const { content, price, explicitContent } = req.body
@@ -52,8 +51,10 @@ export const getPostById = async (req, res, next) => {
     try {
         const { id } = req.params
         const post = await Publication.findById({ _id: id })
-        const user = await User.findById(req.userId)
-        res.status(200).json({post: post, userId: user?._id})
+        const user = await User.findById({ _id: req.userId })
+        const userId = user?._id
+        console.log({post, userId})
+        res.status(200).json({post: post, userId: userId})
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
