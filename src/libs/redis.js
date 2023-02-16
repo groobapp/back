@@ -2,8 +2,8 @@ import redis from "redis"
 import { promisify } from "util"
 
 const client = redis.createClient({
-    host: process.env.NODE_ENV  === "production" ? process.env.REDISHOST : '127.0.0.1',
-    port: process.env.NODE_ENV  === "production" ? process.env.REDISPORT : 6379
+    host: process.env.REDISHOST,
+    port: process.env.REDISPORT
 })
 
 client.connect()
