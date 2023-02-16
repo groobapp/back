@@ -1,5 +1,5 @@
-import Publication from "../models/Publication.js"
-import User from "../models/User.js"
+import Publication from "../../models/Publication.js"
+import User from "../../models/User.js"
 
 export const notification = async (req, res, next) => {
     try {
@@ -30,7 +30,7 @@ export const notification = async (req, res, next) => {
             const user = await User.findById({ _id: userId })
             user.notifications = user.notifications.concat({
                 profilePic: profilePic,
-                userName: `A ${userName}`,
+                userName: userName,
                 event: "le ha gustado tu post",
                 link: post._id,
                 date: new Date(),

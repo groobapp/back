@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import User from "../models/User.js";
+import User from "../../models/User.js";
 import jwt from "jsonwebtoken"
-import { transporter } from "../libs/nodemailer.js";
+import { transporter } from "../../libs/nodemailer.js";
 // import { LoginBodyType, SignupBodyType } from "../schemas/auth..schema";
 
 

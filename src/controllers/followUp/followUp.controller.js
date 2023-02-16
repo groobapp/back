@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../../models/User.js";
 import mongoose from "mongoose";
 
 const closeConnectionInMongoose = mongoose.connection.close();

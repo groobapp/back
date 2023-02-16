@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { signup, login, logout, reset, changePassword } from '../controllers/auth.controller.js';
+import { signup, login, logout, reset, changePassword } from '../controllers/auth/auth.controller.js';
 // import schemaValidator from 'express-joi-middleware'
 // import { LoginSchema, SignupSchema } from '../schemas/auth.schema.js';
 import { TokenValidator } from '../libs/tokenValidator.js';

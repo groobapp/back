@@ -1,8 +1,8 @@
-import Publication from '../models/Publication.js'
-import User from "../models/User.js";
+import Publication from '../../models/Publication.js'
+import User from "../../models/User.js";
 import fs from "fs-extra"
-import { uploadImage, deleteImage } from "../libs/cloudinary.js";
-import { closeConnectionInMongoose } from "../libs/constants.js";
+import { uploadImage, deleteImage } from "../../libs/cloudinary.js";
+import { closeConnectionInMongoose } from "../../libs/constants.js";
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 export const createPost = async (req, res, next) => {
@@ -58,8 +58,8 @@ export const getPostById = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
-        next()
+        res.status(500).send({error: error});
+        next(error)
     }
 }
 
@@ -83,9 +83,9 @@ export const deletePost = async (req, res, next) => {
         res.status(200).json(`Publicación eliminada`)
         return closeConnectionInMongoose
     } catch (error) {
-        res.status(500).send('An internal server error occurred');
         console.log(error)
-        next()
+        res.status(500).send({error: error});
+        next(error)
     }
 }
 
@@ -105,8 +105,8 @@ export const commentPost = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
-        next()
+        res.status(500).send({error: error});
+        next(error)
     }
 }
 
@@ -124,8 +124,8 @@ export const likePost = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send(error);
-        next()
+        res.status(500).send({error: error});
+        next({error: error})
     }
 }
 
@@ -146,7 +146,7 @@ export const dislikePost = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send(error);
-        next()
+        res.status(500).send({error: error});
+        next(error)
     }
 }

@@ -1,10 +1,10 @@
-import User from '../models/User.js'
-import Publication from '../models/Publication.js'
+import User from '../../models/User.js'
+import Publication from '../../models/Publication.js'
 import fs from "fs-extra"
-import { uploadImage } from "../libs/cloudinary.js";
-import { closeConnectionInMongoose } from "../libs/constants.js";
+import { uploadImage } from "../../libs/cloudinary.js";
+import { closeConnectionInMongoose } from "../../libs/constants.js";
 
-export const pictureProfile = async (req, res, next) => {
+export const frontDNI = async (req, res, next) => {
     try {
         const { id } = req.params
         const user = await User.findById(id, { password: 0 })

@@ -1,11 +1,11 @@
-import User from '../models/User.js'
-import Publication from '../models/Publication.js'
+import User from '../../models/User.js'
+import Publication from '../../models/Publication.js'
 import fs from "fs-extra"
-import { uploadImage } from "../libs/cloudinary.js";
+import { uploadImage } from "../../libs/cloudinary.js";
 // import {  deleteImage } from "../libs/cloudinary";
-import { closeConnectionInMongoose } from "../libs/constants.js";
+import { closeConnectionInMongoose } from "../../libs/constants.js";
 // import { UpdateProfileBodyType, ValidateProfileParamsType } from "../schemas/profile.schema";
-
+import { GET_REDIS_ASYNC, SET_REDIS_ASYNC } from '../../libs/redis.js';
 
 
 
@@ -16,7 +16,15 @@ export const getProfile = async (req, res, next) => {
             select: 'publications',
             options: { limit: 10 }
         })
-        res.status(200).json(profileData)
+        const replyFromCache = await GET_REDIS_ASYNC("getProfile")
+        if (replyFromCache) {
+            return res.json(JSON.parse(replyFromCache))
+        }
+        else {
+            const response = await SET_REDIS_ASYNC('getProfile', JSON.stringify(profileData))
+            console.log("almacenado en caché con redis", response)
+            res.status(200).json(profileData)
+        }
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Cannot get profile", error)
@@ -56,29 +64,45 @@ export const getReducedUserById = async (req, res, next) => {
 
 export const getAllProfiles = async (req, res, next) => {
     try {
-
         const allProfiles = await User.find()
         res.status(200).json(allProfiles)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
-        next()
+        res.status(500).send({ error: error });
+        next(error)
     }
 }
 
 export const getProfileById = async (req, res, next) => {
     try {
         const { id } = req.params
-        const profileData = await User.findById(id, { password: 0, purchases: 0, mpAccount: 0, mpAccessToken: 0, verificationPay: 0, verificationInProcess: 0 })
-
+        const myUser = await User.findById(req.userId)
         const myId = req.userId?.toString()
+
+        const profileData = await User.findById(id, { password: 0, purchases: 0, mpAccount: 0, mpAccessToken: 0, verificationPay: 0, verificationInProcess: 0 })
         if (profileData !== undefined && myId !== undefined) {
             profileData.visits = profileData.visits.concat(myId)
+            profileData.notifications = profileData.notifications.concat({
+                userName: myUser?.userName,
+                profilePic: myUser?.profilePic,
+                event: "visitó tu perfil",
+                link: myId,
+                date: new Date(),
+                read: false,
+            })
         }
         await profileData.save()
 
-        res.status(200).json({ profileData, myId })
+        const replyFromCache = await GET_REDIS_ASYNC("getProfileById")
+        if (replyFromCache) {
+            return res.json(JSON.parse(replyFromCache))
+        }
+        else {
+            const response = await SET_REDIS_ASYNC('getProfile', JSON.stringify(profileData))
+            console.log("almacenado en caché con redis", response)
+            res.status(200).json(profileData)
+        }
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Cannot get profile", error)
@@ -103,11 +127,10 @@ export const updateProfile = async (req, res, next) => {
                 online, premium, verified, verificationPay, verificationInProcess,
                 mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
             })
-            await Publication.updateMany({ userName: user.userName }, { userName: userName})
-
-        res.status(200).json({ message: "User updated!"});
+        await Publication.updateMany({ userName: user.userName }, { userName: userName })
+        console.log(userUpdated)
+        res.status(200).json({ message: "User updated!" });
         return closeConnectionInMongoose
-
     } catch (error) {
         console.log("Error:", error)
         res.status(500).json(error)
@@ -138,7 +161,7 @@ export const pictureProfile = async (req, res, next) => {
             user.profilePicture = obj
             const userUpdated = await user.save()
             const pictureUpdated = userUpdated.profilePicture
-            await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url})
+            await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url })
             res.status(200).json({ pictureUpdated });
         }
         return closeConnectionInMongoose
@@ -181,7 +204,7 @@ export const getAllPostsByUser = async (req, res, next) => {
         const myUserExplicit = myUser?.explicitContent
 
         const user = await User.findById(id)
-        if(myUserExplicit === false) {
+        if (myUserExplicit === false) {
             const posts = await Publication.find()
             const userId = user._id.toString()
             const postsByUser = posts.filter(post => {
@@ -192,7 +215,15 @@ export const getAllPostsByUser = async (req, res, next) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
-            res.status(200).json(postsByUser)
+            const replyFromCache = await GET_REDIS_ASYNC("getAllPostsByUser")
+            if (replyFromCache) {
+                return res.json(JSON.parse(replyFromCache))
+            }
+            else {
+                const response = await SET_REDIS_ASYNC('getAllPostsByUser', JSON.stringify(postsByUser))
+                console.log("almacenado en caché con redis", response)
+                res.status(200).json(postsByUser)
+            }
         } else {
             const posts = await Publication.find()
             const userId = user._id.toString()
@@ -204,12 +235,20 @@ export const getAllPostsByUser = async (req, res, next) => {
                 if (a.createdAt < b.createdAt) return 1;
                 return -1;
             })
-            res.status(200).json(postsByUser)
+            const replyFromCache = await GET_REDIS_ASYNC("getAllPostsByUser")
+            if (replyFromCache) {
+                return res.json(JSON.parse(replyFromCache))
+            }
+            else {
+                const response = await SET_REDIS_ASYNC('getAllPostsByUser', JSON.stringify(postsByUser))
+                console.log("almacenado en caché con redis", response)
+                res.status(200).json(postsByUser)
+            }
         }
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
-        next()
+        res.status(500).send({ error: error });
+        next(error)
     }
 }

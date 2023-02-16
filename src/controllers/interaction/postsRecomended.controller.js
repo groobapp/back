@@ -1,5 +1,7 @@
 import Publication from '../../models/Publication.js'
 import User from '../../models/User.js'
+import { closeConnectionInMongoose } from '../../libs/constants.js'
+import { GET_REDIS_ASYNC, SET_REDIS_ASYNC } from '../../libs/redis.js'
 
 export const postsRecomended = async (req, res, next) => {
     try {
@@ -21,8 +23,19 @@ export const postsRecomended = async (req, res, next) => {
         const noDuplicates = [...new Set(filterByPhoto.map(post => post._id))]
         .map(id => filterByPhoto.find(post => post._id === id));
 
-        res.status(200).json(noDuplicates)
-        
+        // Añadir un filtro aleatorio que traiga de a 30 publicaciones?
+        // Añadir un filtro que traiga de a 500 publicaciones y mo
+
+        const replyFromCache = await GET_REDIS_ASYNC("getPostsRecomended")
+        if (replyFromCache) {
+            return res.json(JSON.parse(replyFromCache))
+        }
+        else {
+            const response = await SET_REDIS_ASYNC('getPostsRecomended', JSON.stringify(noDuplicates))
+            console.log("almacenado en caché con redis", response)
+            res.status(200).json(noDuplicates)
+        }
+        return closeConnectionInMongoose;
     } catch (error) {
         console.log(error)
         next()

@@ -1,10 +1,16 @@
 import { Schema, model } from 'mongoose'
 
 const publicationSchema = new Schema({
+    title: {type: String, required: false, trim: true},
     content: {
-        type: String, required: false, trim: true
+        type: String, required: false, trim: true,
     },
     images: [{
+        public_id: String,
+        secure_url: String, 
+        required: false, 
+    }],
+    videos: [{
         public_id: String,
         secure_url: String, 
         required: false, 

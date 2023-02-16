@@ -1,5 +1,5 @@
-import User from '../models/User.js'
-import Publication from '../models/Publication.js'
+import User from '../../models/User.js'
+import Publication from '../../models/Publication.js'
 
 export const bringAllPurchasesByUser = async (req, res, next) => {
     try {
@@ -20,7 +20,7 @@ export const bringAllPurchasesByUser = async (req, res, next) => {
         res.status(200).json(postsPurchases)
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
-        next()
+        res.status(500).json({error: error});
+        next(error)
     }
 }

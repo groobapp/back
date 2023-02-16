@@ -9,7 +9,9 @@ const commentSchema = new Schema({
     comment: {
         type: String,  maxlength: 500,
     },
-
+    audio: {
+        type: String,
+    },
     userName: String,
     createdAt: {
         type: Date,

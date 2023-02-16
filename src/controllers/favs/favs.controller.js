@@ -1,6 +1,6 @@
-import Publication from '../models/Publication.js'
-import User from "../models/User.js";
-import { closeConnectionInMongoose } from "../libs/constants.js";
+import Publication from '../../models/Publication.js'
+import User from "../../models/User.js";
+import { closeConnectionInMongoose } from "../../libs/constants.js";
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 export const likePost = async (req, res, next) => {
@@ -13,7 +13,8 @@ export const likePost = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
+        res.status(500).send({error: error});
+        next(error)
     }
 }
 
@@ -26,6 +27,7 @@ export const dislikePost = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send('An internal server error occurred');
+        res.status(500).send({error: error});
+        next(error)
     }
 }

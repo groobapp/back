@@ -26,8 +26,8 @@ export const createChat = async (req, res, next) => {
 
     } catch (error) {
         console.error(error)
-        res.status(500).json(error)
-        next()
+        res.status(500).json({error: error})
+        next(error)
     }
 }
 
@@ -74,8 +74,8 @@ export const userChats = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(400).json(error)
-        next()
+        res.status(400).json({error: error})
+        next(error)
     }
 }
 
@@ -97,8 +97,8 @@ export const findChat = async (req, res, next) => {
 
     } catch (error) {
         console.log(error)
-        res.status(400).json(error)
-        next()
+        res.status(400).json({error: error})
+        next(error)
     }
 }
 

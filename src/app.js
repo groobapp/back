@@ -1,7 +1,6 @@
 import express from "express"
 import path from 'path'
 import http from "http"
-import url from 'url';
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser"
 import morgan from 'morgan'
@@ -17,7 +16,8 @@ import profileRoute from './routes/profile.routes.js'
 import searchRoute from './routes/search.routes.js'
 import walletsRoute from './routes/wallets.routes.js'
 import moderationRoute from './routes/moderation.routes.js'
-import notifications from "./routes/notifications.routes.js"
+import notificationsRoute from "./routes/notifications.routes.js"
+import adminRoute from './routes/admin.routes.js'
 
 import { Server as SocketServer } from "socket.io"
 import User from "./models/User.js";
@@ -28,7 +28,6 @@ const app = express()
 const server = http.createServer(app)
 
 // export instance for new sockets in endpoints
-
 let io = new SocketServer(server, {
     cors: {
         origin: ['https://groob.com.ar', 'https://groob.vercel.app', 'https://groob.online', 'https://groob.store',
@@ -56,14 +55,6 @@ const errorHandler = (error, req, res, next) => {
     next()
 };
 
-
-
-app.use(errorHandler);
-// Settings
-app.set('port', process.env.PORT || 8080)
-// Middlewares
-app.use(cookieParser())
-app.use(morgan('dev'))
 var corsOptions = {
     origin: ['https://www.groob.com.ar', 'https://groob.com.ar', 'https://groob.vercel.app', 'https://groob.online', 'https://www.groob.online', 'https://groob.store', 'https://www.groob.store', 'http://localhost:3000'],
     credentials: true,
@@ -80,11 +71,20 @@ var corsOptions = {
         'authtoken'
     ],
 }
+
+
+// Settings
+app.use(errorHandler);
+app.set('port', process.env.PORT || 8080)
+
+// Middlewares
+app.use(cookieParser())
+app.use(morgan('dev'))
 app.use(cors(corsOptions));
 app.set("trust proxy", 1);
 app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true, limit: "100mb" }));
-app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true, limit: "150mb" }));
+app.use(express.json({ limit: "150mb" }));
 
 // Routes
 app.use(authRoute)
@@ -98,7 +98,8 @@ app.use(walletsRoute)
 app.use(mercadopagoRoute)
 app.use(paymentsRoute)
 app.use(moderationRoute)
-app.use(notifications)
+app.use(notificationsRoute)
+app.use(adminRoute)
 
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
