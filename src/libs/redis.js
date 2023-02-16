@@ -2,8 +2,8 @@ import redis from "redis"
 import { promisify } from "util"
 
 const client = redis.createClient({
-    host: process.env.NODE_ENV  === "production" ? process.env.REDIS_URL : '127.0.0.1',
-    port: 6379
+    host: process.env.NODE_ENV  === "production" ? process.env.REDISHOST : '127.0.0.1',
+    port: process.env.NODE_ENV  === "production" ? process.env.REDISPORT : 6379
 })
 
 client.connect()
@@ -18,7 +18,7 @@ client.connect()
     client.quit();
   })
   .catch((err) => {
-    console.log('err happened' + err);
+    console.log('¡Hubo un error! El error es: ' + err);
   });
 
 export const GET_REDIS_ASYNC = promisify(client.get).bind(client)
