@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 (async () => {
     try {
-        const URI = process.env.NODE_ENV !== "development" 
-        ? `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.p7kqs.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true` 
+        const URI = process.env.NODE_ENV === "development" 
+        ? `mongodb://localhost:${process.env.LOCAL_MONGO_HOST}/${process.env.LOCAL_MONGO_DATABASE}` 
         : `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.p7kqs.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true`
         await mongoose.connect(URI, {
             useNewUrlParser: true,
@@ -12,23 +12,3 @@ import mongoose from "mongoose";
         console.log(error)
     }
 })()
-
-// import mongoose from "mongoose";
-
-// (async () => {
-//   try {
-//     let URI;
-//     if (process.env.NODE_ENV === "development") {
-//       URI = `mongodb://localhost:27017/${process.env.LOCAL_MONGO_DATABASE}`;
-//     } else {
-//       URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.p7kqs.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true`;
-//     }
-
-//     await mongoose.connect(URI, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true
-//     });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// })();
