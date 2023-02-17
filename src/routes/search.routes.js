@@ -9,6 +9,6 @@ const router = Router()
 router.get('/search', TokenValidator, searchUser)
 router.get('/discover-images', TokenValidator, discoverPostsWithImages)
 router.get('/discover-texts', TokenValidator, discoverPostsWithTexts)
-router.get('/surfing', postsRecomended)
+router.get('/posts-recomended', postsRecomended)
 
 export default router;

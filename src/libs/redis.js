@@ -1,25 +1,28 @@
 import redis from "redis"
 import { promisify } from "util"
 
-const client = redis.createClient({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT
-})
+const client = redis.createClient({ host: process.env.REDIS_HOST, port: process.env.REDIS_PORT })
 
-client.connect()
-  .then(async (res) => {
-    console.log('connected');
-    // Write your own code here
+client.on("connect", function () {
+  console.log("redis connected");
+});
+client.on("error", (error) => {
+  console.error(error);
+});
 
-    // Example
-    const value = await client.lRange('data', 0, -1);
-    console.log(value.length);
-    console.log(value);
-    client.quit();
-  })
-  .catch((err) => {
-    console.log('¡Hubo un error! El error es: ' + err);
-  });
+export const GET_REDIS_ASYNC = async (key) => {
+  const getAsync = promisify(client.get).bind(client);
+  const value = await getAsync(key);
+  if (value) {
+    return JSON.parse(value);
+  }
+  return null;
+};
 
-export const GET_REDIS_ASYNC = promisify(client.get).bind(client)
-export const SET_REDIS_ASYNC = promisify(client.set).bind(client)
+export const SET_REDIS_ASYNC = async (key, value, expiration) => {
+  const setAsync = promisify(client.set).bind(client);
+  const expireAsync = promisify(client.expire).bind(client);
+  const response = await setAsync(key, JSON.stringify(value));
+  await expireAsync(key, expiration ? expiration : 60 * 45);
+  return response;
+};
