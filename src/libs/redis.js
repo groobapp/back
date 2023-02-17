@@ -1,7 +1,11 @@
 import redis from "redis"
 import { promisify } from "util"
 
-const client = redis.createClient({ host: process.env.REDISHOST, port: process.env.REDISPORT })
+const client = redis.createClient({ 
+  host: process.env.REDISHOST, 
+  port: process.env.REDISPORT, 
+  password: process.env.REDISPASSWORD
+})
 
 client.on("connect", function () {
   console.log("redis connected");
