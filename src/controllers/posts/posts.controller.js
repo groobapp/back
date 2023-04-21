@@ -1,4 +1,4 @@
-import Publication from '../../models/Publication.js'
+import Propiedad from '../../models/Propiedad.js'
 import User from "../../models/User.js";
 import fs from "fs-extra"
 import { uploadImage, deleteImage } from "../../libs/cloudinary.js";
@@ -7,18 +7,24 @@ import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 export const createPost = async (req, res, next) => {
     try {
-        const { content, price, explicitContent } = req.body
-        const priceValue = parseInt(price)
-        const user = await User.findById(req.userId, { password: 0 })
-        if (!user) return res.status(404).json("No user found")
-        const publication = new Publication({
-            content, 
-            price: priceValue, 
-            explicitContent, 
-            user: user?._id, 
-            userName: user?.userName,
-            profilePicture: user?.profilePicture.secure_url, 
-            userVerified: user?.verified, 
+        const { titulo, direccion, precio, baños, dormitorios, tamano, tipo, localidad } = req.body
+        console.log(tamano)
+        const precioNum = isNaN(parseInt(precio)) ? undefined : parseInt(precio);
+        const bañosNum = isNaN(parseInt(baños)) ? undefined : parseInt(baños);
+        const dormitoriosNum = isNaN(parseInt(dormitorios)) ? undefined : parseInt(dormitorios);
+        const tamanoNum = isNaN(parseInt(tamano)) ? undefined : parseInt(tamano);
+        console.log(tamanoNum)
+        // const user = await User.findById(req.userId, { password: 0 })
+        // if (!user) return res.status(404).json("No user found")
+        const publication = new Propiedad({
+            titulo,
+            direccion, 
+            precio: precioNum, 
+            baños: bañosNum, 
+            dormitorios: dormitoriosNum, 
+            tamaño: tamanoNum,
+            tipo,
+            localidad, 
         })
         if (req.files) {
             const files = req.files['images']
@@ -33,11 +39,12 @@ export const createPost = async (req, res, next) => {
             publication.images = data
         }
         const publicationSaved = await publication.save()
-        const postIdForTheUser = publicationSaved?._id
-        if (user != undefined) {
-            user.publications = user.publications.concat(postIdForTheUser)
-            await user.save()
-        }
+        console.log(publicationSaved)
+        // const postIdForTheUser = publicationSaved?._id
+        // if (user != undefined) {
+            // user.publications = user.publications.concat(postIdForTheUser)
+            // await user.save()
+        // }
         res.status(201).json({ "success": true, publicationSaved })
         closeConnectionInMongoose
     } catch (error) {
@@ -50,7 +57,35 @@ export const createPost = async (req, res, next) => {
 export const getPostById = async (req, res, next) => {
     try {
         const { id } = req.params
-        const post = await Publication.findById({ _id: id })
+        const post = await Propiedad.findById({ _id: id })
+        res.status(200).json(post)
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({error: error});
+        next(error)
+    }
+}
+
+export const getAllPosts = async (req, res, next) => {
+    try {
+        const posts = await Propiedad.find()
+        console.log(posts)
+        res.status(200).json(posts)
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({error: error});
+        next(error)
+    }
+}
+
+
+
+export const updatePostById = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const post = await Propiedad.findById({ _id: id })
         const user = await User.findById({ _id: req.userId })
         const userId = user?._id
         console.log({post, userId})
@@ -67,12 +102,12 @@ export const getPostById = async (req, res, next) => {
 export const deletePost = async (req, res, next) => {
     try {
         const { id } = req.params
-        const post = await Publication.findById(id)
+        const post = await Propiedad.findById(id)
         if (!post) {
             return res.status(404).json({ message: "No se ha encontrado la publicación" })
         }
         const postInUser = await User.findById({ _id: req.userId })
-        await Publication.deleteOne({ _id: id })
+        await Propiedad.deleteOne({ _id: id })
         if (post.image?.public_id) {
             await deleteImage(post.image.public_id)
         }
@@ -81,68 +116,6 @@ export const deletePost = async (req, res, next) => {
         }
         await postInUser.save()
         res.status(200).json(`Publicación eliminada`)
-        return closeConnectionInMongoose
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({error: error});
-        next(error)
-    }
-}
-
-export const commentPost = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        const { value } = req.body
-        const user = await User.findById(req.userId)
-        const userName = user?.userName
-        console.log(value, userName)
-        if (value === undefined) res.status(400).json("El comentario no puede estar vacío")
-        if (value.length > 500) res.status(400).json("El comentario no puede superar los 500 caracteres")
-        const post = await Publication.findById({ _id: id })
-        post.comments.push({value, userName})
-        const updatedPost = await Publication.findByIdAndUpdate(id, post, { new: true })
-        res.status(200).json(updatedPost)
-        return closeConnectionInMongoose
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({error: error});
-        next(error)
-    }
-}
-
-export const likePost = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        const post = await Publication.findById({ _id: id })
-        const user = await User.findById(req.userId)
-        post.likes = post.likes + 1
-        post.liked = post.liked.concat(user._id)
-        await post.save()
-        console.log(post.liked)
-        console.log(post)
-        res.status(200).json(post)
-        return closeConnectionInMongoose
-    } catch (error) {
-        console.log(error)
-        res.status(500).send({error: error});
-        next({error: error})
-    }
-}
-
-export const dislikePost = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        console.log(id)
-
-        const post = await Publication.findById({ _id: id })
-        const user = req.userId
-        const userId = user?._id
-        post.likes = post.likes - 1
-        post.liked = post.liked.filter(id => {
-            id !== userId
-        })
-        await post.save()
-        res.status(200).json(post.likes)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
