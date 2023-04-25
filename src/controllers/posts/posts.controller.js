@@ -6,8 +6,7 @@ import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 export const createPost = async (req, res, next) => {
     try {
-        const { titulo, direccion, precio, baños, dormitorios, tamano, tipo, localidad } = req.body
-        console.log(tamano)
+        const { titulo, descripcion, proposito, moneda, tipo, direccion, localidad, tamano, precio, baños, dormitorios } = req.body;
         const precioNum = isNaN(parseInt(precio)) ? undefined : parseInt(precio);
         const bañosNum = isNaN(parseInt(baños)) ? undefined : parseInt(baños);
         const dormitoriosNum = isNaN(parseInt(dormitorios)) ? undefined : parseInt(dormitorios);
@@ -16,6 +15,9 @@ export const createPost = async (req, res, next) => {
         // if (!user) return res.status(404).json("No user found")
         const publication = new Propiedad({
             titulo,
+            descripcion,
+            proposito,
+            moneda,
             direccion,
             precio: precioNum,
             baños: bañosNum,
@@ -36,18 +38,12 @@ export const createPost = async (req, res, next) => {
             }
             publication.images = data
         }
-        const publicationSaved = await publication.save()
-        console.log(publicationSaved)
-        // const postIdForTheUser = publicationSaved?._id
-        // if (user != undefined) {
-        // user.publications = user.publications.concat(postIdForTheUser)
-        // await user.save()
-        // }
-        res.status(201).json({ "success": true, publicationSaved })
+        const housePublicationCreated = await publication.save()
+        res.status(201).json(housePublicationCreated)
         closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(400).send("Mandaste cualquier cosa amigo")
+        res.status(400).json({error: error})
         next()
     }
 }
@@ -81,15 +77,18 @@ export const getAllPosts = async (req, res, next) => {
 export const updatePostById = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { titulo, direccion, localidad, tipo, images, precio, baños, dormitorios, tamaño } = req.body;
+        const { titulo, descripcion, proposito, moneda, tipo, direccion, localidad, images, precio, baños, dormitorios, tamaño } = req.body;
 
         const updatedPropiedad = await Propiedad.findByIdAndUpdate(id, {
             titulo,
+            descripcion,
+            proposito,
+            precio,
+            moneda,
+            tipo,
             direccion,
             localidad,
-            tipo,
             images,
-            precio,
             baños,
             dormitorios,
             tamaño

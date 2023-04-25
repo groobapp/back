@@ -10,7 +10,7 @@ const propiedadSchema = new Schema({
     tipo: { // departamento, casa, lote, etc
         type: String, required: true, trim: true,
     },
-    propósito: { // alquiler, venta, etc
+    proposito: { // alquiler, venta, etc
         type: String, required: true, trim: true 
     },
     moneda: { 

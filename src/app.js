@@ -19,7 +19,7 @@ const errorHandler = (error, req, res, next) => {
 };
 
 var corsOptions = {
-    origin: ['https://www.groob.com.ar', 'https://groob.com.ar', 'https://groob.vercel.app', 'https://groob.online', 'https://www.groob.online', 'https://groob.store', 'https://www.groob.store', 'http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://www.casuarinasinmobiliaria.com.ar', 'https://casuarinasinmobiliaria.com.ar', 'http://localhost:3000', 'http://localhost:3001'],
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
