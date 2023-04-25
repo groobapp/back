@@ -1,7 +1,7 @@
 {
-  "name": "groob-back",
+  "name": "casuarinas-back",
   "version": "1.0.0",
-  "description": "",
+  "description": "Inmobiliaria digital",
   "main": "index.js",
   "type": "module",
   "scripts": {
