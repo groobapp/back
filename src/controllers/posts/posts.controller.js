@@ -1,5 +1,4 @@
 import Propiedad from '../../models/Propiedad.js'
-import User from "../../models/User.js";
 import fs from "fs-extra"
 import { uploadImage, deleteImage } from "../../libs/cloudinary.js";
 import { closeConnectionInMongoose } from "../../libs/constants.js";
@@ -13,18 +12,17 @@ export const createPost = async (req, res, next) => {
         const bañosNum = isNaN(parseInt(baños)) ? undefined : parseInt(baños);
         const dormitoriosNum = isNaN(parseInt(dormitorios)) ? undefined : parseInt(dormitorios);
         const tamanoNum = isNaN(parseInt(tamano)) ? undefined : parseInt(tamano);
-        console.log(tamanoNum)
         // const user = await User.findById(req.userId, { password: 0 })
         // if (!user) return res.status(404).json("No user found")
         const publication = new Propiedad({
             titulo,
-            direccion, 
-            precio: precioNum, 
-            baños: bañosNum, 
-            dormitorios: dormitoriosNum, 
+            direccion,
+            precio: precioNum,
+            baños: bañosNum,
+            dormitorios: dormitoriosNum,
             tamaño: tamanoNum,
             tipo,
-            localidad, 
+            localidad,
         })
         if (req.files) {
             const files = req.files['images']
@@ -42,8 +40,8 @@ export const createPost = async (req, res, next) => {
         console.log(publicationSaved)
         // const postIdForTheUser = publicationSaved?._id
         // if (user != undefined) {
-            // user.publications = user.publications.concat(postIdForTheUser)
-            // await user.save()
+        // user.publications = user.publications.concat(postIdForTheUser)
+        // await user.save()
         // }
         res.status(201).json({ "success": true, publicationSaved })
         closeConnectionInMongoose
@@ -62,7 +60,7 @@ export const getPostById = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send({error: error});
+        res.status(500).send({ error: error });
         next(error)
     }
 }
@@ -75,51 +73,59 @@ export const getAllPosts = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send({error: error});
+        res.status(500).send({ error: error });
         next(error)
     }
 }
-
-
 
 export const updatePostById = async (req, res, next) => {
     try {
-        const { id } = req.params
-        const post = await Propiedad.findById({ _id: id })
-        const user = await User.findById({ _id: req.userId })
-        const userId = user?._id
-        console.log({post, userId})
-        res.status(200).json({post: post, userId: userId})
-        return closeConnectionInMongoose
+        const { id } = req.params;
+        const { titulo, direccion, localidad, tipo, images, precio, baños, dormitorios, tamaño } = req.body;
+
+        const updatedPropiedad = await Propiedad.findByIdAndUpdate(id, {
+            titulo,
+            direccion,
+            localidad,
+            tipo,
+            images,
+            precio,
+            baños,
+            dormitorios,
+            tamaño
+        }, { new: true });
+
+        res.status(200).json(updatedPropiedad);
     } catch (error) {
-        console.log(error)
-        res.status(500).send({error: error});
-        next(error)
+        console.log(error);
+        res.status(500).send({ error: error });
+        next(error);
     }
-}
+};
 
 
 export const deletePost = async (req, res, next) => {
     try {
         const { id } = req.params
+        console.log(id)
         const post = await Propiedad.findById(id)
         if (!post) {
             return res.status(404).json({ message: "No se ha encontrado la publicación" })
         }
-        const postInUser = await User.findById({ _id: req.userId })
+        // tomar el public_id de la imagen y usar el método de cloudinary para eliminarla también
+        const postImage = post.images
         await Propiedad.deleteOne({ _id: id })
-        if (post.image?.public_id) {
-            await deleteImage(post.image.public_id)
+        if (postImage) {
+            for (const file of postImage) {
+                await deleteImage({ public_id: file.public_id })
+            }
         }
-        if (postInUser !== undefined) {
-            postInUser.publications = postInUser.publications.filter(postId => id.toString() !== postId)
-        }
-        await postInUser.save()
+        
         res.status(200).json(`Publicación eliminada`)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send({error: error});
+        res.status(500).send({ error: error });
         next(error)
     }
 }

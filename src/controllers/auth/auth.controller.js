@@ -1,61 +1,14 @@
 import mongoose from "mongoose";
-import User from "../../models/User.js";
+import Admin from "../../models/Admin.js";
 import jwt from "jsonwebtoken"
 import { transporter } from "../../libs/nodemailer.js";
 // import { LoginBodyType, SignupBodyType } from "../schemas/auth..schema";
 
-
-export const signup = async (req, res, next) => {
-    try {
-        const { userName, password, email } = req.body
-        const userNameExist = await User.findOne({ userName })
-        if (userNameExist) {
-            return res.json({ message: "The username is already in use." })
-        }
-        const emailExist = await User.findOne({ email })
-        if (emailExist) {
-            return res.json({ message: "The email is already in use." })
-        }
-        else {
-            if (password.length >= 6 && password.length < 16) {
-                const user = new User({ userName, password, email })
-                user.password = await user.encryptPassword(user.password)
-                user.profilePicture.secure_url = "https://res.cloudinary.com/groob/image/upload/v1661108370/istoremovebg-preview_hzebg1.png"
-                const userSaved = await user.save()
-                const token = jwt.sign({ _id: userSaved._id }, `${process.env.TOKEN_KEY_JWT}`, {
-                    expiresIn: 1815000000
-                })
-                user.online = true
-                await user.save()
-                // res.cookie('authtoken', token, {
-                //     maxAge: 1815000000, //21 days
-                //     httpOnly: true, // Para consumir sólo en protocolo HTTP
-                //     sameSite: 'none',
-                //     secure: true,
-                // })
-                await transporter.sendMail({
-                    from: 'joeljuliandurand@gmail.com', // sender address
-                    to: `${email}`, // list of receivers
-                    subject: `Hola ${userName}, registro exitoso!`, // Subject line
-                    text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand.", // plain text body
-                    // html: "<b>Hello world?</b>", // html body
-                });
-                console.log(user)
-                res.status(200).json({ message: 'Success', token: token })
-            }
-        }
-    } catch (error) {
-        console.log("error:", error)
-        res.status(400).json(error)
-        next()
-    }
-}
-
 export const login = async (req, res, next) => {
     try {
-        const { email, userName, password } = req.body
+        const { email, password } = req.body
         if (email !== undefined && email.length > 0 && password.length > 0) {
-            const user = await User.findOne({ email })
+            const user = await Admin.findOne({ email })
             if (!user) {
                 throw new Error("No se encontró el usuario");
             }
@@ -75,27 +28,6 @@ export const login = async (req, res, next) => {
             await user.save()
         }
 
-        if (userName !== undefined && userName.length > 0 && password.length > 0) {
-            const user = await User.findOne({ userName })
-            if (!user) {
-                throw new Error("No se encontró el usuario");
-            }
-            const passwordFromLogin = await user.validatePassword(password)
-            if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
-            user.online = true
-            const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
-                expiresIn: 1815000000
-            })
-            // res.cookie('authtoken', token, {
-            //     maxAge: 1815000000, //21 days
-            //     httpOnly: true, 
-            //     sameSite: 'none',
-            //     secure: true,
-            // })
-            res.status(200).json({ message: 'Success', token: token })
-            await user.save()
-        }
-
     } catch (error) {
         console.log("error:", error)
         res.status(400).json(error)
@@ -105,7 +37,7 @@ export const login = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId)
+        const user = await Admin.findById(req.userId)
         if (!user) {
             throw new Error("No se encontró el usuario");
         }
@@ -142,7 +74,7 @@ export const logout = async (req, res, next) => {
 
 export const reset = async (req, res, next) => {
     try {
-        const { email, userName } = req.body
+        const { email } = req.body
         console.log(email, userName)
         if (email !== undefined && email.length > 0) {
             const user = await User.findOne({ email })
@@ -157,23 +89,6 @@ export const reset = async (req, res, next) => {
                 // html: '<button> <a href=`https://www.groob.com.ar/reset-password/${token}`>Resetear contraseña</a></button>',
             });
             res.json({ success: true })
-
-        }
-        if (userName !== undefined && userName.length > 0) {
-            const user = await User.findOne({ userName })
-            const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
-                expiresIn: 900000
-            })
-            // const verificationLink = `https://www.groob.com.ar/reset-password/${token}}`
-            await transporter.sendMail({
-                from: 'joeljuliandurand@gmail.com',
-                to: `${user?.email}`,
-                subject: `Recuperá tu contraseña.`,
-                text: `Tenés 15 minutos para cambiar la contraseña, si el botón no funciona prueba copiar y pegar el siguiente link: https://groob.com.ar/change-password?token=${token}`,
-                // html: '<button> <a href=`https://www.groob.com.ar/reset-password/${token}`>Resetear contraseña</a></button>',
-
-            });
-            res.json({ success: true })
         }
     } catch (error) {
         console.log(error)
@@ -186,7 +101,7 @@ export const changePassword = async (req, res, next) => {
         const { password } = req.body
         console.log(password)
         if (password.length >= 6 && password.length <= 16) {
-            const user = await User.findById(req.userId)
+            const user = await Admin.findById(req.userId)
             console.log(user)
             user.password = await user.encryptPassword(password)
             await user.save()

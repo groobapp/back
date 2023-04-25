@@ -18,9 +18,3 @@ router.put('/post/:id', updatePostById)
 router.delete('/post/:id', deletePost)
 
 export default router;
-
-
-// Se tiene que crear una propiedad con sus datos
-// Se tiene que traer y ver 1 propiedad
-// Se tienen que traer y ver todas las propiedades
-// Se tiene que eliminar una propiedad
