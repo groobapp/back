@@ -11,8 +11,6 @@ export const createPost = async (req, res, next) => {
         const bañosNum = isNaN(parseInt(baños)) ? undefined : parseInt(baños);
         const dormitoriosNum = isNaN(parseInt(dormitorios)) ? undefined : parseInt(dormitorios);
         const tamanoNum = isNaN(parseInt(tamano)) ? undefined : parseInt(tamano);
-        // const user = await User.findById(req.userId, { password: 0 })
-        // if (!user) return res.status(404).json("No user found")
         const publication = new Propiedad({
             titulo,
             descripcion,

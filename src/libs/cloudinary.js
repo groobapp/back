@@ -3,9 +3,9 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 cloudinary.config({
-    cloud_name: "groob",
-    api_key: "212115414392645",
-    api_secret: "17C_wVZf2cpw7lVydqBDGULuHeU",
+    cloud_name: "dmdunpjti",
+    api_key: "356936875512432",
+    api_secret: "2orV4cVN0Lqmu5BPWY7PDuOkl4w",
     secure: true,
 })
 
