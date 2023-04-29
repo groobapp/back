@@ -37,7 +37,7 @@ export const createPost = async (req, res, next) => {
             publication.images = data
         }
         const housePublicationCreated = await publication.save()
-        res.status(201).json(housePublicationCreated)
+        res.status(200).json(housePublicationCreated)
         closeConnectionInMongoose
     } catch (error) {
         console.log(error)
