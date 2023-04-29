@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Admin from "../../models/Admin.js";
 import jwt from "jsonwebtoken"
 import { transporter } from "../../libs/nodemailer.js";
@@ -20,7 +19,7 @@ export const signup = async (req, res, next) => {
                     expiresIn: 1815000000
                 })
                 await user.save()
-                res.status(200).json({ data: token})
+                res.status(200).json({ data: token })
             }
         }
     } catch (error) {
@@ -61,7 +60,6 @@ export const logout = async (req, res, next) => {
             throw new Error("No se encontró el usuario");
         }
         await user.save()
-
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
@@ -69,24 +67,16 @@ export const logout = async (req, res, next) => {
     }
 }
 
-export const reset = async (req, res, next) => {
+export const consultaComercial = async (req, res, next) => {
     try {
-        const { email } = req.body
-        console.log(email, userName)
-        if (email !== undefined && email.length > 0) {
-            const user = await User.findOne({ email })
-            const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
-                expiresIn: 900000
-            })
-            await transporter.sendMail({
-                from: 'joeljuliandurand@gmail.com',
-                to: `${user?.email}`,
-                subject: `Recuperá tu contraseña.`,
-                text: `Hola! Alguien solicitó recuperar la contraseña de ingreso. Si no fuiste vos, ignora este email por favor. Tenés 15 minutos para cambiar la contraseña. Accede desde el siguiente link: https://groob.com.ar/change-password?token=${token}`,
-                // html: '<button> <a href=`https://www.groob.com.ar/reset-password/${token}`>Resetear contraseña</a></button>',
-            });
-            res.json({ success: true })
-        }
+        const { nombre, email, asunto, mensaje } = req.body
+        await transporter.sendMail({
+            from: `${email}`,
+            to: 'laurafunes@casuarinasinmobiliaria.com.ar',
+            subject: `${asunto} - ${nombre}`,
+            text: `${mensaje}`
+        });
+        res.status(200).json({ message: true })
     } catch (error) {
         console.log(error)
         next(error);
