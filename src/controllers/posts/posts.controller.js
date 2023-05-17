@@ -14,14 +14,14 @@ export const createPost = async (req, res, next) => {
         const publication = new Propiedad({
             titulo,
             descripcion,
-            proposito,
+            proposito: proposito.toLowerCase(),
             moneda,
             direccion,
             precio: precioNum,
             baños: bañosNum,
             dormitorios: dormitoriosNum,
             tamaño: tamanoNum,
-            tipo,
+            tipo: tipo.toLowerCase(),
             localidad,
         })
         if (req.files) {

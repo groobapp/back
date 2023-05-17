@@ -70,6 +70,7 @@ export const logout = async (req, res, next) => {
 export const consultaComercial = async (req, res, next) => {
     try {
         const { nombre, email, asunto, mensaje } = req.body
+        console.log({nombre, email, asunto, mensaje})
         await transporter.sendMail({
             from: `${email}`,
             to: 'laurafunes@casuarinasinmobiliaria.com.ar',
