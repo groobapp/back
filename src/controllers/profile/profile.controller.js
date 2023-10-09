@@ -1,0 +1,266 @@
+import User from '../../models/User.js'
+import Publication from '../../models/Publication.js'
+import fs from "fs-extra"
+import { uploadImage } from "../../libs/cloudinary.js";
+// import {  deleteImage } from "../libs/cloudinary";
+import { closeConnectionInMongoose } from "../../libs/constants.js";
+// import { UpdateProfileBodyType, ValidateProfileParamsType } from "../schemas/profile.schema";
+// import { GET_REDIS_ASYNC, SET_REDIS_ASYNC } from '../../libs/redis.js';
+
+
+
+export const getProfile = async (req, res, next) => {
+    try {
+        const profileData = await User.findById(req.userId, { password: 0 }).populate({
+            path: 'publications',
+            select: 'publications',
+            options: { limit: 10 }
+        })
+        res.status(200).json(profileData)
+        // const replyFromCache = await GET_REDIS_ASYNC("getProfile")
+        // if (replyFromCache !== null && replyFromCache !== undefined && replyFromCache.length > 0) {
+        //     console.log("data desde caché: ", replyFromCache)
+        //      res.json(JSON.parse(replyFromCache))
+        // }
+        // else {
+        //     const response = await SET_REDIS_ASYNC('getProfile', JSON.stringify(profileData))
+        //     console.log("data desde el server sin caché: ", response)
+        //     res.status(200).json(profileData)
+        // }
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log("Cannot get profile", error)
+        res.status(404).json(error)
+        next(error)
+    }
+}
+
+
+export const getReducedUser = async (req, res, next) => {
+    try {
+
+        const myUser = await User.findById(req.userId, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0, mpAccessToken: 0 })
+        console.log(myUser)
+        res.status(200).json(myUser)
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log("Cannot get profile", error)
+        res.status(404).json(error)
+        next()
+    }
+}
+
+
+export const getReducedUserById = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const user = await User.findById(id, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0, mpAccessToken: 0 })
+        res.status(200).json(user)
+
+    } catch (error) {
+        console.log("Cannot get profile", error)
+        res.status(404).json(error)
+        next()
+    }
+}
+
+export const getAllProfiles = async (req, res, next) => {
+    try {
+        const allProfiles = await User.find()
+        res.status(200).json(allProfiles)
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ error: error });
+        next(error)
+    }
+}
+
+export const getProfileById = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const myUser = await User.findById(req.userId)
+        const myId = req.userId?.toString()
+        console.log(myUser)
+        const profileData = await User.findById(id, { 
+            password: 0, 
+            purchases: 0, 
+            mpAccount: 0, 
+            mpAccessToken: 0, 
+            verificationPay: 0, 
+            verificationInProcess: 0 
+        })
+        if (profileData && myId) {
+            profileData.visits = profileData.visits.concat(myId)
+            profileData.notifications = profileData.notifications.concat({
+                userName: myUser?.userName,
+                profilePic: myUser?.profilePic,
+                event: "visitó tu perfil",
+                link: myId,
+                date: new Date(),
+                read: false,
+            })
+        }
+        await profileData.save()
+        res.status(200).json({profileData, myId})
+        // const replyFromCache = await GET_REDIS_ASYNC("getProfileById")
+        // if (replyFromCache) {
+        //     res.json(JSON.parse(replyFromCache))
+        // }
+        // else {
+        //     const response = await SET_REDIS_ASYNC('getProfileById', JSON.stringify({profileData, myId}))
+        //     console.log("response", response)
+        //     console.log("almacenado en caché con redis", ({profileData, myId}))
+        //     res.status(200).json({profileData, myId})
+        // }
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log("Cannot get profile by id", error)
+        res.status(404).json(error)
+        next(error)
+    }
+}
+
+export const updateProfile = async (req, res, next) => {
+    try {
+        const {
+            userName, description, birthday, firstName, lastName,
+            online, premium, verified, verificationPay, verificationInProcess,
+            mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
+        } = req.body;
+        const { id } = req.params
+        const user = await User.findById(id, { password: 0 })
+        const userUpdated = await User.findOneAndUpdate(
+            { _id: user._id },
+            {
+                userName, description, birthday, firstName, lastName,
+                online, premium, verified, verificationPay, verificationInProcess,
+                mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
+            })
+        await Publication.updateMany({ userName: user.userName }, { userName: userName })
+        console.log(userUpdated)
+        res.status(200).json({ message: "User updated!" });
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log("Error:", error)
+        res.status(500).json(error)
+        next()
+    }
+}
+
+
+export const pictureProfile = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const user = await User.findById(id, { password: 0 })
+        let obj = {}
+        if (req.files) {
+            const files = req.files['image']
+            if (files) {
+                for (const file of files) {
+                    const result = await uploadImage({ filePath: file.path })
+                    obj = {
+                        public_id: result.public_id,
+                        secure_url: result.secure_url,
+                    }
+                    await fs.unlink(file.path)
+                }
+            }
+        }
+        if (user !== undefined) {
+            user.profilePicture = obj
+            const userUpdated = await user.save()
+            const pictureUpdated = userUpdated.profilePicture
+            await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url })
+            res.status(200).json({ pictureUpdated });
+        }
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log("Error:", error)
+        res.status(500).json(error)
+        next()
+    }
+}
+
+
+export const deleteProfile = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const myUser = await User.findById({ _id: id })
+        console.log(myUser)
+        const allPostsToDelete = myUser.publications.map(id => id)
+
+        const allPosts = await Publication.find({
+            _id: {
+                $in: allPostsToDelete
+            }
+        })
+        const postsDeleted = await Publication.deleteMany({ _id: allPosts })
+        const userDeleted = await User.deleteOne({ myUser })
+        res.status(200).json({ message: `User and posts deleted`, postsDeleted, userDeleted })
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log(error)
+        res.status(500).json(error)
+        next()
+    }
+}
+
+export const getAllPostsByUser = async (req, res, next) => {
+    // Hacer paginado cada 7 posts así en el front se realiza infinity scroll
+    try {
+        const { id } = req.params
+        const myUser = await User.findById(req.userId)
+        const myUserExplicit = myUser?.explicitContent
+
+        const user = await User.findById(id)
+        if (myUserExplicit === false) {
+            const posts = await Publication.find()
+            const userId = user._id.toString()
+            const postsByUser = posts.filter(post => {
+                if (userId === post.user.toString() && post.price === 0 && post.explicitContent === false) {
+                    return post;
+                }
+            }).sort((a, b) => {
+                if (a.createdAt < b.createdAt) return 1;
+                return -1;
+            })
+            res.status(200).json(postsByUser)
+            // const replyFromCache = await GET_REDIS_ASYNC("getAllPostsByUser")
+            // if (replyFromCache) {
+            //     return res.json(JSON.parse(replyFromCache))
+            // }
+            // else {
+            //     const response = await SET_REDIS_ASYNC('getAllPostsByUser', JSON.stringify(postsByUser))
+            //     console.log("almacenado en caché con redis", response)
+            //     res.status(200).json(postsByUser)
+            // }
+        } else {
+            const posts = await Publication.find()
+            const userId = user._id.toString()
+            const postsByUser = posts.filter(post => {
+                if (userId === post.user.toString() && post.price === 0) {
+                    return post;
+                }
+            }).sort((a, b) => {
+                if (a.createdAt < b.createdAt) return 1;
+                return -1;
+            })
+            res.status(200).json(postsByUser)
+            // const replyFromCache = await GET_REDIS_ASYNC("getAllPostsByUser")
+        //     if (replyFromCache) {
+        //         return res.json(JSON.parse(replyFromCache))
+        //     }
+        //     else {
+        //         const response = await SET_REDIS_ASYNC('getAllPostsByUser', JSON.stringify(postsByUser))
+        //         console.log("almacenado en caché con redis", response)
+        //         res.status(200).json(postsByUser)
+        //     }
+        }
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ error: error });
+        next(error)
+    }
+}

@@ -1,20 +1,25 @@
 import { Router } from 'express'
-import { createPost, getPostById, getAllPosts, updatePostById, deletePost } from '../controllers/posts/posts.controller.js';
-// import { TokenValidator } from '../libs/tokenValidator.js';
-import multer from "../libs/multer.js"
+import { createPost, getPostById, deletePost, commentPost, likePost, dislikePost } from '../controllers/posts/posts.controller.js';
+import { getAllPostsByFollowings } from '../controllers/interaction/getAllPostsByFollowings.controller.js'
+import { TokenValidator } from '../libs/tokenValidator.js';
 // import { schemaValidation } from '../libs/schemasValidator';
+import multer from "../libs/multer.js"
 // import { CreatePublicationSchema, GetOrDeletePublicationByIdSchema } from '../schemas/publications.schema';
+import { getAllPostsByUser } from '../controllers/profile/profile.controller.js';
 const router = Router()
 
-router.post('/post', multer.fields([{
+router.post('/post', TokenValidator, multer.fields([{
     name: 'images',
-    maxCount: 20
+    maxCount: 7
 }]), createPost)
+router.post('/like/:id', TokenValidator, likePost)
+router.post('/dislike/:id', TokenValidator, dislikePost)
+router.post('/post/:id', TokenValidator, commentPost)
 
-router.get('/post/:id', getPostById)
-router.get('/posts', getAllPosts)
+router.get('/posts', TokenValidator, getAllPostsByFollowings)
+router.get('/posts/:id', TokenValidator, getAllPostsByUser)
+router.get('/post/:id', TokenValidator, getPostById)
 
-router.put('/post/:id', updatePostById)
-router.delete('/post/:id', deletePost)
+router.delete('/post/:id', TokenValidator, deletePost)
 
 export default router;
