@@ -1,11 +1,23 @@
 import express from "express"
 import path from 'path'
+import http from "http"
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser"
 import morgan from 'morgan'
 import cors from 'cors'
 import authRoute from './routes/auth.routes.js'
+import chatRoute from './routes/chat.routes.js'
 import feedRoute from './routes/feed.routes.js'
+import followRoute from './routes/follow.routes.js'
+import messagesRoute from './routes/messages.routes.js'
+import mercadopagoRoute from './routes/mercadopago.routes.js'
+import paymentsRoute from './routes/payments.routes.js'
+import profileRoute from './routes/profile.routes.js'
+import searchRoute from './routes/search.routes.js'
+import walletsRoute from './routes/wallets.routes.js'
+import moderationRoute from './routes/moderation.routes.js'
+import notificationsRoute from "./routes/notifications.routes.js"
+import adminRoute from './routes/admin.routes.js'
 
 dotenv.config()
 
@@ -19,7 +31,7 @@ const errorHandler = (error, req, res, next) => {
 };
 
 var corsOptions = {
-    origin: ['https://www.casuarinasinmobiliaria.com.ar', 'https://casuarinasinmobiliaria.com.ar', 'http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://groob.app', 'https://www.groob.app', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
@@ -51,7 +63,18 @@ app.use(express.json({ limit: "150mb" }));
 
 // Routes
 app.use(authRoute)
+app.use(profileRoute)
 app.use(feedRoute)
+app.use(searchRoute)
+app.use(followRoute)
+app.use(chatRoute)
+app.use(messagesRoute)
+app.use(walletsRoute)
+app.use(mercadopagoRoute)
+app.use(paymentsRoute)
+app.use(moderationRoute)
+app.use(notificationsRoute)
+app.use(adminRoute)
 
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
