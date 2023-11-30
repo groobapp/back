@@ -7,20 +7,19 @@ export const discoverPostsWithImages = async (req, res, next) => {
     try {
         const allPublications = await Publication.find()
         // if (user.explicitContent === true) {
-        res.status(200).json(allPublications)
 
-        // const filterByExplicitContentAndImages = allPublications.filter(post => {
-        //     if (post.explicitContent === false
-        //         && post.images.length > 0
-        //         && post.price === 0) {
-        //         return post;
-        //     }
-        // })
-        // const orderByDate = filterByExplicitContentAndImages.sort((a, b) => {
-        //     if (a.createdAt < b.createdAt) return 1;
-        //     return -1;
-        // })
+        const filterByExplicitContentAndImages = allPublications.filter(post => {
+            if (post.images.length > 0
+                && post.price === 0) {
+                return post;
+            }
+        })
+        const orderByDate = filterByExplicitContentAndImages.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        })
 
+        res.status(200).json(orderByDate)
 
         // const replyFromCache = await GET_REDIS_ASYNC("discoverPostsWithImages")
         // if (replyFromCache) {
