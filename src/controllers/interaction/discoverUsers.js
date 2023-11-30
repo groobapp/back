@@ -16,10 +16,7 @@ export const discoverPostsWithImages = async (req, res, next) => {
         })
 
         const filterByExplicitContentAndImages = allPublications.filter(post => {
-            if (post.images !== null
-                && post.images !== undefined
-                && post.images.secure_url !== undefined
-                && post.images.secure_url !== null
+            if (post.images[0].secure_url
                 && post.price === 0) {
                 return post;
             }
