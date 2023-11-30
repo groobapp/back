@@ -18,11 +18,24 @@ import walletsRoute from './routes/wallets.routes.js'
 import moderationRoute from './routes/moderation.routes.js'
 import notificationsRoute from "./routes/notifications.routes.js"
 import adminRoute from './routes/admin.routes.js'
+import { Server as SocketServer } from "socket.io"
 
 dotenv.config()
 
 // Inicialization
 const app = express()
+// const server = http.createServer(app)
+
+// // export instance for new sockets in endpoints
+// const io = new SocketServer(server, {
+//     cors: {
+//         origin: ['http://localhost:19000', 'http://localhost:19006', 'https://groob.app', 'https://www.groob.app'],
+//         methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//         credentials: true,
+//         optionsSuccessStatus: 200,
+
+//     }
+// })
 
 const errorHandler = (error, req, res, next) => {
     console.log(error)
@@ -80,6 +93,30 @@ app.use(adminRoute)
 app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)
 // app.use(express.static(path.join(__dirname, 'public')))
+
+
+
+
+// global.onlineUsers = new Map()
+
+// io.on('connection', (socket) => { // conexión del WebSocket.
+//     global.chatSocket = socket
+
+//     socket.on("enviar-mensaje", (message) => {
+//         console.log(message, socket.id)
+
+//         socket.broadcast.emit("mensaje-desde-server", message) //manda a todos menos a mi
+//     })
+//     socket.on("escribiendo", () => {
+
+//         socket.broadcast.emit("escribiendo-desde-server") //manda a todos menos a mi
+//     })
+
+//     socket.on('disconnect', () => {
+//         console.log('Cliente desconectado:', socket.id);
+//     });
+// })
+
 
 
 export default app;

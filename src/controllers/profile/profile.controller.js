@@ -82,27 +82,31 @@ export const getProfileById = async (req, res, next) => {
         const myUser = await User.findById(req.userId)
         const myId = req.userId?.toString()
         console.log(myUser)
-        const profileData = await User.findById(id, { 
-            password: 0, 
-            purchases: 0, 
-            mpAccount: 0, 
-            mpAccessToken: 0, 
-            verificationPay: 0, 
-            verificationInProcess: 0 
+        const profileData = await User.findById(id, {
+            password: 0,
+            purchases: 0,
+            mpAccount: 0,
+            mpAccessToken: 0,
+            verificationPay: 0,
+            verificationInProcess: 0,
+            notifications: 0,
+            chats: 0,
         })
-        if (profileData && myId) {
-            profileData.visits = profileData.visits.concat(myId)
-            profileData.notifications = profileData.notifications.concat({
-                userName: myUser?.userName,
-                profilePic: myUser?.profilePic,
-                event: "visitó tu perfil",
-                link: myId,
-                date: new Date(),
-                read: false,
-            })
-        }
+
+        // if (profileData && myId) {
+        //     profileData.visits = profileData.visits.concat(myId)
+        //     profileData.notifications = profileData.notifications.concat({
+        //         userName: myUser?.userName,
+        //         profilePic: myUser?.profilePic,
+        //         event: "visitó tu perfil",
+        //         link: myId,
+        //         date: new Date(),
+        //         read: false,
+        //     })
+        // }
+
         await profileData.save()
-        res.status(200).json({profileData, myId})
+        res.status(200).json({ profileData, myId })
         // const replyFromCache = await GET_REDIS_ASYNC("getProfileById")
         // if (replyFromCache) {
         //     res.json(JSON.parse(replyFromCache))
@@ -207,56 +211,30 @@ export const deleteProfile = async (req, res, next) => {
 }
 
 export const getAllPostsByUser = async (req, res, next) => {
-    // Hacer paginado cada 7 posts así en el front se realiza infinity scroll
     try {
-        const { id } = req.params
-        const myUser = await User.findById(req.userId)
-        const myUserExplicit = myUser?.explicitContent
+        const myUser = await User.findById(req.userId, {
+            password: 0,
+            mpAccessToken: 0,
+            followers: 0,
+            firstName: 0,
+            lastName: 0,
+            birthday: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            email: 0
+        })
+        let myPosts = myUser.publications.map((id) => id)
+        const filterPosts = await Publication.find({
+            _id: {
+                $in: myPosts
+            }
+        })
+        const postsByUser = filterPosts.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        })
 
-        const user = await User.findById(id)
-        if (myUserExplicit === false) {
-            const posts = await Publication.find()
-            const userId = user._id.toString()
-            const postsByUser = posts.filter(post => {
-                if (userId === post.user.toString() && post.price === 0 && post.explicitContent === false) {
-                    return post;
-                }
-            }).sort((a, b) => {
-                if (a.createdAt < b.createdAt) return 1;
-                return -1;
-            })
-            res.status(200).json(postsByUser)
-            // const replyFromCache = await GET_REDIS_ASYNC("getAllPostsByUser")
-            // if (replyFromCache) {
-            //     return res.json(JSON.parse(replyFromCache))
-            // }
-            // else {
-            //     const response = await SET_REDIS_ASYNC('getAllPostsByUser', JSON.stringify(postsByUser))
-            //     console.log("almacenado en caché con redis", response)
-            //     res.status(200).json(postsByUser)
-            // }
-        } else {
-            const posts = await Publication.find()
-            const userId = user._id.toString()
-            const postsByUser = posts.filter(post => {
-                if (userId === post.user.toString() && post.price === 0) {
-                    return post;
-                }
-            }).sort((a, b) => {
-                if (a.createdAt < b.createdAt) return 1;
-                return -1;
-            })
-            res.status(200).json(postsByUser)
-            // const replyFromCache = await GET_REDIS_ASYNC("getAllPostsByUser")
-        //     if (replyFromCache) {
-        //         return res.json(JSON.parse(replyFromCache))
-        //     }
-        //     else {
-        //         const response = await SET_REDIS_ASYNC('getAllPostsByUser', JSON.stringify(postsByUser))
-        //         console.log("almacenado en caché con redis", response)
-        //         res.status(200).json(postsByUser)
-        //     }
-        }
+        res.status(200).json(postsByUser)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
