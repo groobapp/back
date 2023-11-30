@@ -9,7 +9,8 @@ export const discoverPostsWithImages = async (req, res, next) => {
         // if (user.explicitContent === true) {
 
         const filterByExplicitContentAndImages = allPublications.filter(post => {
-            if (post.images.length > 0
+            if (post.images.length !== null
+                && post.images.length !== undefined
                 && post.price === 0) {
                 return post;
             }
