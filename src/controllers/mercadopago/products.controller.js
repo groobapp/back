@@ -16,7 +16,7 @@ export const postsWithPriceByUser = async (req, res, next) => {
                 return post
             }
         })
-
+        console.log(postsWithPrice)
         res.status(200).json(postsWithPrice)
         return closeConnectionInMongoose;
     } catch (error) {
