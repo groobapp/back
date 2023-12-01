@@ -3,7 +3,7 @@ import { createPost, getPostById, deletePost, commentPost, likePost, dislikePost
 import { getAllPostsByFollowings } from '../controllers/interaction/getAllPostsByFollowings.controller.js'
 import { TokenValidator } from '../libs/tokenValidator.js';
 import multer from "../libs/multer.js"
-import { getAllPostsByUser } from '../controllers/profile/profile.controller.js';
+import { getAllPostsWithOutPriceByUser, getAllPostsByUser } from '../controllers/profile/profile.controller.js';
 const router = Router()
 
 router.post('/post', TokenValidator, multer.fields([{
@@ -16,6 +16,7 @@ router.post('/post/:id', TokenValidator, commentPost)
 
 router.get('/posts', TokenValidator, getAllPostsByFollowings)
 router.get('/posts-user', TokenValidator, getAllPostsByUser)
+router.get('/gallery-posts', TokenValidator, getAllPostsWithOutPriceByUser)
 router.get('/posts-user/:id', TokenValidator, getAllPostsByUserById)
 router.get('/post/:id', TokenValidator, getPostById)
 

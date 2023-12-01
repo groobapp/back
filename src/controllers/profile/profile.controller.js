@@ -210,6 +210,40 @@ export const deleteProfile = async (req, res, next) => {
     }
 }
 
+export const getAllPostsWithOutPriceByUser = async (req, res, next) => {
+    try {
+        const myUser = await User.findById(req.userId, {
+            password: 0,
+            mpAccessToken: 0,
+            followers: 0,
+            firstName: 0,
+            lastName: 0,
+            birthday: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            email: 0
+        })
+        let myPosts = myUser.publications.map((id) => id)
+        const filterPosts = await Publication.find({
+            _id: {
+                $in: myPosts
+            }
+        })
+        const postsByUser = filterPosts.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        }).filter((post) => post.price === 0)
+
+        res.status(200).json(postsByUser)
+        return closeConnectionInMongoose
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ error: error });
+        next(error)
+    }
+}
+
+
 export const getAllPostsByUser = async (req, res, next) => {
     try {
         const myUser = await User.findById(req.userId, {

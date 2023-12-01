@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 import bcrypt from "bcryptjs"
 
-const validateEmail = function(email) {
+const validateEmail = function (email) {
   const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   return re.test(email)
 };
@@ -33,26 +33,26 @@ const userSchema = new Schema({
     default: new Date()
   },
   firstName: { type: String, lowercase: true, },
-  lastName: { type: String, lowercase: true,},
-  phone: {type: Number},
-  description: { type: String, default: "", lowercase: true,},
+  lastName: { type: String, lowercase: true, },
+  phone: { type: Number },
+  description: { type: String, default: "", lowercase: true, },
   profilePicture: {
     public_id: String,
     secure_url: String
   },
-  role: {type: String, default: "user"},
+  role: { type: String, default: "user" },
   denouncement: [],
   gender: { type: String, default: "Other" },
-  verificationPay: {type: Boolean, default: false},
-  verificationInProcess: {type: Boolean, default: false},
-  verified: { type: Boolean, default: false }, 
+  verificationPay: { type: Boolean, default: false },
+  verificationInProcess: { type: Boolean, default: false },
+  verified: { type: Boolean, default: false },
   online: { type: Boolean, default: false },
-  premium: { type: Boolean, default: false },
+  receiveVideocall: { type: Boolean, default: false },
   visits: { type: [String] },
-  explicitContent: { type: Boolean, default: false },
+  viewExplicitContent: { type: Boolean, default: false },
   followers: { type: [String], default: [], trim: true },
   followings: { type: [String], default: [], trim: true },
-  likes: { type: [String]},
+  likes: { type: [String] },
   purchases: {
     type: [String]
   },
@@ -63,31 +63,11 @@ const userSchema = new Schema({
     },
     { timestamps: true, versionKey: false },
   ],
-  cryptoWallets: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Crypto",
-    },
-    { timestamps: true, versionKey: false }
-  ],
-  fiatWallets: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Fiat",
-    },
-    { timestamps: true, versionKey: false },
-  ],
-  mpAccountAsociated: {type: Boolean, default: false},
-  mpAccessToken: {type: String},
-  mpAccount: {
-    type: Schema.Types.ObjectId,
-    ref: "MpAccount",
-  },
   chats: [{
     type: Schema.Types.ObjectId,
     ref: "Chat",
   }],
-  notifications:[{
+  notifications: [{
     userName: String,
     profilePic: String,
     event: String,
