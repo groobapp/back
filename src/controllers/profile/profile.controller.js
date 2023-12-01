@@ -64,17 +64,40 @@ export const getReducedUserById = async (req, res, next) => {
     }
 }
 
+// Declaración de una variable para almacenar los usuarios aleatorios previamente obtenidos
+let previousRandomUsers = [];
+
 export const getAllProfiles = async (req, res, next) => {
     try {
-        const allProfiles = await User.find()
-        res.status(200).json(allProfiles)
-        return closeConnectionInMongoose
+        const allProfiles = await User.find();
+
+        // Verificar si se han obtenido todos los usuarios existentes
+        if (previousRandomUsers.length >= allProfiles.length) {
+            // Si ya se han obtenido todos los usuarios, reiniciar el array
+            previousRandomUsers = [];
+        }
+
+        // Obtener 20 usuarios aleatorios sin repetición
+        let randomUsers = [];
+        while (randomUsers.length < 20) {
+            const randomIndex = Math.floor(Math.random() * allProfiles.length);
+            const randomUser = allProfiles[randomIndex];
+
+            // Verificar si el usuario ya ha sido seleccionado anteriormente
+            if (!previousRandomUsers.includes(randomUser)) {
+                randomUsers.push(randomUser);
+                previousRandomUsers.push(randomUser);
+            }
+        }
+
+        res.status(200).json(randomUsers);
     } catch (error) {
-        console.log(error)
+        console.log(error);
         res.status(500).send({ error: error });
-        next(error)
+        next(error);
     }
-}
+};
+
 
 export const getProfileById = async (req, res, next) => {
     try {
