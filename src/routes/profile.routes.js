@@ -1,11 +1,9 @@
 import { Router } from 'express'
 import {
     getProfile, deleteProfile, updateProfile, pictureProfile, getProfileById,
-    getAllProfiles, getAllPostsByUser, getReducedUser, getReducedUserById
+    getAllProfiles
 } from '../controllers/profile/profile.controller.js';
 import { TokenValidator } from '../libs/tokenValidator.js';
-// import { schemaValidation } from '../libs/schemasValidator.js';
-// import { UpdateProfileSchema, ValidateProfileParamsSchema } from '../schemas/profile.schema';
 import multer from "../libs/multer.js"
 
 const router = Router()
