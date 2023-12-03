@@ -126,7 +126,6 @@ export const getProfileById = async (req, res, next) => {
         console.log(myUser)
         const profileData = await User.findById(id, {
             password: 0,
-            publications: 0,
             firstName: 0,
             lastName: 0,
             mpAccessToken: 0,
