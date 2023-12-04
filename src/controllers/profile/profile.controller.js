@@ -151,16 +151,7 @@ export const getProfileById = async (req, res, next) => {
 
         await profileData.save()
         res.status(200).json({ profileData, myId })
-        // const replyFromCache = await GET_REDIS_ASYNC("getProfileById")
-        // if (replyFromCache) {
-        //     res.json(JSON.parse(replyFromCache))
-        // }
-        // else {
-        //     const response = await SET_REDIS_ASYNC('getProfileById', JSON.stringify({profileData, myId}))
-        //     console.log("response", response)
-        //     console.log("almacenado en caché con redis", ({profileData, myId}))
-        //     res.status(200).json({profileData, myId})
-        // }
+
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Cannot get profile by id", error)
