@@ -36,7 +36,7 @@ const publicationSchema = new Schema({
         type: Date,
         default: new Date()
     },
-    user: {
+    userIdCreatorPost: {
         type: Schema.Types.ObjectId,
         ref: "User",
     },

@@ -21,7 +21,7 @@ export const createPost = async (req, res, next) => {
             price: priceValue || 0,
             checkNSFW,
             checkExclusive,
-            user: user?._id,
+            userIdCreatorPost: user?._id,
             userName: user?.userName,
             profilePicture: user?.profilePicture.secure_url,
             userVerified: user?.verified,
@@ -137,8 +137,7 @@ export const deletePost = async (req, res, next) => {
 
 export const commentPost = async (req, res, next) => {
     try {
-        const { id } = req.params
-        const { value } = req.body
+        const { value, id } = req.body
         const user = await User.findById(req.userId)
         const userName = user?.userName
         console.log(value, userName)
