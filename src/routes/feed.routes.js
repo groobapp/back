@@ -12,7 +12,7 @@ router.post('/post', TokenValidator, multer.fields([{
 }]), createPost)
 router.post('/like/:id', TokenValidator, likePost)
 router.post('/dislike/:id', TokenValidator, dislikePost)
-router.post('/post/:id', TokenValidator, commentPost)
+router.post('/comment-post', TokenValidator, commentPost)
 
 router.get('/posts', TokenValidator, getAllPostsByFollowings)
 router.get('/posts-user', TokenValidator, getAllPostsByUser)
