@@ -16,34 +16,34 @@ export const signup = async (req, res, next) => {
         if (emailExist) {
             return res.json({ message: "The email is already in use." })
         }
-            if (password.length >= 6 && password.length < 16) {
-                const user = new User({ userName, password, email })
-                user.password = await user.encryptPassword(user.password)
-                user.profilePicture.secure_url = "https://res.cloudinary.com/groob/image/upload/v1661108370/istoremovebg-preview_hzebg1.png"
-                const userSaved = await user.save()
-                const token = jwt.sign({ _id: userSaved._id }, `${process.env.TOKEN_KEY_JWT}`, {
-                    expiresIn: 1815000000
-                })
-                user.online = true
-                await user.save()
-                // res.cookie('authtoken', token, {
-                //     maxAge: 1815000000, //21 days
-                //     httpOnly: true, // Para consumir sólo en protocolo HTTP
-                //     sameSite: 'none',
-                //     secure: true,
-                // })
-                await transporter.sendMail({
-                    from: 'joeljuliandurand@gmail.com', // sender address
-                    to: `${email}`, // list of receivers
-                    subject: `Hola ${userName}, registro exitoso!`, // Subject line
-                    text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand.", // plain text body
-                    // html: "<b>Hello world?</b>", // html body
-                });
-                console.log(user)
-                res.status(200).json({ message: 'Success', token: token })
-            }
+        if (password.length >= 6 && password.length < 16) {
+            const user = new User({ userName, password, email })
+            user.password = await user.encryptPassword(user.password)
+            user.profilePicture.secure_url = "https://res.cloudinary.com/groob/image/upload/v1661108370/istoremovebg-preview_hzebg1.png"
+            const userSaved = await user.save()
+            const token = jwt.sign({ _id: userSaved._id }, `${process.env.TOKEN_KEY_JWT}`, {
+                expiresIn: 1815000000
+            })
+            user.online = true
+            await user.save()
+            // res.cookie('authtoken', token, {
+            //     maxAge: 1815000000, //21 days
+            //     httpOnly: true, // Para consumir sólo en protocolo HTTP
+            //     sameSite: 'none',
+            //     secure: true,
+            // })
+            await transporter.sendMail({
+                from: 'joeljuliandurand@gmail.com', // sender address
+                to: `${email}`, // list of receivers
+                subject: `Hola ${userName}, registro exitoso!`, // Subject line
+                text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand.", // plain text body
+                // html: "<b>Hello world?</b>", // html body
+            });
+            console.log(user)
+            res.status(200).json(token)
+        }
 
-        } catch (error) {
+    } catch (error) {
         console.log("error:", error)
         res.status(400).json(error)
         next()
@@ -70,7 +70,7 @@ export const login = async (req, res, next) => {
             //     sameSite: 'none',
             //     secure: true,
             // }))
-            res.status(200).json({ message: 'Success', token: token })
+            res.status(200).json(token)
             await user.save()
         }
 
@@ -91,7 +91,7 @@ export const login = async (req, res, next) => {
             //     sameSite: 'none',
             //     secure: true,
             // })
-            res.status(200).json({ message: 'Success', token: token })
+            res.status(200).json(token)
             await user.save()
         }
 
@@ -110,12 +110,10 @@ export const logout = async (req, res, next) => {
         }
         user.online = false
         await user.save()
-        res.clearCookie('authtoken');
-        res.send('Cookie deleted');
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
-        next()
+        next(error)
     }
 }
 
