@@ -56,7 +56,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         }
         else if (postsByFollowings.length > 0 || postsByMyUser.length > 0) {
 
-            if (myUser.explicitContent === true) {
+            if (myUser.explicitContent === true || myUser.checkNSFW === true) {
                 const allPosts = postsByMyUser.concat(postsByFollowings) // concateno los usuarios y los posts
                 const noDuplicates = [...new Set(allPosts.map(post => post._id))] // elimino posibles resultados duplicados
                     .map(id => allPosts.find(post => post._id === id));
@@ -64,19 +64,14 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                     if (a.createdAt < b.createdAt) return 1; // ordeno por fecha más reciente 
                     return -1;
                 })
-                const getPostsByFollowings = {
-                    data,
-                    myId: myUser?._id,
-                    myUserExplicitContent: myUser?.explicitContent,
-                    mpAccountAsociated: myUser?.mpAccountAsociated
-                }
-                // const replyFromCache = await GET_REDIS_ASYNC("getPostsByFollowings")
-                // if (replyFromCache) {
-                //     return res.json(JSON.parse(replyFromCache))
-                // }
-                // else {
+                data,
+                    // const replyFromCache = await GET_REDIS_ASYNC("getPostsByFollowings")
+                    // if (replyFromCache) {
+                    //     return res.json(JSON.parse(replyFromCache))
+                    // }
+                    // else {
                     // const response = await SET_REDIS_ASYNC('getPostsByFollowings', JSON.stringify(getPostsByFollowings))
-                    res.status(200).json(getPostsByFollowings)
+                    res.status(200).json(data)
                 // }
             } else {
                 const postWithOutExplicitContent = postsByFollowings.filter(post => {
@@ -89,19 +84,14 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                     if (a.createdAt < b.createdAt) return 1; // ordeno por fecha más reciente 
                     return -1;
                 })
-                const getPostsByFollowings = {
-                    data,
-                    myId: myUser?._id,
-                    myUserExplicitContent: myUser?.explicitContent,
-                    mpAccountAsociated: myUser?.mpAccountAsociated
-                }
-                // const replyFromCache = await GET_REDIS_ASYNC("getPostsByFollowings")
-                // if (replyFromCache) {
-                //     return res.json(JSON.parse(replyFromCache))
-                // }
-                // else {
+                data,
+                    // const replyFromCache = await GET_REDIS_ASYNC("getPostsByFollowings")
+                    // if (replyFromCache) {
+                    //     return res.json(JSON.parse(replyFromCache))
+                    // }
+                    // else {
                     // const response = await SET_REDIS_ASYNC('getPostsByFollowings', JSON.stringify(getPostsByFollowings))
-                    res.status(200).json(getPostsByFollowings)
+                    res.status(200).json(data)
                 // }
 
             }
