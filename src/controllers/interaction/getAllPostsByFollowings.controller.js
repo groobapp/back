@@ -1,12 +1,31 @@
 import User from '../../models/User.js';
 import Publication from '../../models/Publication.js';
-import { closeConnectionInMongoose } from '../../libs/constants.js';
 
 export const getAllPostsByFollowings = async (req, res, next) => {
     try {
-        const myUser = await User.findById(req.userId, '-password -mpAccessToken -followers -firstName -lastName -birthday -createdAt -updatedAt -email')
-            .populate('publications', '_id')
-            .populate('followings', '_id');
+        const myUser = await User.findById(req.userId, {
+            password: 0,
+            mpAccessToken: 0,
+            followers: 0,
+            role: 0,
+            firstName: 0,
+            lastName: 0,
+            createdAt: 0,
+            visits: 0,
+            updatedAt: 0,
+            phone: 0,
+            verificationInProcess: 0,
+            verificationPay: 0,
+            purchases: 0,
+            chats: 0,
+            notifications: 0
+        }).populate({
+            path: 'publications',
+            select: 'publications',
+        }).populate({
+            path: 'followings',
+            select: 'followings',
+        })
         if (!myUser) {
             res.status(500).send("Usuario no loggeado")
             return
@@ -24,7 +43,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             const allPosts = [...postsByMyUser, ...postsByFollowings];
             const uniquePosts = Array.from(new Set(allPosts.map(post => post._id))).map(id => allPosts.find(post => post._id === id));
 
-            const filteredPosts = myUser.explicitContent || myUser.checkNSFW ?
+            const filteredPosts = myUser.viewExplicitContent ?
                 uniquePosts :
                 uniquePosts.filter(post => !post.explicitContent || !post.checkNSFW);
 
@@ -36,7 +55,5 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         console.error(error);
         res.status(400).json(error);
         next(error);
-    } finally {
-        closeConnectionInMongoose();
     }
-};
+}
