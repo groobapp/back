@@ -57,37 +57,31 @@ export const getAllPostsByUserById = async (req, res, next) => {
     // Hacer paginado cada 7 posts así en el front se realiza infinity scroll
     try {
         const { id } = req.params
+        if (!id) return
+
         const myUser = await User.findById(req.userId)
-        const myUserExplicit = myUser?.explicitContent
+        if (!myUser) return
 
         const user = await User.findById(id)
-        if (myUserExplicit === false) {
-            const posts = await Publication.find()
-            const userId = user._id.toString()
-            const postsByUser = posts.filter(post => {
-                if (userId === post.user.toString() && post.price === 0 && post.explicitContent === false) {
-                    return post;
-                }
-            }).sort((a, b) => {
-                if (a.createdAt < b.createdAt) return 1;
-                return -1;
-            })
-            res.status(200).json(postsByUser)
+        if (!user) return
 
-        } else {
-            const posts = await Publication.find()
-            const userId = user._id.toString()
-            const postsByUser = posts.filter(post => {
-                if (userId === post.user.toString() && post.price === 0) {
-                    return post;
-                }
-            }).sort((a, b) => {
-                if (a.createdAt < b.createdAt) return 1;
-                return -1;
-            })
-            res.status(200).json(postsByUser)
+        const userPosts = user.publications.map((id) => id)
+        const searchPosts = await Publication.find({
+            _id: {
+                $in: userPosts
+            }
+        })
+        const postsByUser = searchPosts.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        })
 
-        }
+        const filteredPosts = myUser.viewExplicitContent ?
+            postsByUser :
+            postsByUser.filter(post => !post.explicitContent || !post.checkNSFW);
+
+
+        res.status(200).json(filteredPosts)
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
