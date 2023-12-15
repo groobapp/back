@@ -4,6 +4,7 @@ import Publication from '../../models/Publication.js';
 export const getAllPostsByFollowings = async (req, res, next) => {
     try {
         const startTime = Date.now()
+
         const myUser = await User.findById(req.userId, {
             password: 0,
             mpAccessToken: 0,
@@ -38,10 +39,8 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         const followingsIds = myUser.followings.map(followings => followings);
         const postsByFollowings = await Publication.find({ user: { $in: followingsIds } });
 
-        let finalPosts = [];
-
         if (postsByFollowings.length || postsByMyUser.length) {
-            const allPosts = [...postsByMyUser, ...postsByFollowings];
+            const allPosts = postsByMyUser.concat(postsByFollowings)
 
             const uniquePostsSet = new Set(allPosts.map(post => post._id.toString()));
             const uniquePostsArray = [...uniquePostsSet].map(id =>
@@ -56,14 +55,14 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             const filteredPosts = myUser.viewExplicitContent ?
                 sortedUniquePosts :
                 sortedUniquePosts.filter(post => !post.explicitContent || !post.checkNSFW);
+            const endTime = Date.now(); // Momento en el que finaliza la ejecución
+            const executionTime = endTime - startTime; // Calculo de tiempo de ejecución en milisegundos
 
-            finalPosts = filteredPosts;
+            console.log(`Tiempo de ejecución: ${executionTime}ms`);
+            res.status(200).json(filteredPosts);
+        } else {
+            res.status(200).send("No se encontraron publicaciones");
         }
-        const endTime = Date.now(); // Momento en el que finaliza la ejecución
-        const executionTime = endTime - startTime; // Calculo de tiempo de ejecución en milisegundos
-
-        console.log(`Tiempo de ejecución: ${executionTime}ms`);
-        res.status(200).json(finalPosts);
     } catch (error) {
         console.error(error);
         res.status(400).json(error);
