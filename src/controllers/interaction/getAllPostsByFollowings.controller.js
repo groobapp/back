@@ -34,7 +34,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         const myPosts = myUser.publications.map(pub => pub._id);
         const postsByMyUser = await Publication.find({ _id: { $in: myPosts } });
 
-        const followingsIds = myUser.followings.map(following => following._id);
+        const followingsIds = myUser.followings.map(followings => followings._id);
         const postsByFollowings = await Publication.find({ user: { $in: followingsIds } });
 
         let finalPosts = [];
