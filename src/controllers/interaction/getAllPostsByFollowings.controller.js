@@ -2,7 +2,7 @@ import User from '../../models/User.js';
 import Publication from '../../models/Publication.js';
 import { closeConnectionInMongoose } from '../../libs/constants.js';
 
-const getAllPostsByFollowings = async (req, res, next) => {
+export const getAllPostsByFollowings = async (req, res, next) => {
     try {
         const myUser = await User.findById(req.userId, '-password -mpAccessToken -followers -firstName -lastName -birthday -createdAt -updatedAt -email')
             .populate('publications', '_id')
@@ -40,5 +40,3 @@ const getAllPostsByFollowings = async (req, res, next) => {
         closeConnectionInMongoose();
     }
 };
-
-export default getAllPostsByFollowings;
