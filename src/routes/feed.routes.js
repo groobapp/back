@@ -4,6 +4,7 @@ import { getAllPostsByFollowings } from '../controllers/interaction/getAllPostsB
 import { TokenValidator } from '../libs/tokenValidator.js';
 import multer from "../libs/multer.js"
 import { getAllPostsWithOutPriceByUser, getAllPostsByUser } from '../controllers/profile/profile.controller.js';
+
 const router = Router()
 
 router.post('/post', TokenValidator, multer.fields([{
