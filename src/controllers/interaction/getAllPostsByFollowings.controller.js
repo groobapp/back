@@ -3,6 +3,7 @@ import Publication from '../../models/Publication.js';
 
 export const getAllPostsByFollowings = async (req, res, next) => {
     try {
+        const startTime = Date.now()
         const myUser = await User.findById(req.userId, {
             password: 0,
             mpAccessToken: 0,
@@ -58,7 +59,10 @@ export const getAllPostsByFollowings = async (req, res, next) => {
 
             finalPosts = filteredPosts;
         }
+        const endTime = Date.now(); // Momento en el que finaliza la ejecución
+        const executionTime = endTime - startTime; // Calculo de tiempo de ejecución en milisegundos
 
+        console.log(`Tiempo de ejecución: ${executionTime}ms`);
         res.status(200).json(finalPosts);
     } catch (error) {
         console.error(error);
