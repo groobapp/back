@@ -3,6 +3,10 @@ import Publication from '../../models/Publication.js';
 
 export const getAllPostsByFollowings = async (req, res, next) => {
     try {
+        if (!req.userId) {
+            res.status(500).send("Usuario no loggeado")
+            return
+        }
         const myUser = await User.findById(req.userId, {
             password: 0,
             mpAccessToken: 0,
@@ -26,11 +30,6 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             path: 'followings',
             select: 'followings',
         })
-        console.log("USUARIO", myUser)
-        if (!myUser) {
-            res.status(500).send("Usuario no loggeado")
-            return
-        }
 
         const myPostsIds = myUser.publications.map(pub => pub._id);
         const postsByMyUser = await Publication.find({ _id: { $in: myPostsIds } });
