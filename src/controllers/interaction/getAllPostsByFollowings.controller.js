@@ -31,8 +31,8 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             return
         }
 
-        const myPosts = myUser.publications.map(pub => pub._id);
-        const postsByMyUser = await Publication.find({ _id: { $in: myPosts } });
+        const myPostsIds = myUser.publications.map(pub => pub._id);
+        const postsByMyUser = await Publication.find({ _id: { $in: myPostsIds } });
 
         const followingsIds = myUser.followings.map(followings => followings);
         const postsByFollowings = await Publication.find({ user: { $in: followingsIds } });
@@ -41,19 +41,24 @@ export const getAllPostsByFollowings = async (req, res, next) => {
 
         if (postsByFollowings.length || postsByMyUser.length) {
             const allPosts = [...postsByMyUser, ...postsByFollowings];
-            const noDuplicates = [...new Set(allPosts.map(post => post._id))]
-                .map(id => allPosts.find(post => post._id === id))
-                .sort((a, b) => {
-                    if (a.createdAt < b.createdAt) return 1;
-                    return -1;
-                })
+
+            const uniquePostsSet = new Set(allPosts.map(post => post._id.toString()));
+            const uniquePostsArray = [...uniquePostsSet].map(id =>
+                allPosts.find(post => post._id.toString() === id)
+            );
+
+            const sortedUniquePosts = uniquePostsArray.sort((a, b) => {
+                if (a.createdAt < b.createdAt) return 1;
+                return -1;
+            });
 
             const filteredPosts = myUser.viewExplicitContent ?
-                noDuplicates :
-                noDuplicates.filter(post => !post.explicitContent || !post.checkNSFW);
+                sortedUniquePosts :
+                sortedUniquePosts.filter(post => !post.explicitContent || !post.checkNSFW);
 
-            finalPosts = filteredPosts
+            finalPosts = filteredPosts;
         }
+
         res.status(200).json(finalPosts);
     } catch (error) {
         console.error(error);
