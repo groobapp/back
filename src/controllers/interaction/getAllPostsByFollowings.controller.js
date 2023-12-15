@@ -3,8 +3,6 @@ import Publication from '../../models/Publication.js';
 
 export const getAllPostsByFollowings = async (req, res, next) => {
     try {
-        const startTime = Date.now()
-
         const myUser = await User.findById(req.userId, {
             password: 0,
             mpAccessToken: 0,
@@ -28,6 +26,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             path: 'followings',
             select: 'followings',
         })
+        console.log("USUARIO", myUser)
         if (!myUser) {
             res.status(500).send("Usuario no loggeado")
             return
@@ -55,13 +54,9 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             const filteredPosts = myUser.viewExplicitContent ?
                 sortedUniquePosts :
                 sortedUniquePosts.filter(post => !post.explicitContent || !post.checkNSFW);
-            const endTime = Date.now(); // Momento en el que finaliza la ejecución
-            const executionTime = endTime - startTime; // Calculo de tiempo de ejecución en milisegundos
-
-            console.log(`Tiempo de ejecución: ${executionTime}ms`);
             res.status(200).json(filteredPosts);
         } else {
-            res.status(200).send("No se encontraron publicaciones");
+            res.status(200).json([]);
         }
     } catch (error) {
         console.error(error);
