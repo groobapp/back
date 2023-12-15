@@ -7,6 +7,10 @@ const getAllPostsByFollowings = async (req, res, next) => {
         const myUser = await User.findById(req.userId, '-password -mpAccessToken -followers -firstName -lastName -birthday -createdAt -updatedAt -email')
             .populate('publications', '_id')
             .populate('followings', '_id');
+        if (!myUser) {
+            res.status(500).send("Usuario no loggeado")
+            return
+        }
 
         const myPosts = myUser.publications.map(pub => pub._id);
         const postsByMyUser = await Publication.find({ _id: { $in: myPosts } });
