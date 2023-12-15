@@ -41,15 +41,19 @@ export const getAllPostsByFollowings = async (req, res, next) => {
 
         if (postsByFollowings.length || postsByMyUser.length) {
             const allPosts = [...postsByMyUser, ...postsByFollowings];
-            const uniquePosts = Array.from(new Set(allPosts.map(post => post._id))).map(id => allPosts.find(post => post._id === id));
+            const noDuplicates = [...new Set(allPosts.map(post => post._id))]
+                .map(id => allPosts.find(post => post._id === id))
+                .sort((a, b) => {
+                    if (a.createdAt < b.createdAt) return 1;
+                    return -1;
+                })
 
             const filteredPosts = myUser.viewExplicitContent ?
-                uniquePosts :
-                uniquePosts.filter(post => !post.explicitContent || !post.checkNSFW);
+                noDuplicates :
+                noDuplicates.filter(post => !post.explicitContent || !post.checkNSFW);
 
-            finalPosts = filteredPosts.sort((a, b) => b.createdAt - a.createdAt);
+            finalPosts = filteredPosts
         }
-
         res.status(200).json(finalPosts);
     } catch (error) {
         console.error(error);
