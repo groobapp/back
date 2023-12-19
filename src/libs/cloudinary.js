@@ -22,7 +22,7 @@ export async function deleteImage(publicId) {
 
 export async function uploadVideo({ filePath }) {
     return await cloudinary.uploader.upload(filePath, {
-        folder: 'uploads'
+        folder: 'uploads',
     })
 }
 
