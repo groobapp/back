@@ -92,7 +92,7 @@ export const uploadVideoPost = async (req, res, next) => {
         res.status(201).json({ "success": true, publicationSaved })
         closeConnectionInMongoose
     } catch (error) {
-        console.log(error)
+        console.log("hubo un error", error)
         res.status(400).json(error)
         next(next)
     }
