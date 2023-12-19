@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createPost, getPostById, deletePost, commentPost, likePost, dislikePost, getAllPostsByUserById } from '../controllers/posts/posts.controller.js';
+import { createPost, getPostById, deletePost, commentPost, likePost, dislikePost, getAllPostsByUserById, uploadVideoPost } from '../controllers/posts/posts.controller.js';
 import { getAllPostsByFollowings } from '../controllers/interaction/getAllPostsByFollowings.controller.js'
 import { TokenValidator } from '../libs/tokenValidator.js';
 import multer from "../libs/multer.js"
@@ -11,6 +11,10 @@ router.post('/post', TokenValidator, multer.fields([{
     name: 'images',
     maxCount: 7
 }]), createPost)
+router.post('/video-post', TokenValidator, multer.fields([{
+    name: 'video',
+    maxCount: 1
+}]), uploadVideoPost)
 router.post('/like/:id', TokenValidator, likePost)
 router.post('/dislike/:id', TokenValidator, dislikePost)
 router.post('/comment-post', TokenValidator, commentPost)

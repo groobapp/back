@@ -8,7 +8,7 @@ import { closeConnectionInMongoose } from "../../libs/constants.js";
 export const createPost = async (req, res, next) => {
     // comentario pa probar
     try {
-        const { title, content, price, checkNSFW, checkExclusive } = req.body
+        const { content, price, checkNSFW, checkExclusive } = req.body
         let priceValue;
         if (price) {
             priceValue = parseInt(price)
@@ -16,7 +16,6 @@ export const createPost = async (req, res, next) => {
         const user = await User.findById(req.userId, { password: 0 })
         if (!user) return res.status(404).json("No user found")
         const publication = new Publication({
-            title,
             content,
             price: priceValue || 0,
             checkNSFW,
@@ -52,6 +51,54 @@ export const createPost = async (req, res, next) => {
         next(next)
     }
 }
+
+export const uploadVideoPost = async (req, res, next) => {
+    try {
+        const { title, content, price, checkNSFW, checkExclusive } = req.body
+        let priceValue;
+        if (price) {
+            priceValue = parseInt(price)
+        }
+        const user = await User.findById(req.userId, { password: 0 })
+        if (!user) return res.status(404).json("No user found")
+        const publication = new Publication({
+            title,
+            content,
+            price: priceValue || 0,
+            checkNSFW,
+            checkExclusive,
+            userIdCreatorPost: user?._id,
+            userName: user?.userName,
+            profilePicture: user?.profilePicture.secure_url,
+            userVerified: user?.verified,
+        })
+        if (req.files) {
+            const files = req.files['video']
+            const data = []
+            if (files) {
+                for (const file of files) {
+                    const result = await uploadImage({ filePath: file.path })
+                    data.push({ public_id: result.public_id, secure_url: result.secure_url })
+                    await fs.unlink(file.path)
+                }
+            }
+            publication.images = data
+        }
+        const publicationSaved = await publication.save()
+        const postIdForTheUser = publicationSaved?._id
+        if (user != undefined) {
+            user.publications = user.publications.concat(postIdForTheUser)
+            await user.save()
+        }
+        res.status(201).json({ "success": true, publicationSaved })
+        closeConnectionInMongoose
+    } catch (error) {
+        console.log(error)
+        res.status(400).send("Mandaste cualquier cosa amigo")
+        next(next)
+    }
+}
+
 
 export const getAllPostsByUserById = async (req, res, next) => {
     // Hacer paginado cada 7 posts así en el front se realiza infinity scroll

@@ -10,7 +10,7 @@ const publicationSchema = new Schema({
         secure_url: String,
         required: false,
     }],
-    videos: [{
+    video: [{
         public_id: String,
         secure_url: String,
         required: false,

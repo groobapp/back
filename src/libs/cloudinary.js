@@ -19,3 +19,13 @@ export async function uploadImage({ filePath }) {
 export async function deleteImage(publicId) {
     return await cloudinary.uploader.destroy(publicId)
 }
+
+export async function uploadVideo({ filePath }) {
+    return await cloudinary.uploader.upload(filePath, {
+        folder: 'uploads'
+    })
+}
+
+export async function deleteVideo(publicId) {
+    return await cloudinary.uploader.destroy(publicId)
+}
