@@ -47,7 +47,7 @@ export const createPost = async (req, res, next) => {
         closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(400).send("Mandaste cualquier cosa amigo")
+        res.status(400).json(error)
         next(next)
     }
 }
@@ -94,7 +94,7 @@ export const uploadVideoPost = async (req, res, next) => {
         closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(400).send("Mandaste cualquier cosa amigo")
+        res.status(400).json(error)
         next(next)
     }
 }
