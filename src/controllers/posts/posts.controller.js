@@ -78,6 +78,7 @@ export const uploadVideoPost = async (req, res, next) => {
             const videoData = [];
             if (video) {
                 const result = await uploadVideo({ filePath: video[0].path })
+                console.log("result", result)
                 videoData.push({ public_id: result.public_id, secure_url: result.secure_url })
                 await fs.unlink(video[0].path)
             }
