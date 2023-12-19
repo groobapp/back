@@ -1,7 +1,7 @@
 import Publication from '../../models/Publication.js'
 import User from "../../models/User.js";
 import fs from "fs-extra"
-import { uploadImage, deleteImage } from "../../libs/cloudinary.js";
+import { uploadImage, deleteImage, uploadVideo, deleteVideo } from "../../libs/cloudinary.js";
 import { closeConnectionInMongoose } from "../../libs/constants.js";
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
@@ -74,15 +74,16 @@ export const uploadVideoPost = async (req, res, next) => {
         })
         if (req.files) {
             const files = req.files['video']
+            console.log("VIDEO FILE: ", files)
             const data = []
             if (files) {
                 for (const file of files) {
-                    const result = await uploadImage({ filePath: file.path })
+                    const result = await uploadVideo({ filePath: file.path })
                     data.push({ public_id: result.public_id, secure_url: result.secure_url })
                     await fs.unlink(file.path)
                 }
             }
-            publication.images = data
+            publication.video = data
         }
         const publicationSaved = await publication.save()
         const postIdForTheUser = publicationSaved?._id
@@ -160,8 +161,11 @@ export const deletePost = async (req, res, next) => {
         }
         const postInUser = await User.findById({ _id: req.userId })
         await Publication.deleteOne({ _id: id })
-        if (post.image?.public_id) {
-            await deleteImage(post.image.public_id)
+        if (post.images?.public_id) {
+            await deleteImage(post.images.public_id)
+        }
+        if (post.video?.public_id) {
+            await deleteVideo(post.video.public_id)
         }
         if (postInUser !== undefined) {
             postInUser.publications = postInUser.publications.filter(postId => id.toString() !== postId)
