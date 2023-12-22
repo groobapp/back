@@ -190,8 +190,11 @@ export const updateProfile = async (req, res, next) => {
 
 export const pictureProfile = async (req, res, next) => {
     try {
-        const { id } = req.params
-        const user = await User.findById(id, { password: 0 })
+        const user = await User.findById(req.userId, { password: 0 })
+
+        if (!user) return;
+        if (!req.files) return;
+
         let obj = {}
         if (req.files) {
             const files = req.files['image']
@@ -206,13 +209,11 @@ export const pictureProfile = async (req, res, next) => {
                 }
             }
         }
-        if (user !== undefined) {
-            user.profilePicture = obj
-            const userUpdated = await user.save()
-            const pictureUpdated = userUpdated.profilePicture
-            await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url })
-            res.status(200).json({ pictureUpdated });
-        }
+        user.profilePicture = obj
+        const userUpdated = await user.save()
+        const pictureUpdated = userUpdated.profilePicture
+        await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url })
+        res.status(200).json({ pictureUpdated });
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Error:", error)

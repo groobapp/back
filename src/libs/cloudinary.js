@@ -21,11 +21,9 @@ export async function deleteImage(publicId) {
 }
 
 export async function uploadVideo({ filePath }) {
-    console.log(filePath)
     return await cloudinary.uploader.upload(filePath, {
         resource_type: "video",
         folder: 'uploads',
-
     })
 }
 
