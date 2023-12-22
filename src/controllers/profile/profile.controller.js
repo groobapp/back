@@ -198,6 +198,7 @@ export const pictureProfile = async (req, res, next) => {
         let obj = {}
         if (req.files) {
             const files = req.files['image']
+            console.log(files)
             if (files) {
                 for (const file of files) {
                     const result = await uploadImage({ filePath: file.path })
