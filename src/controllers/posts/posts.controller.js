@@ -74,10 +74,10 @@ export const uploadVideoPost = async (req, res, next) => {
         })
         if (req.files) {
             const video = req.files['video']
+            console.log("VIDEO FILE: ", video)
             const videoData = [];
 
             if (video) {
-                console.log("VIDEO FILE: ", video)
                 const result = await uploadVideo({ filePath: video[0].path })
                 console.log("result", result)
 
@@ -92,6 +92,7 @@ export const uploadVideoPost = async (req, res, next) => {
             user.publications = user.publications.concat(postIdForTheUser)
             await user.save()
         }
+        console.log(publicationSaved)
         res.status(201).json({ "success": true, publicationSaved })
         closeConnectionInMongoose
     } catch (error) {
