@@ -40,7 +40,7 @@ export const discoverPostsWithTexts = async (req, res, next) => {
     try {
         const allPublications = await Publication.find()
         const data = allPublications.filter(post => {
-            if (post.content.length > 0 && post.price === 0 && !post.images) {
+            if (post.content && post.price === 0 && !post.images) {
                 return post;
             }
         })
