@@ -73,22 +73,22 @@ export const uploadVideoPost = async (req, res, next) => {
             profilePicture: user?.profilePicture.secure_url,
             userVerified: user?.verified,
         })
-        // if (req.files) {
-        //     const video = req.files['video']
-        //     console.log("VIDEO FILE: ", video)
-        //     const videoData = [];
+        if (req.files) {
+            const video = req.files['video']
+            console.log("VIDEO FILE: ", video)
+            const videoData = [];
 
-        //     if (video) {
-        // for (const file of video) {
-        //         const result = await uploadVideo({ filePath: video.path })
-        //         console.log("result", result)
+            if (video) {
+                for (const file of video) {
+                    const result = await uploadVideo({ filePath: file.path })
+                    console.log("result", result)
 
-        //         videoData.push({ public_id: result.public_id, secure_url: result.secure_url })
-        //         await fs.unlink(video[0].path)
-        // }
-        //     }
-        //     publication.video = videoData
-        // }
+                    videoData.push({ public_id: result.public_id, secure_url: result.secure_url })
+                    await fs.unlink(video[0].path)
+                }
+            }
+            publication.video = videoData
+        }
         const publicationSaved = await publication.save()
         const postIdForTheUser = publicationSaved?._id
         if (user != undefined) {
