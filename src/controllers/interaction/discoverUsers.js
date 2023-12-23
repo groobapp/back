@@ -38,14 +38,17 @@ export const discoverPostsWithImages = async (req, res, next) => {
 
 export const discoverPostsWithTexts = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId)
         const allPublications = await Publication.find()
-        const texts = allPublications.filter(post => {
-            if (post.content.length > 0
-                && post.price === 0 && post.images.length === 0) {
+        const data = allPublications.filter(post => {
+            if (post.content.length > 0 && post.price === 0 && !post.images) {
                 return post;
             }
         })
+        const texts = data.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        })
+
         res.status(200).json(texts)
         // if (user.explicitContent === true) {
         //     const filterByExplicitContentAndTexts = allPublications.filter(post => {
