@@ -4,7 +4,6 @@ import fs from "fs-extra"
 import { uploadImage } from "../../libs/cloudinary.js";
 // import {  deleteImage } from "../libs/cloudinary";
 import { closeConnectionInMongoose } from "../../libs/constants.js";
-import Wallet from '../../models/Wallet.js';
 // import { UpdateProfileBodyType, ValidateProfileParamsType } from "../schemas/profile.schema";
 // import { GET_REDIS_ASYNC, SET_REDIS_ASYNC } from '../../libs/redis.js';
 
@@ -12,10 +11,11 @@ import Wallet from '../../models/Wallet.js';
 
 export const getProfile = async (req, res, next) => {
     try {
-        let profileData = await User.findById(req.userId, { password: 0, notifications: 0, chats: 0, publications: 0 })
-        const wallet = await Wallet.findOne({ user: req.userId })
-        profileData = profileData.concat(wallet)
-        console.log(profileData)
+        const profileData = await User.findById(req.userId, { password: 0, notifications: 0, chats: 0 }).populate({
+            path: 'publications',
+            select: 'publications',
+            options: { limit: 10 }
+        }).populate({ path: 'wallet', select: 'wallet' })
         res.status(200).json(profileData)
         // const replyFromCache = await GET_REDIS_ASYNC("getProfile")
         // if (replyFromCache !== null && replyFromCache !== undefined && replyFromCache.length > 0) {
