@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { bringAllPurchasesByUser, buyContentById, getWallet } from '../controllers/wallets/fiatWallet.controller.js';
+import { getWallet, buyContentById, bringAllPurchasesByUser } from '../controllers/wallet/wallet.controller.js';
 import { TokenValidator } from '../libs/tokenValidator.js';
 
 const router = Router()

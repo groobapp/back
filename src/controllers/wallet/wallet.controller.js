@@ -8,11 +8,17 @@ export const buyContentById = async (req, res, next) => {
         const userBuyer = await User.findById(req.userId)
         const walletBuyer = await Wallet.findOne({ user: req.userId })
 
-        if (!userBuyer || !walletBuyer) return
+        if (!userBuyer || !walletBuyer) {
+            return res.status(404).json({ message: 'No se han encontrado usuario y/o billetera alguna.' });
+        }
 
         const postToBuy = await Publication.findById(postId)
         if (!postToBuy) {
             return res.status(404).json({ message: 'El post no existe.' });
+        }
+
+        if (postToBuy.userIdCreatorPost === userBuyer._id) {
+            return res.status(404).json({ message: 'No puedes autocomprarte.' });
         }
 
         if (walletBuyer.balance < postToBuy.price) {
@@ -23,12 +29,11 @@ export const buyContentById = async (req, res, next) => {
         const walletCreatorContent = Wallet.findOne({ user: postToBuy.userIdCreatorPost })
 
         if (!creatorContent || !walletCreatorContent) {
-            return res.status(404).json({ message: 'Usuario o su wallet no encontrados.' });
+            return res.status(404).json({ message: 'Creador de contenido y/o su wallet no han sido encontrados.' });
         }
 
         walletBuyer.balance = walletBuyer.balance - postToBuy.price
         walletCreatorContent.balance = walletCreatorContent.balance + postToBuy.price
-
 
         const coinsTransferred = {
             amount: postToBuy.price,
