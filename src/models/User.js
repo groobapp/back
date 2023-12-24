@@ -75,7 +75,11 @@ const userSchema = new Schema({
     link: String,
     date: Date,
     read: Boolean,
-  }]
+  }],
+  wallet: [{
+    type: Schema.Types.ObjectId,
+    ref: "Wallet",
+  }],
 }, { timestamps: true, versionKey: false })
 
 

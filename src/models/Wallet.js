@@ -1,31 +1,62 @@
 import { Schema, model } from 'mongoose'
 
 const walletSchema = new Schema({
+    balance: {
+        type: Number, require: true, trim: true, default: 100,
+    },
+    coinsTransferred: [{
+        amount: {
+            type: Number, require: true
+        },
+        receiver: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        date: {
+            type: Date,
+            default: new Date()
+        },
+    }],
+    coinsReceived: [{
+        amount: {
+            type: Number, require: true
+        },
+        sender: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true
+        },
+        date: {
+            type: Date,
+            default: new Date()
+        },
+    }],
     mercadoPago: {
-        email: { type: String, required: true, trim: true },
+        email: { type: String, required: false, trim: true },
         CVU: {
-            type: String, required: true, trim: true,
+            type: String, required: false, trim: true,
         },
         alias: {
-            type: String, required: true, trim: true,
+            type: String, required: false, trim: true,
         },
     },
     payoneer: {
-        email: { type: String, required: true, trim: true },
+        email: { type: String, required: false, trim: true },
         ACH: {
-            type: String, required: true, trim: true,
+            type: String, required: false, trim: true,
         },
         alias: {
-            type: String, required: true, trim: true,
+            type: String, required: falsetrue, trim: true,
         },
     },
     crypto: {
-        currency: { type: String, required: true, trim: true },
-        address: { type: String, required: true, trim: true },
+        currency: { type: String, required: false, trim: true },
+        address: { type: String, required: false, trim: true },
     },
     entity: {
         name: {
-            type: String, required: true, trim: true, default: "Banco - Entidad"
+            type: String, required: false, trim: true, default: "Banco - Entidad"
         },
         CBU: {
             type: String, required: false, trim: true, default: "0000000000000000000000",

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import User from "../../models/User.js";
+import Wallet from "../../models/Wallet.js";
 import jwt from "jsonwebtoken"
 import { transporter } from "../../libs/nodemailer.js";
 // import { LoginBodyType, SignupBodyType } from "../schemas/auth..schema";
@@ -21,22 +22,24 @@ export const signup = async (req, res, next) => {
             user.password = await user.encryptPassword(user.password)
             user.profilePicture.secure_url = "https://res.cloudinary.com/groob/image/upload/v1661108370/istoremovebg-preview_hzebg1.png"
             const userSaved = await user.save()
+
             const token = jwt.sign({ _id: userSaved._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
-            user.online = true
-            await user.save()
-            // res.cookie('authtoken', token, {
-            //     maxAge: 1815000000, //21 days
-            //     httpOnly: true, // Para consumir sólo en protocolo HTTP
-            //     sameSite: 'none',
-            //     secure: true,
-            // })
+            const wallet = new Wallet({
+                user: userSaved._id
+            });
+
+            const walletSaved = await wallet.save();
+
+            userSaved.wallet = walletSaved._id;
+            await userSaved.save();
+
             await transporter.sendMail({
-                from: 'joeljuliandurand@gmail.com', // sender address
-                to: `${email}`, // list of receivers
-                subject: `Hola ${userName}, registro exitoso!`, // Subject line
-                text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand.", // plain text body
+                from: 'hola@groob.app',
+                to: `${email}`,
+                subject: `Hola ${userName}, registro exitoso!`,
+                text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand. Ante cualquier duda puedes consultar por este medio.", // plain text body
                 // html: "<b>Hello world?</b>", // html body
             });
             console.log(user)
@@ -64,12 +67,6 @@ export const login = async (req, res, next) => {
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
-            // res.setHeader('Set-cookie', serialize("authtoken", token, {
-            //     maxAge: 1815000000, //21 days
-            //     httpOnly: true, 
-            //     sameSite: 'none',
-            //     secure: true,
-            // }))
             res.status(200).json(token)
             await user.save()
         }
@@ -85,12 +82,6 @@ export const login = async (req, res, next) => {
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
-            // res.cookie('authtoken', token, {
-            //     maxAge: 1815000000, //21 days
-            //     httpOnly: true, 
-            //     sameSite: 'none',
-            //     secure: true,
-            // })
             res.status(200).json(token)
             await user.save()
         }
