@@ -11,10 +11,9 @@ import feedRoute from './routes/feed.routes.js'
 import followRoute from './routes/follow.routes.js'
 import messagesRoute from './routes/messages.routes.js'
 import mercadopagoRoute from './routes/mercadopago.routes.js'
-import paymentsRoute from './routes/payments.routes.js'
 import profileRoute from './routes/profile.routes.js'
 import searchRoute from './routes/search.routes.js'
-import walletsRoute from './routes/wallets.routes.js'
+import walletRoute from './routes/wallet.routes.js'
 import moderationRoute from './routes/moderation.routes.js'
 import notificationsRoute from "./routes/notifications.routes.js"
 import adminRoute from './routes/admin.routes.js'
@@ -82,9 +81,8 @@ app.use(searchRoute)
 app.use(followRoute)
 app.use(chatRoute)
 app.use(messagesRoute)
-app.use(walletsRoute)
+app.use(walletRoute)
 app.use(mercadopagoRoute)
-app.use(paymentsRoute)
 app.use(moderationRoute)
 app.use(notificationsRoute)
 app.use(adminRoute)
