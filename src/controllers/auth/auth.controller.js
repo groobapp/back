@@ -65,10 +65,10 @@ export const login = async (req, res, next) => {
             if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
             const wallet = await Wallet.findOne({ user: user._id })
             if (!wallet) {
-                new Wallet({
+                const newWallet = new Wallet({
                     user: user._id
                 });
-
+                await newWallet.save()
             }
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
