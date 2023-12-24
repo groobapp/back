@@ -47,7 +47,7 @@ const walletSchema = new Schema({
             type: String, required: false, trim: true,
         },
         alias: {
-            type: String, required: falsetrue, trim: true,
+            type: String, required: false, trim: true,
         },
     },
     crypto: {
