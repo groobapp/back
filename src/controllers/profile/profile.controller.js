@@ -15,7 +15,7 @@ export const getProfile = async (req, res, next) => {
             path: 'publications',
             select: 'publications',
             options: { limit: 10 }
-        }).populate({ path: 'wallet', select: 'wallet' })
+        })
         res.status(200).json(profileData)
         // const replyFromCache = await GET_REDIS_ASYNC("getProfile")
         // if (replyFromCache !== null && replyFromCache !== undefined && replyFromCache.length > 0) {
