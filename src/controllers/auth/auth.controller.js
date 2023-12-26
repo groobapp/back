@@ -27,9 +27,7 @@ export const signup = async (req, res, next) => {
             const wallet = new Wallet({
                 user: userSaved._id
             });
-
             const walletSaved = await wallet.save();
-
             userSaved.wallet = walletSaved._id;
             await userSaved.save();
 
@@ -40,7 +38,6 @@ export const signup = async (req, res, next) => {
                 text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand. Ante cualquier duda puedes consultar por este medio.", // plain text body
                 // html: "<b>Hello world?</b>", // html body
             });
-            console.log(user)
             res.status(200).json(token)
         }
 

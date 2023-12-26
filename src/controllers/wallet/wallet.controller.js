@@ -13,6 +13,9 @@ export const buyContentById = async (req, res, next) => {
         }
 
         const postToBuy = await Publication.findById(postId)
+        const creatorContent = await User.findById(postToBuy.userIdCreatorPost)
+        const walletCreatorContent = Wallet.findOne({ user: postToBuy.userIdCreatorPost })
+
         if (!postToBuy) {
             return res.status(404).json({ message: 'El post no existe.' });
         }
@@ -24,9 +27,6 @@ export const buyContentById = async (req, res, next) => {
         if (walletBuyer.balance < postToBuy.price) {
             return res.status(400).json({ message: 'Saldo insuficiente para adquirir el contenido.' });
         }
-
-        const creatorContent = await User.findById(postToBuy.userIdCreatorPost)
-        const walletCreatorContent = Wallet.findOne({ user: postToBuy.userIdCreatorPost })
 
         if (!creatorContent || !walletCreatorContent) {
             return res.status(404).json({ message: 'Creador de contenido y/o su wallet no han sido encontrados.' });
@@ -60,8 +60,8 @@ export const buyContentById = async (req, res, next) => {
 
         res.status(200).json({ message: "Compra realizada." })
     } catch (error) {
-        console.log(error)
         res.status(500).json({ error: error });
+        console.log(error)
         next(error)
     }
 }
