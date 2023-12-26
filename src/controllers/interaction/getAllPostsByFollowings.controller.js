@@ -53,6 +53,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             const filteredPosts = myUser.viewExplicitContent ?
                 sortedUniquePosts :
                 sortedUniquePosts.filter(post => !post.explicitContent || !post.checkNSFW);
+            console.log("POSTS DE QUIENES SIGO", filteredPosts)
             res.status(200).json(filteredPosts);
         } else {
             res.status(200).json([]);

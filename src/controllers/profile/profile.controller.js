@@ -11,7 +11,7 @@ import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 export const getProfile = async (req, res, next) => {
     try {
-        const profileData = await User.findById(req.userId, { password: 0, notifications: 0, chats: 0 }).populate({
+        const profileData = await User.findById(req.userId, { password: 0, notifications: 0, chats: 0, visits: 0 }).populate({
             path: 'publications',
             select: 'publications',
             options: { limit: 10 }
