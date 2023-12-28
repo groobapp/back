@@ -76,10 +76,10 @@ const userSchema = new Schema({
     date: Date,
     read: Boolean,
   }],
-  wallet: [{
+  wallet: {
     type: Schema.Types.ObjectId,
     ref: "Wallet",
-  }],
+  },
 }, { timestamps: true, versionKey: false })
 
 
