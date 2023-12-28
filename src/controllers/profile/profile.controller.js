@@ -65,26 +65,28 @@ let previousRandomUsers = [];
 
 export const getAllProfiles = async (req, res, next) => {
     try {
-        const allProfiles = await User.find({}, {
-            password: 0,
-            followers: 0,
-            followings: 0,
-            publications: 0,
-            firstName: 0,
-            lastName: 0,
-            birthday: 0,
-            createdAt: 0,
-            updatedAt: 0,
-            email: 0,
-            mpAccessToken: 0,
-            purchases: 0,
-            verificationInProcess: 0,
-            verificationPay: 0,
-            chats: 0,
-            notifications: 0,
-            likes: 0,
-            phone: 0,
-        });
+        // const allProfiles = await User.find({}, {
+        //     password: 0,
+        //     followers: 0,
+        //     followings: 0,
+        //     publications: 0,
+        //     firstName: 0,
+        //     lastName: 0,
+        //     birthday: 0,
+        //     createdAt: 0,
+        //     updatedAt: 0,
+        //     email: 0,
+        //     mpAccessToken: 0,
+        //     purchases: 0,
+        //     verificationInProcess: 0,
+        //     verificationPay: 0,
+        //     chats: 0,
+        //     notifications: 0,
+        //     likes: 0,
+        //     phone: 0,
+        // });
+
+        const allProfiles = await User.find();
 
         // Verificar si se han obtenido todos los usuarios existentes
         if (previousRandomUsers.length >= allProfiles.length) {
