@@ -38,7 +38,7 @@ export const signup = async (req, res, next) => {
                 text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand. Ante cualquier duda puedes consultar por este medio.", // plain text body
                 // html: "<b>Hello world?</b>", // html body
             });
-            res.status(200).json(token)
+            res.status(200).json({ token })
         }
 
     } catch (error) {
@@ -54,27 +54,27 @@ export const login = async (req, res, next) => {
         if (email !== undefined && email.length > 0 && password.length > 0) {
             const user = await User.findOne({ email })
             if (!user) {
-                return res.status(400).json('No se encontró el usuario')
+                return res.status(400).json({ message: 'User not found.' })
             }
             const passwordFromLogin = await user.validatePassword(password)
-            if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
+            if (!passwordFromLogin) return res.status(400).json({ message: 'Email or password is wrong' })
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
-            res.status(200).json(token)
+            res.status(200).json({ token })
         }
 
         if (userName !== undefined && userName.length > 0 && password.length > 0) {
             const user = await User.findOne({ userName })
             if (!user) {
-                return res.status(400).json('No se encontró el usuario')
+                return res.status(400).json({ message: 'User not found.' })
             }
             const passwordFromLogin = await user.validatePassword(password)
             if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
-            res.status(200).json(token)
+            res.status(200).json({ token })
         }
     } catch (error) {
         console.log("error:", error)
