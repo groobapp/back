@@ -5,7 +5,6 @@ import Publication from '../../models/Publication.js'
 export const buyContentById = async (req, res, next) => {
     try {
         const { postId } = req.body
-        console.log("postId", postId)
         const userBuyer = await User.findById(req.userId)
         const walletBuyer = await Wallet.findOne({ user: req.userId })
 
@@ -13,27 +12,24 @@ export const buyContentById = async (req, res, next) => {
             return res.status(404).json({ message: 'No se han encontrado usuario y/o billetera alguna.' });
         }
 
-        console.log({ userBuyer, walletBuyer })
-
-        const postToBuy = await Publication.findById(postId)
+        const postToBuy = await Publication.findById({ _id: postId })
         if (!postToBuy) {
             return res.status(404).json({ message: 'El post no existe.' });
         }
 
-        const creatorContent = await User.findById(postToBuy.userIdCreatorPost)
-        const walletCreatorContent = await Wallet.findOne({ user: postToBuy.userIdCreatorPost })
-
-
         if (postToBuy.userIdCreatorPost === userBuyer._id) {
             return res.status(404).json({ message: 'No puedes autocomprarte.' });
+        }
+        console.log("PostToBuy: ", postToBuy)
+        const creatorContent = await User.findById({ _id: postToBuy?.userIdCreatorPost })
+        const walletCreatorContent = await Wallet.findOne({ user: postToBuy?.userIdCreatorPost })
+
+        if (!creatorContent || !walletCreatorContent) {
+            return res.status(404).json({ message: 'Creador de contenido y/o su wallet no han sido encontrados.' });
         }
 
         if (walletBuyer.balance < postToBuy.price) {
             return res.status(400).json({ message: 'Saldo insuficiente para adquirir el contenido.' });
-        }
-
-        if (!creatorContent || !walletCreatorContent) {
-            return res.status(404).json({ message: 'Creador de contenido y/o su wallet no han sido encontrados.' });
         }
 
         walletBuyer.balance = walletBuyer.balance - postToBuy.price
