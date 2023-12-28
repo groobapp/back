@@ -27,17 +27,18 @@ export const buyContentById = async (req, res, next) => {
         // hasta acá anda
 
         const creatorContent = await User.findById({ _id: postToBuy.userIdCreatorPost })
-        const walletCreatorContent = await Wallet.findOne({ user: postToBuy.userIdCreatorPost })
 
         if (!creatorContent) {
-            console.log(creatorContent)
             return res.status(404).json({ message: 'Creador de contenido no encontrado.' });
         }
+        console.log(creatorContent)
 
+        const walletCreatorContent = await Wallet.findById({ _id: creatorContent.wallet })
         if (!walletCreatorContent) {
             console.log(walletCreatorContent)
             return res.status(404).json({ message: 'Billetera del creador no encontrada.' });
         }
+        console.log(walletCreatorContent)
 
         walletBuyer.balance = walletBuyer.balance - postToBuy.price
         walletCreatorContent.balance = walletCreatorContent.balance + postToBuy.price
