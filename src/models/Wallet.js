@@ -9,8 +9,7 @@ const walletSchema = new Schema({
             type: Number, require: true
         },
         receiver: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
+            type: String,
             required: true
         },
         date: {
@@ -23,8 +22,7 @@ const walletSchema = new Schema({
             type: Number, require: true
         },
         sender: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
+            type: String,
             required: true
         },
         date: {

@@ -45,11 +45,11 @@ export const buyContentById = async (req, res, next) => {
 
         const coinsTransferred = {
             amount: postToBuy.price,
-            receiver: creatorContent._id,
+            receiver: creatorContent.userName,
         };
         const coinsReceived = {
             amount: postToBuy.price,
-            sender: userBuyer._id,
+            sender: userBuyer.userName,
         };
 
         walletBuyer.coinsTransferred = coinsTransferred;
@@ -66,7 +66,7 @@ export const buyContentById = async (req, res, next) => {
 
         await userBuyer.save()
 
-        res.status(200).json({ message: "Compra realizada." })
+        res.status(200).json({ message: "Contenido desbloqueado!" })
     } catch (error) {
         res.status(500).json({ error: error });
         console.log(error)
