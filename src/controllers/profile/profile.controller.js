@@ -88,26 +88,26 @@ export const getAllProfiles = async (req, res, next) => {
 
         const allProfiles = await User.find();
 
-        // Verificar si se han obtenido todos los usuarios existentes
-        if (previousRandomUsers.length >= allProfiles.length) {
-            // Si ya se han obtenido todos los usuarios, reiniciar el array
-            previousRandomUsers = [];
-        }
+        // // Verificar si se han obtenido todos los usuarios existentes
+        // if (previousRandomUsers.length >= allProfiles.length) {
+        //     // Si ya se han obtenido todos los usuarios, reiniciar el array
+        //     previousRandomUsers = [];
+        // }
 
-        // Obtener 20 usuarios aleatorios sin repetición
-        let randomUsers = [];
-        while (randomUsers.length < 20) {
-            const randomIndex = Math.floor(Math.random() * allProfiles.length);
-            const randomUser = allProfiles[randomIndex];
+        // // Obtener 20 usuarios aleatorios sin repetición
+        // let randomUsers = [];
+        // while (randomUsers.length < 20) {
+        //     const randomIndex = Math.floor(Math.random() * allProfiles.length);
+        //     const randomUser = allProfiles[randomIndex];
 
-            // Verificar si el usuario ya ha sido seleccionado anteriormente
-            if (!previousRandomUsers.includes(randomUser)) {
-                randomUsers.push(randomUser);
-                previousRandomUsers.push(randomUser);
-            }
-        }
+        //     // Verificar si el usuario ya ha sido seleccionado anteriormente
+        //     if (!previousRandomUsers.includes(randomUser)) {
+        //         randomUsers.push(randomUser);
+        //         previousRandomUsers.push(randomUser);
+        //     }
+        // }
 
-        res.status(200).json(randomUsers);
+        res.status(200).json(allProfiles);
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: error });
