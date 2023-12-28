@@ -45,11 +45,11 @@ export const buyContentById = async (req, res, next) => {
 
         const coinsTransferred = {
             amount: postToBuy.price,
-            receiver: creatorContent.userName,
+            receiver: creatorContent._id,
         };
         const coinsReceived = {
             amount: postToBuy.price,
-            sender: userBuyer.userName,
+            sender: userBuyer._id,
         };
 
         walletBuyer.coinsTransferred = coinsTransferred;
