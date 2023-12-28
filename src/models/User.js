@@ -12,7 +12,7 @@ const userSchema = new Schema({
     minlength: 2,
     maxlength: 16,
     requiered: true,
-    lowercase: true,
+    lowercase: false,
     unique: true,
   },
   email: {
@@ -35,7 +35,7 @@ const userSchema = new Schema({
   firstName: { type: String, lowercase: true, },
   lastName: { type: String, lowercase: true, },
   phone: { type: Number },
-  description: { type: String, default: "", lowercase: true, },
+  description: { type: String, default: "", lowercase: false, },
   profilePicture: {
     public_id: String,
     secure_url: String
