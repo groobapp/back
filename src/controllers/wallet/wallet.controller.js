@@ -13,12 +13,13 @@ export const buyContentById = async (req, res, next) => {
         }
 
         const postToBuy = await Publication.findById(postId)
-        const creatorContent = await User.findById(postToBuy.userIdCreatorPost)
-        const walletCreatorContent = Wallet.findOne({ user: postToBuy.userIdCreatorPost })
-
         if (!postToBuy) {
             return res.status(404).json({ message: 'El post no existe.' });
         }
+
+        const creatorContent = await User.findById(postToBuy.userIdCreatorPost)
+        const walletCreatorContent = await Wallet.findOne({ user: postToBuy.userIdCreatorPost })
+
 
         if (postToBuy.userIdCreatorPost === userBuyer._id) {
             return res.status(404).json({ message: 'No puedes autocomprarte.' });

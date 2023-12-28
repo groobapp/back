@@ -36,11 +36,6 @@ const app = express()
 //     }
 // })
 
-const errorHandler = (error, req, res, next) => {
-    console.log(error)
-    res.status(500).json(`Algo ha salido mal: ${error}`)
-    next()
-};
 
 var corsOptions = {
     origin: ['https://groob.app', 'https://www.groob.app', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
@@ -61,7 +56,6 @@ var corsOptions = {
 
 
 // Settings
-app.use(errorHandler);
 app.set('port', process.env.PORT || 8080)
 
 // Middlewares
@@ -86,6 +80,13 @@ app.use(mercadopagoRoute)
 app.use(moderationRoute)
 app.use(notificationsRoute)
 app.use(adminRoute)
+
+const errorHandler = (error, req, res, next) => {
+    console.error(error)
+    res.status(500).json(`Algo ha salido mal: ${error}`)
+    next(error)
+};
+app.use(errorHandler);
 
 // Static files
 app.use('/uploads', express.static(path.resolve('uploads')));
