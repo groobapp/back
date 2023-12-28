@@ -13,16 +13,6 @@ export const getProfile = async (req, res, next) => {
     try {
         const profileData = await User.findById(req.userId, { password: 0, notifications: 0, chats: 0, visits: 0 })
         res.status(200).json(profileData)
-        // const replyFromCache = await GET_REDIS_ASYNC("getProfile")
-        // if (replyFromCache !== null && replyFromCache !== undefined && replyFromCache.length > 0) {
-        //     console.log("data desde caché: ", replyFromCache)
-        //      res.json(JSON.parse(replyFromCache))
-        // }
-        // else {
-        //     const response = await SET_REDIS_ASYNC('getProfile', JSON.stringify(profileData))
-        //     console.log("data desde el server sin caché: ", response)
-        //     res.status(200).json(profileData)
-        // }
         return closeConnectionInMongoose
     } catch (error) {
         console.log("Cannot get profile", error)
@@ -31,34 +21,6 @@ export const getProfile = async (req, res, next) => {
     }
 }
 
-
-export const getReducedUser = async (req, res, next) => {
-    try {
-
-        const myUser = await User.findById(req.userId, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0, mpAccessToken: 0 })
-        console.log(myUser)
-        res.status(200).json(myUser)
-        return closeConnectionInMongoose
-    } catch (error) {
-        console.log("Cannot get profile", error)
-        res.status(404).json(error)
-        next()
-    }
-}
-
-
-export const getReducedUserById = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        const user = await User.findById(id, { password: 0, followers: 0, followings: 0, publications: 0, description: 0, firstName: 0, lastName: 0, birthday: 0, createdAt: 0, updatedAt: 0, email: 0, mpAccessToken: 0 })
-        res.status(200).json(user)
-
-    } catch (error) {
-        console.log("Cannot get profile", error)
-        res.status(404).json(error)
-        next()
-    }
-}
 
 // Declaración de una variable para almacenar los usuarios aleatorios previamente obtenidos
 let previousRandomUsers = [];

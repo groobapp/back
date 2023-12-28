@@ -5,12 +5,15 @@ import Publication from '../../models/Publication.js'
 export const buyContentById = async (req, res, next) => {
     try {
         const { postId } = req.body
+        console.log("postId", postId)
         const userBuyer = await User.findById(req.userId)
         const walletBuyer = await Wallet.findOne({ user: req.userId })
 
         if (!userBuyer || !walletBuyer) {
             return res.status(404).json({ message: 'No se han encontrado usuario y/o billetera alguna.' });
         }
+
+        console.log({ userBuyer, walletBuyer })
 
         const postToBuy = await Publication.findById(postId)
         if (!postToBuy) {
