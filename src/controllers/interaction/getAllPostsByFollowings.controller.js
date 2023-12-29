@@ -26,9 +26,6 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         }).populate({
             path: 'publications',
             select: 'publications',
-        }).populate({
-            path: 'followings',
-            select: 'followings',
         })
 
         const myPostsIds = myUser.publications.map(pub => pub._id);

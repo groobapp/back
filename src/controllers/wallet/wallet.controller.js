@@ -5,7 +5,17 @@ import Publication from '../../models/Publication.js'
 export const buyContentById = async (req, res, next) => {
     try {
         const { postId } = req.body
+        if (!postId) {
+            return res.status(404).json({ message: 'No se ha recibido un ID.' });
+        }
         const userBuyer = await User.findById(req.userId)
+        const myPostsIds = userBuyer.publications.map(pub => pub._id);
+
+        if (myPostsIds.includes(postId)) {
+            console.log("estás intentando autocomprarte")
+            return res.status(400).json("No puedes autocomprarte.")
+        }
+
         const walletBuyer = await Wallet.findOne({ user: req.userId })
 
         if (!userBuyer || !walletBuyer) {
@@ -24,21 +34,17 @@ export const buyContentById = async (req, res, next) => {
         if (postToBuy.userIdCreatorPost === userBuyer._id) {
             return res.status(404).json({ message: 'No puedes autocomprarte.' });
         }
-        // hasta acá anda
 
         const creatorContent = await User.findById({ _id: postToBuy.userIdCreatorPost })
 
         if (!creatorContent) {
             return res.status(404).json({ message: 'Creador de contenido no encontrado.' });
         }
-        console.log(creatorContent)
 
         const walletCreatorContent = await Wallet.findById({ _id: creatorContent.wallet })
         if (!walletCreatorContent) {
-            console.log(walletCreatorContent)
             return res.status(404).json({ message: 'Billetera del creador no encontrada.' });
         }
-        console.log(walletCreatorContent)
 
         walletBuyer.balance = walletBuyer.balance - postToBuy.price
         walletCreatorContent.balance = walletCreatorContent.balance + postToBuy.price
@@ -58,13 +64,11 @@ export const buyContentById = async (req, res, next) => {
         userBuyer.purchases.push(postId)
         postToBuy.buyers.push(userBuyer._id)
 
-        const walletComprador = await walletBuyer.save()
-        console.log("walletComprador", walletComprador)
-
-        const walletVendedor = await walletCreatorContent.save()
-        console.log("walletVendedor", walletVendedor)
-
         await userBuyer.save()
+        await postToBuy.save()
+        await walletBuyer.save()
+        await walletCreatorContent.save()
+
 
         res.status(200).json({ message: "Contenido desbloqueado!" })
     } catch (error) {
@@ -95,6 +99,7 @@ export const bringAllPurchasesByUser = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId)
         const userPurchases = user?.purchases
+        console.log("userPurchases", userPurchases)
 
         const findPostsPurchases = await Publication.find({
             _id: {

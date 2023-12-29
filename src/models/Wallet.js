@@ -4,6 +4,11 @@ const walletSchema = new Schema({
     balance: {
         type: Number, require: true, trim: true, default: 100,
     },
+    historyPurchases: [{
+        date: { type: Date, default: new Date() },
+        price: { type: Number },
+        amount: { type: Number },
+    }],
     coinsTransferred: [{
         amount: {
             type: Number, require: true
