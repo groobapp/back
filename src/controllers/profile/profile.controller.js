@@ -4,6 +4,7 @@ import fs from "fs-extra"
 import { uploadImage } from "../../libs/cloudinary.js";
 // import {  deleteImage } from "../libs/cloudinary";
 import { closeConnectionInMongoose } from "../../libs/constants.js";
+import Wallet from '../../models/Wallet.js';
 // import { UpdateProfileBodyType, ValidateProfileParamsType } from "../schemas/profile.schema";
 // import { GET_REDIS_ASYNC, SET_REDIS_ASYNC } from '../../libs/redis.js';
 
@@ -186,9 +187,7 @@ export const pictureProfile = async (req, res, next) => {
 
 export const deleteProfile = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const myUser = await User.findById({ _id: id })
-        console.log(myUser)
+        const myUser = await User.findById({ _id: req.userId })
         const allPostsToDelete = myUser.publications.map(id => id)
 
         const allPosts = await Publication.find({
@@ -196,9 +195,17 @@ export const deleteProfile = async (req, res, next) => {
                 $in: allPostsToDelete
             }
         })
+
+        const wallet = await Wallet.find({
+            _id: {
+                $in: myUser.wallet
+            }
+        })
+
         const postsDeleted = await Publication.deleteMany({ _id: allPosts })
+        const walletDeleted = await Wallet.deleteOne({ _id: wallet._id })
         const userDeleted = await User.deleteOne({ myUser })
-        res.status(200).json({ message: `User and posts deleted`, postsDeleted, userDeleted })
+        res.status(200).json({ message: `Info deleted`, postsDeleted, userDeleted, walletDeleted })
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)

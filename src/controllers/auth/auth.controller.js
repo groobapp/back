@@ -149,7 +149,6 @@ export const changePassword = async (req, res, next) => {
         }
         if (password.length >= 6 && password.length <= 16) {
             const user = await User.findById(req.userId)
-            console.log(user)
             user.password = await user.encryptPassword(password)
             await user.save()
             return res.status(200).json({ "success": true })
