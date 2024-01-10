@@ -17,7 +17,7 @@ router.put('/profile/:id', TokenValidator, updateProfile)
 router.put('/picture', TokenValidator,
     multer.fields([{ name: 'image', maxCount: 1 }]), pictureProfile)
 
-router.delete('/profile', TokenValidator, deleteProfile)
+router.delete('/delete-account', TokenValidator, deleteProfile)
 
 
 

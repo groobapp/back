@@ -185,9 +185,13 @@ export const pictureProfile = async (req, res, next) => {
 }
 
 
-export const deleteProfile = async (req, res, next) => {
+export const deleteAccount = async (req, res, next) => {
     try {
         const myUser = await User.findById({ _id: req.userId })
+        if (!myUser) {
+            res.status(400).json("Usuario no encontrado")
+            return
+        }
         const allPostsToDelete = myUser.publications.map(id => id)
 
         const allPosts = await Publication.find({

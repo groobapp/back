@@ -9,11 +9,11 @@ export const signup = async (req, res, next) => {
         const { userName, password, email } = req.body
         const userNameExist = await User.findOne({ userName })
         if (userNameExist) {
-            return res.json({ message: "The username is already in use." })
+            return res.status(400).json({ message: "El nombre de usuario está en uso." })
         }
         const emailExist = await User.findOne({ email })
         if (emailExist) {
-            return res.json({ message: "The email is already in use." })
+            return res.status(400).json({ message: "El email se encuentra en uso." })
         }
         if (password.length >= 6 && password.length < 16) {
             const user = new User({ userName, password, email })
@@ -54,10 +54,10 @@ export const login = async (req, res, next) => {
         if (email !== undefined && email.length > 0 && password.length > 0) {
             const user = await User.findOne({ email })
             if (!user) {
-                return res.status(400).json({ message: 'User not found.' })
+                return res.status(400).json({ message: 'Usuario no encontrado.' })
             }
             const passwordFromLogin = await user.validatePassword(password)
-            if (!passwordFromLogin) return res.status(400).json({ message: 'Email or password is wrong' })
+            if (!passwordFromLogin) return res.status(400).json({ message: 'Email o contraseña incorrectos' })
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
@@ -67,10 +67,10 @@ export const login = async (req, res, next) => {
         if (userName !== undefined && userName.length > 0 && password.length > 0) {
             const user = await User.findOne({ userName })
             if (!user) {
-                return res.status(400).json({ message: 'User not found.' })
+                return res.status(400).json({ message: 'Usuario no encontrado.' })
             }
             const passwordFromLogin = await user.validatePassword(password)
-            if (!passwordFromLogin) return res.status(400).json('Email or password is wrong')
+            if (!passwordFromLogin) return res.status(400).json('Email o contraseña incorrectos')
             const token = jwt.sign({ _id: user._id }, `${process.env.TOKEN_KEY_JWT}`, {
                 expiresIn: 1815000000
             })
