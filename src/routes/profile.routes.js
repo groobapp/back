@@ -1,7 +1,8 @@
 import { Router } from 'express'
 import {
-    getProfile, deleteProfile, updateProfile, pictureProfile, getProfileById,
-    getAllProfiles
+    getProfile, updateProfile, pictureProfile, getProfileById,
+    getAllProfiles,
+    deleteAccount
 } from '../controllers/profile/profile.controller.js';
 import { TokenValidator } from '../libs/tokenValidator.js';
 import multer from "../libs/multer.js"
@@ -17,7 +18,7 @@ router.put('/profile/:id', TokenValidator, updateProfile)
 router.put('/picture', TokenValidator,
     multer.fields([{ name: 'image', maxCount: 1 }]), pictureProfile)
 
-router.delete('/delete-account', TokenValidator, deleteProfile)
+router.delete('/delete-account', TokenValidator, deleteAccount)
 
 
 
