@@ -96,7 +96,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         if (allMyIds.length === 0) return res.status(200).json(myPosts)
 
         const postsByFollowings = await Publication.find({
-            _id: {
+            userIdCreatorPost: {
                 $in: allMyIds
             }
         })
