@@ -82,14 +82,10 @@ export const getAllProfiles = async (req, res, next) => {
 export const getProfileById = async (req, res, next) => {
     try {
         const { id } = req.params
-        const myUser = await User.findById(req.userId)
-        const myId = req.userId?.toString()
-        console.log(myUser)
-        const profileData = await User.findById(id, {
+        const data = await User.findById(id, {
             password: 0,
             firstName: 0,
             lastName: 0,
-            mpAccessToken: 0,
             purchases: 0,
             verificationInProcess: 0,
             verificationPay: 0,
@@ -110,12 +106,11 @@ export const getProfileById = async (req, res, next) => {
         //     })
         // }
 
-        await profileData.save()
-        res.status(200).json({ profileData, myId })
+        res.status(200).json(data)
 
         return closeConnectionInMongoose
     } catch (error) {
-        console.log("Cannot get profile by id", error)
+        console.log(error)
         res.status(404).json(error)
         next(error)
     }
@@ -124,18 +119,20 @@ export const getProfileById = async (req, res, next) => {
 export const updateProfile = async (req, res, next) => {
     try {
         const {
-            userName, description, birthday, firstName, lastName,
-            online, premium, verified, verificationPay, verificationInProcess,
-            mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
+            userName, description, birthday, email, firstName, lastName,
+            premium, verified, verificationPay, verificationInProcess,
+            viewExplicitContent, phone
         } = req.body;
+
+
         const { id } = req.params
         const user = await User.findById(id, { password: 0 })
         const userUpdated = await User.findOneAndUpdate(
             { _id: user._id },
             {
-                userName, description, birthday, firstName, lastName,
-                online, premium, verified, verificationPay, verificationInProcess,
-                mpAccountAsociated, mpAccessToken, mpAccount, explicitContent
+                userName, description, birthday, email, firstName, lastName,
+                premium, verified, verificationPay, verificationInProcess,
+                viewExplicitContent, phone,
             })
         await Publication.updateMany({ userName: user.userName }, { userName: userName })
         console.log(userUpdated)
@@ -214,7 +211,7 @@ export const deleteAccount = async (req, res, next) => {
     } catch (error) {
         console.log(error)
         res.status(500).json(error)
-        next()
+        next(error)
     }
 }
 
