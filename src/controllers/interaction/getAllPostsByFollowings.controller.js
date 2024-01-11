@@ -96,13 +96,11 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         console.log("posts de quienes sigo: ", postsByFollowings)
         const allPosts = postsByMyUser.concat(postsByFollowings)
 
-        const noDuplicates = [...new Set(allPosts.map(post => post._id.toString()))]
-            .map(id => allPosts.find(post => post._id.toString() === id));
+        const uniqueIds = [...new Set(allPosts.map(post => post._id.toString()))];
+        const noDuplicates = uniqueIds.map(id => allPosts.find(post => post._id.toString() === id));
 
-        const data = noDuplicates.sort((a, b) => {
-            if (a.createdAt < b.createdAt) return 1;
-            return -1;
-        })
+        const data = noDuplicates.sort((a, b) => a.createdAt - b.createdAt);
+
         res.status(200).json(data)
 
 
