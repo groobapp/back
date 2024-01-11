@@ -3,19 +3,37 @@ import User from '../../models/User.js'
 import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 
-// Declaración de una variable para almacenar los usuarios aleatorios previamente obtenidos
 let previousRandomUsers = [];
-
-
 export const discoverUsers = async (req, res, next) => {
     try {
         if (!req.userId) {
             res.status(401).json("Usuario no loggeado")
             return
         }
-        const allProfiles = await User.find();
+        const allProfiles = await User.find({}, {
+            password: 0,
+            followers: 0,
+            followings: 0,
+            publications: 0,
+            firstName: 0,
+            lastName: 0,
+            birthday: 0,
+            createdAt: 0,
+            updatedAt: 0,
+            visits: 0,
+            purchases: 0,
+            verificationInProcess: 0,
+            verificationPay: 0,
+            chats: 0,
+            notifications: 0,
+            likes: 0,
+            liked: 0,
+            phone: 0,
+        });
 
+        // Verificar si se han obtenido todos los usuarios existentes
         if (previousRandomUsers.length >= allProfiles.length) {
+            // Si ya se han obtenido todos los usuarios, reiniciar el array
             previousRandomUsers = [];
         }
 

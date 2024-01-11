@@ -89,7 +89,6 @@ export const logout = async (req, res, next) => {
         if (!user) {
             throw new Error("No se encontró el usuario");
         }
-        user.online = false
         await user.save()
     } catch (error) {
         console.log("Error: ", error)

@@ -49,7 +49,6 @@ const userSchema = new Schema({
   verificationPay: { type: Boolean, default: false },
   verificationInProcess: { type: Boolean, default: false },
   verified: { type: Boolean, default: false },
-  online: { type: Boolean, default: false },
   visits: { type: [String] },
   followers: { type: [String], default: [], trim: true },
   followings: { type: [String], default: [], trim: true },

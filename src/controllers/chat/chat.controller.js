@@ -5,7 +5,7 @@ import User from "../../models/User.js"
 export const createChat = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);
-        
+
         if (!user) {
             return res.status(404).json({ message: "Usuario no encontrado" });
         }
@@ -43,7 +43,6 @@ export const userChats = async (req, res, next) => {
 
 
         const userName = user?.userName
-        const online = user?.online
         const profilePicture = user?.profilePicture?.secure_url
         const myId = user._id.toString()
         const role = user?.role
@@ -68,16 +67,15 @@ export const userChats = async (req, res, next) => {
                 id: user._id.toString(),
                 userName: user.userName,
                 profilePicture: user.profilePicture.secure_url,
-                online: user.online,
                 // updatedAt: user.updatedAt,
             }
         })
-        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture, online, myId, role })
+        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture, myId, role })
 
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(400).json({error: error})
+        res.status(400).json({ error: error })
         next(error)
     }
 }
@@ -94,13 +92,12 @@ export const findChat = async (req, res, next) => {
         const user = await User.findById(req.params.secondId)
         const userName = user?.userName
         const profilePicture = user?.profilePicture?.secure_url
-        const online = user?.online
         closeConnectionInMongoose
-        res.status(200).json({ chat, userName, profilePicture, online, myId, myRole })
+        res.status(200).json({ chat, userName, profilePicture, myId, myRole })
 
     } catch (error) {
         console.log(error)
-        res.status(400).json({error: error})
+        res.status(400).json({ error: error })
         next(error)
     }
 }
