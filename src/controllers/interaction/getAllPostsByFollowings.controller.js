@@ -77,7 +77,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             createdAt: 0,
             updatedAt: 0,
             email: 0,
-            notifications
+            notifications: 0
         })
         let myPosts = myUser.publications.map((id) => id)
         const postsByMyUser = await Publication.find({
