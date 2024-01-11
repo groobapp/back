@@ -91,39 +91,18 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                 $in: allMyIds
             }
         })
-        if (postsByFollowings.length === 0) {
-            const data = postsByMyUser.concat(postsByFollowings)
-            return res.status(200).json(data)
-        }
-        else if (postsByFollowings.length > 0 || postsByMyUser.length > 0) {
+        const allPosts = postsByMyUser.concat(postsByFollowings)
+        console.log("allPosts: ", allPosts)
+        const noDuplicates = [...new Set(allPosts.map(post => post._id))] // elimino posibles resultados duplicados
+            .map(id => allPosts.find(post => post._id === id));
 
-            if (myUser.viewExplicitContent === true) {
-                const allPosts = postsByMyUser.concat(postsByFollowings) // concateno los usuarios y los posts
-                const noDuplicates = [...new Set(allPosts.map(post => post._id))] // elimino posibles resultados duplicados
-                    .map(id => allPosts.find(post => post._id === id));
+        const data = noDuplicates.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        })
+        res.status(200).json(data)
 
-                const data = noDuplicates.sort((a, b) => {
-                    if (a.createdAt < b.createdAt) return 1; // ordeno por fecha más reciente 
-                    return -1;
-                })
-                res.status(200).json(data)
-                // }
-            } else {
-                const postWithOutExplicitContent = postsByFollowings.filter(post => {
-                    return post.checkNSFW === false
-                })
-                const allPosts = postsByMyUser.concat(postWithOutExplicitContent) // concateno los usuarios y los posts
-                const noDuplicates = [...new Set(allPosts.map(post => post._id))]
-                    .map(id => allPosts.find(post => post._id === id)); // elimino posibles resultados duplicados
 
-                const data = noDuplicates.sort((a, b) => {
-                    if (a.createdAt < b.createdAt) return 1; // ordeno por fecha más reciente 
-                    return -1;
-                })
-                res.status(200).json(data)
-
-            }
-        }
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
