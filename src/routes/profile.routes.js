@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import {
     getProfile, updateProfile, pictureProfile, getProfileById,
-    getAllProfiles,
     deleteAccount
 } from '../controllers/profile/profile.controller.js';
 import { TokenValidator } from '../libs/tokenValidator.js';
