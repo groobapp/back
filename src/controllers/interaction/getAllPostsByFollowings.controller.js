@@ -78,17 +78,25 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             updatedAt: 0,
             email: 0,
         })
+        if (!myUser) {
+            res.status(500).json("Usuario no loggeado")
+            return
+        }
         let myPosts = myUser.publications.map((id) => id)
         const postsByMyUser = await Publication.find({
             _id: {
                 $in: myPosts
             }
         })
-        console.log("mis posts: ", postsByMyUser)
+        console.log("MIS POSTS: ", postsByMyUser)
 
         let allMyIds = myUser.followings.map((id) => id)
+
+        console.log("A QUIENES SIGO: ", allMyIds)
+        if (allMyIds.length === 0) return res.status(200).json(myPosts)
+
         const postsByFollowings = await Publication.find({
-            user: {
+            _id: {
                 $in: allMyIds
             }
         })
