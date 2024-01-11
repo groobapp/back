@@ -11,7 +11,6 @@ const router = Router()
 
 router.get('/profile', TokenValidator, getProfile)
 router.get('/profile/:id', TokenValidator, getProfileById)
-router.get('/profiles', getAllProfiles)
 
 router.put('/profile/:id', TokenValidator, updateProfile)
 
