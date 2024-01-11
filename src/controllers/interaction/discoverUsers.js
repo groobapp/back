@@ -10,14 +10,12 @@ let previousRandomUsers = [];
 export const discoverUsers = async (req, res, next) => {
     try {
         if (!req.userId) {
-            res.status(500).json("Usuario no loggeado")
+            res.status(401).json("Usuario no loggeado")
             return
         }
         const allProfiles = await User.find();
 
-        // Verificar si se han obtenido todos los usuarios existentes
         if (previousRandomUsers.length >= allProfiles.length) {
-            // Si ya se han obtenido todos los usuarios, reiniciar el array
             previousRandomUsers = [];
         }
 
