@@ -76,7 +76,8 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             birthday: 0,
             createdAt: 0,
             updatedAt: 0,
-            email: 0
+            email: 0,
+            notifications
         })
         let myPosts = myUser.publications.map((id) => id)
         const postsByMyUser = await Publication.find({
@@ -84,6 +85,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                 $in: myPosts
             }
         })
+        console.log("mis posts: ", postsByMyUser)
 
         let allMyIds = myUser.followings.map((id) => id)
         const postsByFollowings = await Publication.find({
@@ -91,10 +93,12 @@ export const getAllPostsByFollowings = async (req, res, next) => {
                 $in: allMyIds
             }
         })
+
+        console.log("mis posts: ", postsByFollowings)
         const allPosts = postsByMyUser.concat(postsByFollowings)
-        console.log("allPosts: ", allPosts)
-        const noDuplicates = [...new Set(allPosts.map(post => post._id))] // elimino posibles resultados duplicados
-            .map(id => allPosts.find(post => post._id === id));
+
+        const noDuplicates = [...new Set(allPosts.map(post => post._id.toString()))]
+            .map(id => allPosts.find(post => post._id.toString() === id));
 
         const data = noDuplicates.sort((a, b) => {
             if (a.createdAt < b.createdAt) return 1;
