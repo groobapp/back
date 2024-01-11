@@ -26,7 +26,6 @@ export const getProfile = async (req, res, next) => {
 // Declaración de una variable para almacenar los usuarios aleatorios previamente obtenidos
 let previousRandomUsers = [];
 
-import User from '../models/User';  // Asegúrate de importar tu modelo User correctamente
 
 export const getAllProfiles = async (req, res, next) => {
     try {
