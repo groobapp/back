@@ -77,7 +77,6 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             createdAt: 0,
             updatedAt: 0,
             email: 0,
-            notifications: 0
         })
         let myPosts = myUser.publications.map((id) => id)
         const postsByMyUser = await Publication.find({
@@ -94,7 +93,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             }
         })
 
-        console.log("mis posts: ", postsByFollowings)
+        console.log("posts de quienes sigo: ", postsByFollowings)
         const allPosts = postsByMyUser.concat(postsByFollowings)
 
         const noDuplicates = [...new Set(allPosts.map(post => post._id.toString()))]
