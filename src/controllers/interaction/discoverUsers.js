@@ -6,22 +6,25 @@ import { closeConnectionInMongoose } from "../../libs/constants.js";
 let previousRandomUsers = [];
 export const discoverUsers = async (req, res, next) => {
     try {
-        if (!req.userId) {
-            res.status(401).json("Usuario no loggeado")
-            return
-        }
         const allProfiles = await User.find();
+
+        if (allProfiles.length === 0) {
+            return res.status(404).json({ message: 'No hay usuarios disponibles.' });
+        }
 
         if (previousRandomUsers.length >= allProfiles.length) {
             previousRandomUsers = [];
         }
 
         let randomUsers = [];
-        while (randomUsers.length < 20) {
+        while (randomUsers.length < 20 && randomUsers.length < allProfiles.length) {
             const randomIndex = Math.floor(Math.random() * allProfiles.length);
             const randomUser = allProfiles[randomIndex];
 
-            if (!previousRandomUsers.includes(randomUser)) {
+            // Verificar si el usuario ya fue seleccionado anteriormente
+            const isUserSelected = previousRandomUsers.some(user => user._id.toString() === randomUser._id.toString());
+
+            if (!isUserSelected) {
                 randomUsers.push(randomUser);
                 previousRandomUsers.push(randomUser);
             }
