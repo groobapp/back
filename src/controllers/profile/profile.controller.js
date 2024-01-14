@@ -85,7 +85,7 @@ export const updateProfile = async (req, res, next) => {
     } catch (error) {
         console.log("Error:", error)
         res.status(500).json(error)
-        next()
+        next(error)
     }
 }
 
@@ -121,7 +121,7 @@ export const pictureProfile = async (req, res, next) => {
     } catch (error) {
         console.log("Error:", error)
         res.status(500).json(error)
-        next()
+        next(error)
     }
 }
 
@@ -130,8 +130,7 @@ export const deleteAccount = async (req, res, next) => {
     try {
         const myUser = await User.findById({ _id: req.userId })
         if (!myUser) {
-            res.status(400).json("Usuario no encontrado")
-            return
+            return res.status(400).json("Usuario no encontrado")
         }
         const allPostsToDelete = myUser.publications.map(id => id)
 
@@ -172,7 +171,9 @@ export const getAllPostsWithOutPriceByUser = async (req, res, next) => {
             updatedAt: 0,
             email: 0
         })
-        let myPosts = myUser.publications.map((id) => id)
+        if (!myUser) return res.status(401).json("No se ha encontrado un usuario")
+
+        let myPosts = myUser.publications?.map((id) => id)
         const filterPosts = await Publication.find({
             _id: {
                 $in: myPosts
@@ -187,7 +188,7 @@ export const getAllPostsWithOutPriceByUser = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send({ error: error });
+        res.status(500).json({ error: error });
         next(error)
     }
 }
@@ -206,7 +207,9 @@ export const getAllPostsByUser = async (req, res, next) => {
             updatedAt: 0,
             email: 0
         })
-        let myPosts = myUser.publications.map((id) => id)
+        if (!myUser) return res.status(401).json("No se ha encontrado un usuario")
+
+        let myPosts = myUser.publications?.map((id) => id)
         const filterPosts = await Publication.find({
             _id: {
                 $in: myPosts
@@ -221,7 +224,7 @@ export const getAllPostsByUser = async (req, res, next) => {
         return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
-        res.status(500).send({ error: error });
+        res.status(500).json({ error: error });
         next(error)
     }
 }
