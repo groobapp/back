@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose'
 
 const walletSchema = new Schema({
     balance: {
-        type: Number, require: true, trim: true, default: 100,
+        type: Number, require: true, trim: true, default: 5,
     },
     historyPurchases: [{
         date: { type: Date, default: new Date() },
