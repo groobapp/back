@@ -148,7 +148,6 @@ export const getPostById = async (req, res, next) => {
         const { id } = req.params
         const post = await Publication.findById({ _id: id })
         res.status(200).json(post)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });
