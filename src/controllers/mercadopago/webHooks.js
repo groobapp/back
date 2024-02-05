@@ -19,7 +19,7 @@ export const webHooks = async (req, res, next) => {
             compra.data.metadata.coinsQuantity && compra.data.metadata.userBuyer) {
             const wallet = await Wallet.findById({ _id: compra.data.metadata.userBuyer })
             if (wallet === undefined || wallet === null) {
-                return res.status(400).json("No se ha encontrado una billetera")
+                res.status(400).json("No se ha encontrado una billetera")
             }
             wallet.balance = compra.data.metadata.coinsQuantity
             wallet.historyPurchases = wallet.historyPurchases.push({
