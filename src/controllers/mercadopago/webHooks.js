@@ -4,10 +4,10 @@ import Wallet from "../../models/Wallet.js"
 
 export const webHooks = async (req, res, next) => {
     const { type, data } = req.body
-    console.log(type, data)
+    console.log("BODY", req.body)
     try {
         if (data !== null && data !== undefined && data.userBuyer) {
-            const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data?.userBuyer}`, {
+            const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${type.payment.id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
