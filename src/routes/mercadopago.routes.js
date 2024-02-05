@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { usersProductsMP } from '../controllers/mercadopago/checkout.controller.js'
 import { buyCoins } from '../controllers/mercadopago/coins.controller.js'
 import { postsWithPriceByUser, postsWithPriceByUserId } from "../controllers/mercadopago/products.controller.js"
 import { webHooks } from '../controllers/mercadopago/webHooks.js'
