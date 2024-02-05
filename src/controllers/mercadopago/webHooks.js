@@ -13,6 +13,7 @@ export const webHooks = async (req, res, next) => {
                     "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
                 }
             })
+            console.log("COMPRA:", compra)
             if (type === "payment" &&
                 compra.data.status === "approved" &&
                 compra.data.status_detail === "accredited" &&
