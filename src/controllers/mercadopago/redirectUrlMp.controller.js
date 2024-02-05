@@ -22,7 +22,7 @@ export const redirectUrlMp = async (req, res, next) => {
                 "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
             }
         })
-        
+
         const newMpAccount = new MpAccout({
             access_token: data.access_token,
             token_type: data.token_type,
@@ -38,7 +38,7 @@ export const redirectUrlMp = async (req, res, next) => {
             mpAccountAsociated: true,
         })
 
-        res.redirect("https://groob.com.ar/user")
+        res.redirect("https://groob.app/user")
 
     } catch (error) {
         console.log(error)

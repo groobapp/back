@@ -9,7 +9,6 @@ import { TokenValidator } from '../libs/tokenValidator.js';
 const router = Router()
 
 router.post('/buy-coins', TokenValidator, buyCoins)
-router.post('/preferenceProduct', TokenValidator, usersProductsMP)
 router.post('/notifications', webHooks)
 
 router.get('/productsByUser', TokenValidator, postsWithPriceByUser)

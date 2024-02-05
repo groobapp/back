@@ -25,9 +25,9 @@ export const buyCoins = async (req, res) => {
         }
       ],
       back_urls: {
-        "success": "https://groob.com.ar/notifications/success",
-        "pending": "https://groob.com.ar/notifications/pending",
-        "failure": "https://groob.com.ar/notifications/error",
+        "success": "https://groob.app/notifications/success",
+        "pending": "https://groob.app/notifications/pending",
+        "failure": "https://groob.app/notifications/error",
       },
       auto_return: "approved",
       notification_url: "https://groob.onrender.com/notifications",

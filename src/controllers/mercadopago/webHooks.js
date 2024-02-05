@@ -33,6 +33,7 @@ export const webHooks = async (req, res, next) => {
 
     } catch (error) {
         console.log(error)
+        res.status(403).json(error)
         next(error)
     }
 }
