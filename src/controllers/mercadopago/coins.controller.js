@@ -5,20 +5,20 @@ mercadopago.configure({
 });
 
 export const buyCoins = async (req, res) => {
-  const { price, quantity, id, monedaDeFrente } = req.body
+  const { price, coinsQuantity, id, monedaDeFrente } = req.body
 
   try {
     let preference = {
       metadata: {
         userBuyer: id,
-        coinsQuantity: parseInt(quantity),
+        coinsQuantity: parseInt(coinsQuantity),
         price: parseInt(price),
       },
       items: [
         {
           title: "Monedas",
           unit_price: parseInt(price),
-          quantity: parseInt(quantity),
+          quantity: 1,
           description: "Las monedas son consumibles para desbloquear contenido, experiencias de streaming, servicios de videollamada y realizar donaciones dentro de la plataforma. Son acumulables y podrás canjearlas por dinero real.",
           currency_id: "ARS",
           picture_url: monedaDeFrente,
