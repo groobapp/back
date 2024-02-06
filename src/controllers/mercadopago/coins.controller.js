@@ -35,7 +35,6 @@ export const buyCoins = async (req, res) => {
 
     mercadopago.preferences.create(preference)
       .then((response) => {
-        console.log(response)
         res.json(response)
       })
   } catch (error) {

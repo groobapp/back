@@ -11,21 +11,34 @@ export const webHooks = async (req, res, next) => {
                 "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
             }
         })
+        console.log(compra)
         if (type === "payment" &&
             compra.data.status === "approved" &&
             compra.data.status_detail === "accredited" &&
             compra.data.metadata.coins_quantity && compra.data.metadata.user_buyer) {
-            const wallet = await Wallet.findById({ _id: compra.data.metadata.user_buyer })
+
+            const update = {
+                $set: {
+                    balance: compra.data.metadata.coins_quantity,
+                    $push: {
+                        historyPurchases: {
+                            price: compra.data.metadata.price,
+                            amount: compra.data.metadata.coins_quantity,
+                            date: new Date()
+                        }
+                    }
+                }
+            };
+
+            const wallet = await Wallet.findByIdAndUpdate(
+                { _id: compra.data.metadata.user_buyer },
+                update,
+                { new: true } // Return the modified document rather than the original
+            );
+
             if (!wallet) {
-                res.status(400).json("No se ha encontrado una billetera")
+                return res.status(400).json("No se ha encontrado una billetera");
             }
-            wallet.balance = compra.data.metadata.coins_quantity
-            wallet.historyPurchases = wallet.historyPurchases.push({
-                price: compra.data.metadata.price,
-                amount: compra.data.metadata.coins_quantity,
-                date: new Date()
-            })
-            await wallet.save()
         }
         res.status(200).send('ok')
     } catch (error) {
