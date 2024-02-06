@@ -71,6 +71,27 @@ const walletSchema = new Schema({
             type: String, required: true, trim: true, default: "gato.perro.loro",
         },
     },
+    withdrawalRequests: [{
+        amountCoins: {
+            type: Number, required: true, trim: true
+        },
+        amountMoney: {
+            type: Number, required: true, trim: true
+        },
+        currency: {
+            type: String, required: true, trim: true
+        },
+        tranferMade: {
+            type: Boolean, required: false, default: false,
+        },
+        paymentAcreditedStatus: {
+            type: Boolean, required: false, default: false,
+        },
+        date: {
+            type: Date, default: new Date()
+        },
+    }
+    ],
     createdAt: {
         type: Date,
         default: new Date()
