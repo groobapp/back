@@ -25,7 +25,8 @@ export const webHooks = async (req, res, next) => {
             wallet.historyPurchases = wallet.historyPurchases.push({
                 price: compra.data.metadata.price,
                 amount: compra.data.metadata.coins_quantity,
-                date: new Date()
+                date: new Date(),
+                completed: true,
             })
             await wallet.save()
         }

@@ -4,7 +4,7 @@ import Publication from '../../models/Publication.js'
 
 export const createWithdrawalRequest = async (req, res, next) => {
     try {
-        const { amountCoins, amountMoney, currency } = req.body
+        const { amountCoins, amountMoney, currency, accountSelected, paymentFee, comisionGroob } = req.body
         if (isNaN(amountCoins) || amountCoins <= 0) {
             return res.status(400).json({ error: "Cantidad de monedas no válida" });
         }
@@ -22,7 +22,10 @@ export const createWithdrawalRequest = async (req, res, next) => {
         wallet.withdrawalRequests.push({
             amountCoins,
             amountMoney,
-            currency
+            currency,
+            accountSelected,
+            paymentFee,
+            comisionGroob,
         })
 
         await wallet.save()
@@ -126,7 +129,20 @@ export const getWallet = async (req, res, next) => {
     }
 }
 
+export const updateWallet = async (req, res, next) => {
+    try {
+        if (!req.userId) return new Error("No ha iniciado sesión")
 
+        const wallet = await Wallet.findOne({ user: req.userId })
+        if (!wallet) res.status(400).json("No se ha entrado una billetera")
+
+        res.status(200).json(wallet)
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ error: error });
+        next(error)
+    }
+}
 
 export const bringAllPurchasesByUser = async (req, res, next) => {
     try {

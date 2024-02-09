@@ -8,6 +8,7 @@ const walletSchema = new Schema({
         date: { type: Date, default: new Date() },
         price: { type: Number },
         amount: { type: Number },
+        completed: { type: Boolean, default: false }
     }],
     coinsTransferred: [{
         amount: {
@@ -35,40 +36,42 @@ const walletSchema = new Schema({
             default: new Date()
         },
     }],
-    mercadoPago: {
-        email: { type: String, required: false, trim: true },
-        CVU: {
-            type: String, required: false, trim: true,
+    accounts: {
+        mercadoPago: {
+            email: { type: String, required: false, trim: true },
+            CVU: {
+                type: String, required: false, trim: true,
+            },
+            alias: {
+                type: String, required: false, trim: true,
+            },
         },
-        alias: {
-            type: String, required: false, trim: true,
+        payoneer: {
+            email: { type: String, required: false, trim: true },
+            ACH: {
+                type: String, required: false, trim: true,
+            },
+            alias: {
+                type: String, required: false, trim: true,
+            },
         },
-    },
-    payoneer: {
-        email: { type: String, required: false, trim: true },
-        ACH: {
-            type: String, required: false, trim: true,
+        crypto: {
+            currency: { type: String, required: false, trim: true },
+            address: { type: String, required: false, trim: true },
         },
-        alias: {
-            type: String, required: false, trim: true,
-        },
-    },
-    crypto: {
-        currency: { type: String, required: false, trim: true },
-        address: { type: String, required: false, trim: true },
-    },
-    entity: {
-        name: {
-            type: String, required: false, trim: true, default: "Banco - Entidad"
-        },
-        CBU: {
-            type: String, required: false, trim: true, default: "0000000000000000000000",
-        },
-        CVU: {
-            type: String, required: false, trim: true, default: "0000000000000000000000",
-        },
-        alias: {
-            type: String, required: true, trim: true, default: "gato.perro.loro",
+        entity: {
+            name: {
+                type: String, required: false, trim: true, default: "Banco - Entidad"
+            },
+            CBU: {
+                type: String, required: false, trim: true, default: "0000000000000000000000",
+            },
+            CVU: {
+                type: String, required: false, trim: true, default: "0000000000000000000000",
+            },
+            alias: {
+                type: String, required: true, trim: true, default: "gato.perro.loro",
+            },
         },
     },
     withdrawalRequests: [{
@@ -81,8 +84,17 @@ const walletSchema = new Schema({
         currency: {
             type: String, required: true, trim: true
         },
+        accountSelected: {
+            type: String, required: true, trim: true,
+        },
         tranferMade: {
             type: Boolean, required: false, default: false,
+        },
+        comisionGroob: {
+            type: Number, required: true,
+        },
+        paymentFee: {
+            type: Number, required: true,
         },
         paymentAcreditedStatus: {
             type: Boolean, required: false, default: false,
