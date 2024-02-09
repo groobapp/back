@@ -12,7 +12,7 @@ export const createWithdrawalRequest = async (req, res, next) => {
             return res.status(400).json({ error: "Cantidad de dinero no válida" });
         }
         if (!currency || currency.length !== 3) {
-            return res.status(400).json({ error: "Moneda no válida" });
+            return res.status(400).json({ error: "Divisa no válida" });
         }
         const wallet = await Wallet.findOne({ user: req.userId })
         if (!wallet) {
@@ -27,7 +27,7 @@ export const createWithdrawalRequest = async (req, res, next) => {
             paymentFee,
             comisionGroob,
         })
-
+        wallet.balance = 0
         await wallet.save()
         res.status(200).json("Solicitud de retiro creada!")
     } catch (error) {

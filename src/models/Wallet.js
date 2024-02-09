@@ -87,14 +87,14 @@ const walletSchema = new Schema({
         accountSelected: {
             type: String, required: true, trim: true,
         },
-        tranferMade: {
-            type: Boolean, required: false, default: false,
-        },
         comisionGroob: {
             type: Number, required: true,
         },
         paymentFee: {
             type: Number, required: true,
+        },
+        tranferMade: {
+            type: Boolean, required: false, default: false,
         },
         paymentAcreditedStatus: {
             type: Boolean, required: false, default: false,
@@ -102,8 +102,7 @@ const walletSchema = new Schema({
         date: {
             type: Date, default: new Date()
         },
-    }
-    ],
+    }],
     createdAt: {
         type: Date,
         default: new Date()
