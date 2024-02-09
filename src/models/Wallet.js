@@ -4,6 +4,9 @@ const walletSchema = new Schema({
     balance: {
         type: Number, require: true, trim: true, default: 5,
     },
+    promotionUsed: {
+        type: Boolean, default: false,
+    },
     historyPurchases: [{
         date: { type: Date, default: new Date() },
         price: { type: Number },
