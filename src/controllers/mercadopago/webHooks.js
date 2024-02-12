@@ -25,7 +25,7 @@ export const webHooks = async (req, res, next) => {
             if (compra.data.metadata.coins_quantity === 300 && wallet.promotionUsed !== null) {
                 wallet.promotionUsed = true
             }
-            wallet.historyPurchases = wallet.historyPurchases.push({
+            wallet.historyPurchases.push({
                 price: compra.data.metadata.price,
                 amount: compra.data.metadata.coins_quantity,
                 date: new Date(),
