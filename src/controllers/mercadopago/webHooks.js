@@ -3,7 +3,9 @@ import axios from "axios"
 import Wallet from "../../models/Wallet.js"
 
 export const webHooks = async (req, res, next) => {
+    console.log("REQ BODY", req.body)
     const { type, data } = req.body
+
     try {
         const compra = await axios.get(`https://api.mercadopago.com/v1/payments/${data?.id}`, {
             headers: {
@@ -11,6 +13,7 @@ export const webHooks = async (req, res, next) => {
                 "Authorization": `Bearer ${process.env.ACCESS_TOKEN_PROD_MP}`
             }
         })
+        console.log("COMPRA", compra)
         if (type === "payment" &&
             compra.data.status === "approved" &&
             compra.data.status_detail === "accredited" &&
