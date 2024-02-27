@@ -56,6 +56,9 @@ const userSchema = new Schema({
   purchases: {
     type: [String]
   },
+  expoPushToken: {
+    type: String, trim: false, default: ""
+  },
   publications: [
     {
       type: Schema.Types.ObjectId,

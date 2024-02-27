@@ -1,7 +1,7 @@
 {
-  "name": "casuarinas-back",
+  "name": "groobi-back",
   "version": "1.0.0",
-  "description": "Inmobiliaria digital",
+  "description": "Groobi red social",
   "main": "index.js",
   "type": "module",
   "scripts": {

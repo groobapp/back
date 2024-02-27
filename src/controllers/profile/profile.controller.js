@@ -65,7 +65,7 @@ export const updateProfile = async (req, res, next) => {
         const {
             userName, description, birthday, email, firstName, lastName,
             premium, verified, verificationPay, verificationInProcess,
-            viewExplicitContent, phone
+            viewExplicitContent, phone, expoPushToken
         } = req.body;
 
 
@@ -76,7 +76,7 @@ export const updateProfile = async (req, res, next) => {
             {
                 userName, description, birthday, email, firstName, lastName,
                 premium, verified, verificationPay, verificationInProcess,
-                viewExplicitContent, phone,
+                viewExplicitContent, phone, expoPushToken
             })
         await Publication.updateMany({ userName: user.userName }, { userName: userName })
         console.log(userUpdated)
