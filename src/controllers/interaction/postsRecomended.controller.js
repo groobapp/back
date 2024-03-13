@@ -4,7 +4,7 @@ export const postsRecomended = async (_req, res, next) => {
     try {
         const allPublications = await Publication.find()
         const filterByPhoto = allPublications.filter(post => {
-            if (post.images.length > 0 && post.explicitContent === false || post.images.length > 0 && post.checkNSFW === false) {
+            if (post.images.length > 0 && post.checkExclusive === false || post.images.length > 0 && post.checkNSFW === false) {
                 return post;
             }
         }).sort((a, b) => {
