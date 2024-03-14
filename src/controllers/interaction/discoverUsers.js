@@ -79,8 +79,7 @@ export const discoverPostsWithImages = async (req, res, next) => {
 export const discoverPostsWithTexts = async (req, res, next) => {
     try {
         if (!req.userId) {
-            res.status(500).json("Usuario no loggeado")
-            return
+            return res.status(500).json("Usuario no loggeado")
         }
         const allPublications = await Publication.find()
 

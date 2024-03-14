@@ -171,7 +171,9 @@ export const getAllPostsWithOutPriceByUser = async (req, res, next) => {
             updatedAt: 0,
             email: 0
         })
-        if (!myUser) return res.status(401).json("No se ha encontrado un usuario")
+        if (!myUser) {
+            res.status(401).json("No se ha encontrado un usuario")
+        }
 
         let myPosts = myUser.publications?.map((id) => id)
         const filterPosts = await Publication.find({

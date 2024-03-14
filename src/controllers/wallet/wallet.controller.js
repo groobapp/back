@@ -116,12 +116,12 @@ export const buyContentById = async (req, res, next) => {
 
 export const getWallet = async (req, res, next) => {
     try {
-        if (!req.userId) return new Error("No ha iniciado sesión")
+        if (!req.userId) return res.status(401).json("No ha iniciado sesión")
 
         const wallet = await Wallet.findOne({ user: req.userId })
         if (!wallet) res.status(400).json("No se ha entrado una billetera")
-
         res.status(200).json(wallet)
+
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error });

@@ -4,7 +4,13 @@ import { closeConnectionInMongoose } from '../../libs/constants.js'
 
 export const postsWithPriceByUser = async (req, res, next) => {
     try {
+        if (!req.userId) {
+            return res.status(401).json("Usuario no loggeado")
+        }
         const user = await User.findById(req.userId)
+        if (!user) {
+            return res.status(400).json("No se ha encontrado el usuario")
+        }
         const publications = user?.publications
         const posts = await Publication.find({
             _id: {
@@ -20,7 +26,7 @@ export const postsWithPriceByUser = async (req, res, next) => {
         return closeConnectionInMongoose;
     } catch (error) {
         console.log(error)
-        res.status(500).send({ error: error });
+        res.status(500).json({ error: error });
         next(error)
     }
 }
