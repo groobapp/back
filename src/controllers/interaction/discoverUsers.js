@@ -82,15 +82,10 @@ export const discoverPostsWithTexts = async (req, res, next) => {
             res.status(500).json("Usuario no loggeado")
             return
         }
-        const allPublications = await Publication.find({}, {
-            title: 0,
-            videos: 0,
-            images: 0,
-            denouncement: 0,
-        })
+        const allPublications = await Publication.find()
 
         const filterByExplicitContentAndImages = allPublications.filter(post => {
-            if (post.content) {
+            if (post.content && post.images.length === 0 && post.video.length === 0) {
                 return post;
             }
         })
