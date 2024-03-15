@@ -19,7 +19,7 @@ export const getAllPostsByFollowings = async (req, res, next) => {
             email: 0,
         })
         if (!myUser) {
-            return res.status(500).json("Usuario no loggeado")
+            return res.status(500).json("No se ha encontrado un usuario")
         }
         const myPostsIds = myUser.publications.map((id) => id)
         const postsByMyUser = await Publication.find({
