@@ -62,21 +62,20 @@ export const getProfileById = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
     try {
+        const { id } = req.params
         const {
             userName, description, birthday, email, firstName, lastName,
             premium, verified, verificationPay, verificationInProcess,
-            viewExplicitContent, phone, expoPushToken
+            viewExplicitContent, phone, gender, expoPushToken
         } = req.body;
 
-
-        const { id } = req.params
         const user = await User.findById(id, { password: 0 })
         const userUpdated = await User.findOneAndUpdate(
             { _id: user._id },
             {
                 userName, description, birthday, email, firstName, lastName,
                 premium, verified, verificationPay, verificationInProcess,
-                viewExplicitContent, phone, expoPushToken
+                viewExplicitContent, phone, gender, expoPushToken
             })
         await Publication.updateMany({ userName: user.userName }, { userName: userName })
         console.log(userUpdated)
