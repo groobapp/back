@@ -62,14 +62,18 @@ export const getProfileById = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
     try {
-        const { id } = req.params
         const {
-            userName, description, birthday, email, firstName, lastName,
+            id, userName, description, birthday, email, firstName, lastName,
             premium, verified, verificationPay, verificationInProcess,
             viewExplicitContent, phone, gender, expoPushToken
         } = req.body;
 
+        if (!id) return res.status(400).json({ message: "No se ha recibido un id para actualizar el usuario" })
+
         const user = await User.findById(id, { password: 0 })
+
+        if (!user) return res.status(400).json({ message: "No se ha encontrado el usuario" })
+
         const userUpdated = await User.findOneAndUpdate(
             { _id: user._id },
             {
