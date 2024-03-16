@@ -3,7 +3,6 @@ import Publication from '../../models/Publication.js'
 import fs from "fs-extra"
 import { uploadImage } from "../../libs/cloudinary.js";
 // import {  deleteImage } from "../libs/cloudinary";
-import { closeConnectionInMongoose } from "../../libs/constants.js";
 import Wallet from '../../models/Wallet.js';
 // import { UpdateProfileBodyType, ValidateProfileParamsType } from "../schemas/profile.schema";
 // import { GET_REDIS_ASYNC, SET_REDIS_ASYNC } from '../../libs/redis.js';
@@ -14,7 +13,7 @@ export const getProfile = async (req, res, next) => {
     try {
         const profileData = await User.findById(req.userId, { password: 0, notifications: 0, chats: 0, visits: 0 })
         res.status(200).json(profileData)
-        return closeConnectionInMongoose
+
     } catch (error) {
         console.log("Cannot get profile", error)
         res.status(404).json(error)
@@ -52,7 +51,6 @@ export const getProfileById = async (req, res, next) => {
 
         res.status(200).json(data)
 
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(404).json(error)
@@ -84,7 +82,7 @@ export const updateProfile = async (req, res, next) => {
         await Publication.updateMany({ userName: user.userName }, { userName: userName })
         console.log(userUpdated)
         res.status(200).json({ message: "User updated!" });
-        return closeConnectionInMongoose
+
     } catch (error) {
         console.log("Error:", error)
         res.status(500).json(error)
@@ -120,7 +118,7 @@ export const pictureProfile = async (req, res, next) => {
         const pictureUpdated = userUpdated.profilePicture
         await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url })
         res.status(200).json({ pictureUpdated });
-        return closeConnectionInMongoose
+
     } catch (error) {
         console.log("Error:", error)
         res.status(500).json(error)
@@ -153,7 +151,6 @@ export const deleteAccount = async (req, res, next) => {
         const walletDeleted = await Wallet.deleteOne({ _id: wallet._id })
         const userDeleted = await User.deleteOne({ myUser })
         res.status(200).json({ message: `Info deleted`, postsDeleted, userDeleted, walletDeleted })
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).json(error)
@@ -190,7 +187,7 @@ export const getAllPostsWithOutPriceByUser = async (req, res, next) => {
         }).filter((post) => post.price === 0)
 
         res.status(200).json(postsByUser)
-        return closeConnectionInMongoose
+
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error });
@@ -226,7 +223,6 @@ export const getAllPostsByUser = async (req, res, next) => {
         })
 
         res.status(200).json(postsByUser)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error });
