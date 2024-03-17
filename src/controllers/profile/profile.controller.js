@@ -70,15 +70,12 @@ export const updateProfile = async (req, res, next) => {
             premium, verified, verificationPay, verificationInProcess,
             viewExplicitContent, phone, gender, expoPushToken
         } = req.body;
-
         if (!req.body) return res.status(400).json({ message: "No se ha recibido un body" })
-        console.log("req.body", req.body)
 
         const user = await User.findById(id, { password: 0 })
-
         if (!user) return res.status(400).json({ message: "No se ha encontrado el usuario" })
 
-        const userUpdated = await User.findOneAndUpdate(
+        await User.findOneAndUpdate(
             { _id: user._id },
             {
                 userName, description, birthday, email, firstName, lastName,
@@ -86,7 +83,6 @@ export const updateProfile = async (req, res, next) => {
                 viewExplicitContent, phone, gender, expoPushToken
             })
         await Publication.updateMany({ userName: user.userName }, { userName: userName })
-        console.log(userUpdated)
         res.status(200).json({ message: "User updated!" });
 
     } catch (error) {
