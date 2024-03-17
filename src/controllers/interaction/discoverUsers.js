@@ -12,7 +12,7 @@ export const discoverUsers = async (req, res, next) => {
             previousRandomUsers = [];
         }
         let randomUsers = [];
-        while (randomUsers.length < 20 && randomUsers.length < allProfiles.length) {
+        while (randomUsers.length < 20) {
             const randomIndex = Math.floor(Math.random() * allProfiles.length);
             const randomUser = allProfiles[randomIndex];
             const isUserSelected = previousRandomUsers.some(user => user._id.toString() === randomUser._id.toString());
