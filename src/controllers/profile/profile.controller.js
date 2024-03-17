@@ -75,13 +75,11 @@ export const updateProfile = async (req, res, next) => {
         const user = await User.findById(id, { password: 0 })
         if (!user) return res.status(400).json({ message: "No se ha encontrado el usuario" })
 
-        await User.findOneAndUpdate(
-            { _id: user._id },
-            {
-                userName, description, birthday, email, firstName, lastName,
-                premium, verified, verificationPay, verificationInProcess,
-                viewExplicitContent, phone, gender, expoPushToken
-            })
+        const userUpdated = await User.findOneAndUpdate({ _id: user._id }, {
+            userName, description, birthday, email, firstName, lastName,
+            premium, verified, verificationPay, verificationInProcess,
+            viewExplicitContent, phone, gender, expoPushToken
+        })
         await Publication.updateMany({ userName: user.userName }, { userName: userName })
         res.status(200).json({ message: "User updated!" });
 
