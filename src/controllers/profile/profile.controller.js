@@ -60,7 +60,10 @@ export const getProfileById = async (req, res, next) => {
 
 export const updateProfile = async (req, res, next) => {
     try {
-        if (!req.userId) return res.status(400).json({ message: "No se ha recibido un id para actualizar el usuario" })
+        if (!req.userId) return res.status(401).json({ message: "Usuario no loggeado" })
+
+        const { id } = req.params
+        if (!id) return res.status(400).json({ message: "No se ha recibido un id para actualizar el usuario" })
 
         const {
             userName, description, birthday, email, firstName, lastName,
@@ -68,7 +71,10 @@ export const updateProfile = async (req, res, next) => {
             viewExplicitContent, phone, gender, expoPushToken
         } = req.body;
 
-        const user = await User.findById(req.userId, { password: 0 })
+        if (!req.body) return res.status(400).json({ message: "No se ha recibido un body" })
+        console.log("req.body", req.body)
+
+        const user = await User.findById(id, { password: 0 })
 
         if (!user) return res.status(400).json({ message: "No se ha encontrado el usuario" })
 
