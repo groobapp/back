@@ -11,7 +11,7 @@ const router = Router()
 router.get('/profile', TokenValidator, getProfile)
 router.get('/profile/:id', TokenValidator, getProfileById)
 
-router.put('/profile', TokenValidator, updateProfile)
+router.put('/profile/:id', TokenValidator, updateProfile)
 
 router.put('/picture', TokenValidator,
     multer.fields([{ name: 'image', maxCount: 1 }]), pictureProfile)
