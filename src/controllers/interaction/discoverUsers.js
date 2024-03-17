@@ -1,26 +1,24 @@
 import Publication from '../../models/Publication.js'
 import User from '../../models/User.js'
 
-let previousRandomUsers = [];
+let offset = 0; // Variable para llevar el seguimiento del índice de inicio de la próxima página
+const pageSize = 20; // Tamaño de la página
+
 export const discoverUsers = async (req, res, next) => {
     try {
-        const allProfiles = await User.find();
-        if (allProfiles.length === 0) {
+        // Obtener la cantidad total de perfiles
+        const totalCount = await User.countDocuments();
+        if (totalCount === 0) {
             return res.status(404).json({ message: 'No hay usuarios disponibles.' });
         }
-        if (previousRandomUsers.length >= allProfiles.length) {
-            previousRandomUsers = [];
+
+        // Verificar si se ha alcanzado el límite de usuarios
+        if (offset >= totalCount) {
+            return res.status(200).json([]); // No hay más usuarios para enviar
         }
-        let randomUsers = [];
-        while (randomUsers.length < 20) {
-            const randomIndex = Math.floor(Math.random() * allProfiles.length);
-            const randomUser = allProfiles[randomIndex];
-            const isUserSelected = previousRandomUsers.some(user => user._id.toString() === randomUser._id.toString());
-            if (!isUserSelected) {
-                randomUsers.push(randomUser);
-                previousRandomUsers.push(randomUser);
-            }
-        }
+        // Obtener el siguiente lote de usuarios
+        const randomUsers = await User.find().skip(offset).limit(pageSize);
+        offset += pageSize; // Incrementar el offset para la próxima solicitud
         res.status(200).json(randomUsers);
     } catch (error) {
         console.error(error);
@@ -28,7 +26,6 @@ export const discoverUsers = async (req, res, next) => {
         next(error);
     }
 };
-
 export const discoverPostsWithImages = async (req, res, next) => {
     try {
         if (!req.userId) {
