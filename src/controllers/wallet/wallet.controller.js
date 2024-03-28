@@ -100,12 +100,7 @@ export const buyContentById = async (req, res, next) => {
         userBuyer.purchases.push(postId)
         postToBuy.buyers.push(userBuyer._id)
 
-        await userBuyer.save()
-        await postToBuy.save()
-        await walletBuyer.save()
-        await walletCreatorContent.save()
-
-
+        await Promise.all([userBuyer.save(), postToBuy.save(), walletBuyer.save(), walletCreatorContent.save()])
         res.status(200).json({ message: "Contenido desbloqueado!" })
     } catch (error) {
         res.status(500).json({ error: error });
