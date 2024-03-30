@@ -23,6 +23,41 @@ export const discoverUsers = async (req, res, next) => {
     }
 };
 
+let allProfiles2 = []; // Declara una variable para almacenar todos los perfiles
+let offset2 = 0; // Declara una variable para el offset
+const pageSize2 = 50; // Tamaño de la página
+
+export const discoverCreators = async (req, res, next) => {
+    try {
+        if (allProfiles2.length === 0 || offset2 >= allProfiles2.length) {
+
+            allProfiles2 = await User.find().limit(500);
+            offset2 = 0;
+        }
+
+        const randomUsers = allProfiles.slice(offset2, offset2 + pageSize2);
+        const randomUserIds = randomUsers.map(user => user._id);
+
+        const postsFromRandomUsers = await Publication.find({
+            userIdCreatorPost: { $in: randomUserIds },
+            price: { $gt: 0 }
+        });
+
+        const filteredPosts = postsFromRandomUsers.filter(post => {
+            return (post.images.length > 0 && post.checkExclusive);
+        });
+
+        const userIds = filteredPosts.map(post => post.userIdCreatorPost);
+        const filteredRandomUsers = randomUsers.filter(user => userIds.includes(user._id));
+        offset += pageSize; // Incrementar el offset para la próxima solicitud
+        res.status(200).json(filteredRandomUsers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener perfiles aleatorios' });
+        next(error);
+    }
+};
+
 export const discoverPostsWithImages = async (req, res, next) => {
     try {
         if (!req.userId) {
@@ -31,7 +66,7 @@ export const discoverPostsWithImages = async (req, res, next) => {
         }
         const allPublications = await Publication.find({}, {
             title: 0,
-            videos: 0,
+            video: 0,
             content: 0,
             likes: 0,
             liked: 0,
@@ -58,6 +93,40 @@ export const discoverPostsWithImages = async (req, res, next) => {
     }
 }
 
+export const discoverPostsWithVideos = async (req, res, next) => {
+    try {
+        if (!req.userId) {
+            res.status(500).json("Usuario no loggeado")
+            return
+        }
+        const allPublications = await Publication.find({}, {
+            title: 0,
+            videos: 0,
+            content: 0,
+            likes: 0,
+            liked: 0,
+            buyers: 0,
+            comments: 0,
+            denouncement: 0,
+        })
+
+        const filterByExplicitContentAndImages = allPublications.filter(post => {
+            if (post.video.length > 0 && post.video[0].secure_url !== undefined
+                && post.price === 0) {
+                return post;
+            }
+        })
+        const orderByDate = filterByExplicitContentAndImages.sort((a, b) => {
+            if (a.createdAt < b.createdAt) return 1;
+            return -1;
+        })
+
+        res.status(200).json(orderByDate)
+    } catch (error) {
+        console.log({ "message": error })
+        next(error)
+    }
+}
 
 export const discoverPostsWithTexts = async (req, res, next) => {
     try {
