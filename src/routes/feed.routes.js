@@ -23,7 +23,7 @@ router.get('/posts', TokenValidator, getAllPostsByFollowings)
 router.get('/posts-user', TokenValidator, getAllPostsByUser)
 router.get('/gallery-posts', TokenValidator, getAllPostsWithOutPriceByUser)
 router.get('/posts-user/:id', TokenValidator, getAllPostsByUserById)
-router.get('/post/:id', TokenValidator, getPostById)
+router.get('/post/:id', getPostById)
 
 router.delete('/post/:id', TokenValidator, deletePost)
 

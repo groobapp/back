@@ -146,6 +146,7 @@ export const getAllPostsByUserById = async (req, res, next) => {
 export const getPostById = async (req, res, next) => {
     try {
         const { id } = req.params
+        if (!id) return res.status(404).json({ message: 'No se ha recibido un ID.' });
         const post = await Publication.findById({ _id: id })
         res.status(200).json(post)
     } catch (error) {

@@ -25,6 +25,7 @@ export const getProfile = async (req, res, next) => {
 export const getProfileById = async (req, res, next) => {
     try {
         const { id } = req.params
+        if (!id) return res.status(404).json({ message: 'No se ha recibido un ID.' });
         const data = await User.findById(id, {
             password: 0,
             firstName: 0,
@@ -129,6 +130,9 @@ export const pictureProfile = async (req, res, next) => {
 
 export const deleteAccount = async (req, res, next) => {
     try {
+        if (!req.userId) {
+            return res.status(404).json({ message: 'No se ha iniciado sesión.' });
+        }
         const myUser = await User.findById({ _id: req.userId })
         if (!myUser) {
             return res.status(400).json("Usuario no encontrado")
