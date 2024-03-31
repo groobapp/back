@@ -26,7 +26,7 @@ export const getProfileById = async (req, res, next) => {
     try {
         const { id } = req.params
         if (!id) return res.status(404).json({ message: 'No se ha recibido un ID.' });
-        const data = await User.findById(id, {
+        const data = await User.findById({ _id: id }, {
             password: 0,
             firstName: 0,
             lastName: 0,

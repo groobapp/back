@@ -9,7 +9,7 @@ import multer from "../libs/multer.js"
 const router = Router()
 
 router.get('/profile', TokenValidator, getProfile)
-router.get('/profile/:id', TokenValidator, getProfileById)
+router.get('/profile/:id', getProfileById)
 
 router.put('/profile/:id', TokenValidator, updateProfile)
 
