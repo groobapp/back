@@ -2,7 +2,6 @@ import Message from "../../models/Message.js";
 import User from "../../models/User.js"
 import Chat from "../../models/Chat.js"
 import { transporter } from "../../libs/nodemailer.js";
-import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 export const addMessage = async (req, res, next) => {
     try {
@@ -25,7 +24,6 @@ export const addMessage = async (req, res, next) => {
         });
         
         res.status(200).json(result)
-        return closeConnectionInMongoose
 
     } catch (error) {
         console.error(error)
@@ -41,7 +39,6 @@ export const getMessages = async (req, res, next) => {
         const { chatId } = req.params
         const chat = await Message.find({ chatId })
         res.status(200).json({ chat, myId })
-        return closeConnectionInMongoose
 
     } catch (error) {
         console.log(error)

@@ -1,7 +1,6 @@
 import Publication from '../../models/Publication.js'
 import User from "../../models/User.js";
 import Comment from '../../models/Comment.js';
-import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 export const commentPost = async (req, res, next) => {
     try {
@@ -15,7 +14,6 @@ export const commentPost = async (req, res, next) => {
         post.comments.push({ value, userName })
         const updatedPost = await Publication.findByIdAndUpdate(id, post, { new: true })
         res.status(200).json(updatedPost)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });

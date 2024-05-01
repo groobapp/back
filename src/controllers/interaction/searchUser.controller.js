@@ -24,7 +24,7 @@ export const searchUser = async (req, res, next) => {
             // una vez realizada la búsqueda
             // el resultado de usuarios compararlo con mi lista de seguidos
             // ordenar y poner arriba primero a los que coincidan con esa lista
-            return res.status(200).json(result)
+            res.status(200).json(result)
         }
     } catch (error) {
         console.log(error)

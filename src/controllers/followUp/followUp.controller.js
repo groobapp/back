@@ -1,7 +1,6 @@
 import User from "../../models/User.js";
 import mongoose from "mongoose";
 
-const closeConnectionInMongoose = mongoose.connection.close();
 
 export const follow = async (req, res, next) => {
     try {
@@ -16,7 +15,6 @@ export const follow = async (req, res, next) => {
             userWithNewFollower.followers = userWithNewFollower.followers.concat(myUser?._id)
         }
         await userWithNewFollower.save()
-        closeConnectionInMongoose
         res.json(true)
 
     } catch (error) {
@@ -44,7 +42,6 @@ export const unfollow = async (req, res, next) => {
         await otherUser.save()
         
         res.json(true)
-        closeConnectionInMongoose
     }
     catch (error) {
         console.log(error)
@@ -70,7 +67,6 @@ export const getFollowers = async (req, res, next) => { // AL FIN ANDAA
                 }
             })
             res.json({ followersData })
-            closeConnectionInMongoose
         }
     } catch (error) {
         console.log(error)
@@ -96,7 +92,6 @@ export const getFollowings = async (req, res, next) => {
                 }
             })
             res.json({ followingsData })
-            closeConnectionInMongoose
         }
     } catch (error) {
         console.log(error)

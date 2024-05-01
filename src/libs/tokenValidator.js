@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 
 export const TokenValidator = async (req, res, next) => {
-    const token = req.header('authtoken')
+    const token = req.header('@authToken')
     if(!token) return res.status(401).json({
         error: "acceso denegado",
         auth: false,
@@ -12,7 +12,7 @@ export const TokenValidator = async (req, res, next) => {
         req.userId = payload._id
         next()
     } catch (error) {
-        res.status(401).json({ message: "Token is not valid" })
+        res.status(401).json({ message: "Token is not valid", error: error })
         next(error)
     }
 }

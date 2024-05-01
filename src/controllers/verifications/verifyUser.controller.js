@@ -2,7 +2,6 @@ import User from '../../models/User.js'
 import Publication from '../../models/Publication.js'
 import fs from "fs-extra"
 import { uploadImage } from "../../libs/cloudinary.js";
-import { closeConnectionInMongoose } from "../../libs/constants.js";
 
 export const frontDNI = async (req, res, next) => {
     try {
@@ -27,7 +26,6 @@ export const frontDNI = async (req, res, next) => {
             await Publication.updateMany({ userName: user.userName }, { profilePicture: pictureUpdated.secure_url})
             res.status(200).json({ pictureUpdated });
         }
-        return closeConnectionInMongoose
     } catch (error) {
         console.log("Error:", error)
         res.status(500).json(error)

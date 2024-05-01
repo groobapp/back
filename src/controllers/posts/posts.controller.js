@@ -2,7 +2,6 @@ import Publication from '../../models/Publication.js'
 import User from "../../models/User.js";
 import fs from "fs-extra"
 import { uploadImage, deleteImage, uploadVideo, deleteVideo } from "../../libs/cloudinary.js";
-import { closeConnectionInMongoose } from "../../libs/constants.js";
 // import { CreatePublicationType, GetOrDeletePublicationByIdType } from '../schemas/publications.schema'
 
 export const createPost = async (req, res, next) => {
@@ -45,7 +44,6 @@ export const createPost = async (req, res, next) => {
             await user.save()
         }
         res.status(201).json({ "success": true, publicationSaved })
-        closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
@@ -97,7 +95,6 @@ export const uploadVideoPost = async (req, res, next) => {
         }
         console.log(publicationSaved)
         res.status(201).json({ "success": true, publicationSaved })
-        closeConnectionInMongoose
     } catch (error) {
         console.log("hubo un error", error)
         res.status(400).json(error)
@@ -135,7 +132,6 @@ export const getAllPostsByUserById = async (req, res, next) => {
 
 
         res.status(200).json(filteredPosts)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });
@@ -177,7 +173,6 @@ export const deletePost = async (req, res, next) => {
         }
         await postInUser.save()
         res.status(200).json(`Publicación eliminada`)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });
@@ -196,7 +191,6 @@ export const commentPost = async (req, res, next) => {
         post.comments.push({ value, userName })
         const updatedPost = await Publication.findByIdAndUpdate(id, post, { new: true })
         res.status(200).json(updatedPost)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });
@@ -215,7 +209,6 @@ export const likePost = async (req, res, next) => {
         console.log(post.liked)
         console.log(post)
         res.status(200).json(post)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });
@@ -237,7 +230,6 @@ export const dislikePost = async (req, res, next) => {
         })
         await post.save()
         res.status(200).json(post.likes)
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });

@@ -13,7 +13,7 @@ export const postsRecomended = async (_req, res, next) => {
         })
         const noDuplicates = [...new Set(filterByPhoto.map(post => post._id))]
             .map(id => filterByPhoto.find(post => post._id === id));
-        return res.status(200).json(noDuplicates)
+        res.status(200).json(noDuplicates)
     } catch (error) {
         console.log(error)
         res.status(500).json({ "message": error })

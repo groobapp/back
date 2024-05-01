@@ -1,4 +1,3 @@
-import { closeConnectionInMongoose } from '../../libs/constants.js';
 import Chat from "../../models/Chat.js"
 import User from "../../models/User.js"
 
@@ -72,7 +71,6 @@ export const userChats = async (req, res, next) => {
         })
         res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture, myId, role })
 
-        return closeConnectionInMongoose
     } catch (error) {
         console.log(error)
         res.status(400).json({ error: error })
@@ -92,7 +90,6 @@ export const findChat = async (req, res, next) => {
         const user = await User.findById(req.params.secondId)
         const userName = user?.userName
         const profilePicture = user?.profilePicture?.secure_url
-        closeConnectionInMongoose
         res.status(200).json({ chat, userName, profilePicture, myId, myRole })
 
     } catch (error) {
@@ -109,7 +106,6 @@ export const deleteChat = async (req, res, next) => {
             members: { $all: [req.userId, req.params.secondId] }
         })
         // añadir la eliminación de todos los mensajes en el chat
-        closeConnectionInMongoose
         res.status(200).json("Chat deleted")
 
     } catch (error) {

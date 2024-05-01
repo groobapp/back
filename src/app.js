@@ -38,7 +38,7 @@ const app = express()
 
 
 var corsOptions = {
-    origin: ['https://groob.app', 'https://www.groob.app', 'http://localhost:8080', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
+    origin: ['https://groobi.app', 'https://www.groobi.app', 'http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: [

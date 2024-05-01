@@ -1,6 +1,5 @@
 import User from '../../models/User.js'
 import Publication from '../../models/Publication.js'
-import { closeConnectionInMongoose } from '../../libs/constants.js'
 
 export const postsWithPriceByUser = async (req, res, next) => {
     try {
@@ -23,7 +22,6 @@ export const postsWithPriceByUser = async (req, res, next) => {
             }
         })
         res.status(200).json(postsWithPrice)
-        return closeConnectionInMongoose;
     } catch (error) {
         console.log(error)
         res.status(500).json({ error: error });
@@ -61,7 +59,6 @@ export const postsWithPriceByUserId = async (req, res, next) => {
         //     console.log("almacenado en caché con redis", response)
         res.status(200).json(postsWithPrice)
         // }
-        return closeConnectionInMongoose;
     } catch (error) {
         console.log(error)
         res.status(500).send({ error: error });
