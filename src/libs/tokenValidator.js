@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 
 export const TokenValidator = async (req, res, next) => {
-    const token = req.header('@authToken')
+    const token = req.header('authToken')
     if(!token) return res.status(401).json({
         error: "acceso denegado",
         auth: false,
