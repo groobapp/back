@@ -2,13 +2,11 @@ import { v2 as cloudinary } from "cloudinary"
 import dotenv from 'dotenv'
 dotenv.config()
 
-cloudinary.config({
-    cloud_name: "dmdunpjti",
-    api_key: "356936875512432",
-    api_secret: "2orV4cVN0Lqmu5BPWY7PDuOkl4w",
-    secure: true,
-})
-
+cloudinary.config({ 
+  cloud_name: `${process.env.CLOUDINARY_CLOUD_NAME}`, 
+  api_key: `${process.env.CLOUDINARY_API_KEY}`, 
+  api_secret: `${CLOUDINARY_API_SECRET}`,
+});
 
 export async function uploadImage({ filePath }) {
     return await cloudinary.uploader.upload(filePath, {
