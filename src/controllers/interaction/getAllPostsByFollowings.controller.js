@@ -48,7 +48,6 @@ export const getAllPostsByFollowings = async (req, res, next) => {
         const noDuplicates = uniqueIds.map(id => postsByMyUser.find(post => post._id.toString() === id));
         const data = noDuplicates.sort((a, b) => b.createdAt - a.createdAt);
         res.status(200).json(data)
-        return;
     } catch (error) {
         console.log(error)
         res.status(400).json(error)
