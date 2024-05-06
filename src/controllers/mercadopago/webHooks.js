@@ -17,7 +17,7 @@ export const webHooks = async (req, res, next) => {
             const wallet = await Wallet.findOne({ user: compra.data.metadata.user_buyer })
 
             if (!wallet) {
-                res.status(400).json("No se ha encontrado una billetera")
+                return res.status(400).json("No se ha encontrado una billetera")
             }
             console.log("WALLET", wallet)
 

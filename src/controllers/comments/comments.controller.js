@@ -8,8 +8,12 @@ export const commentPost = async (req, res, next) => {
         const { value } = req.body
         const user = await User.findById(req.userId)
         const userName = user?.userName
-        if (value === undefined) res.status(400).json("El comentario no puede estar vacío")
-        if (value.length > 500) res.status(400).json("El comentario no puede superar los 500 caracteres")
+        if (value === undefined) {
+            return res.status(400).json("El comentario no puede estar vacío")
+        }
+        if (value.length > 500) {
+            return res.status(400).json("El comentario no puede superar los 500 caracteres")
+        }
         const post = await Publication.findById({ _id: id })
         post.comments.push({ value, userName })
         const updatedPost = await Publication.findByIdAndUpdate(id, post, { new: true })
