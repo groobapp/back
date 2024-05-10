@@ -18,7 +18,6 @@ export const signup = async (req, res, next) => {
         if (password.length >= 6 && password.length < 16) {
             const user = new User({ userName, password, email })
             user.password = await user.encryptPassword(user.password)
-            user.profilePicture.secure_url = "https://res.cloudinary.com/groob/image/upload/v1661108370/istoremovebg-preview_hzebg1.png"
             const userSaved = await user.save()
 
             const token = jwt.sign({ _id: userSaved._id }, `${process.env.TOKEN_KEY_JWT}`, {
