@@ -3,6 +3,8 @@ import User from "../../models/User.js"
 
 export const createChat = async (req, res, next) => {
     try {
+        const {recivedId, senderId} = req.body
+        console.log("id usuarios", {recivedId, senderId})
         const user = await User.findById(req.userId);
 
         if (!user) {
@@ -10,14 +12,14 @@ export const createChat = async (req, res, next) => {
         }
 
         const chat = await Chat.findOne({
-            members: { $all: [req.userId, req.body.recivedId] }
+            members: { $all: [req.userId, recivedId] }
         });
 
         if (chat) {
             return res.status(200).json({ message: "El chat ya existe:", chat });
         }
 
-        const newChat = new Chat({ members: [req.body.senderId, req.body.recivedId] });
+        const newChat = new Chat({ members: [senderId, recivedId] });
         const result = await newChat.save();
         const chatId = result._id;
 
@@ -27,7 +29,7 @@ export const createChat = async (req, res, next) => {
         res.status(200).json(result);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Ha ocurrido un error al crear el chat" });
+        res.status(500).json({ error: "Ha ocurrido un error al crear el chat", error });
         next(error);
     }
 }
