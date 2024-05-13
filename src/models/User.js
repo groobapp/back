@@ -44,6 +44,9 @@ const userSchema = new Schema({
   denouncement: [],
   gender: { type: String, default: "Other" },
   receiveVideocall: { type: Boolean, default: false },
+  priceVideocall: {
+    type: Number, required: false
+  },
   monetizationActive: { type: Boolean, default: false },
   viewExplicitContent: { type: Boolean, default: false },
   verificationPay: { type: Boolean, default: false },
