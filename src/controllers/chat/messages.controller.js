@@ -7,18 +7,20 @@ export const addMessage = async (req, res, next) => {
     try {
         const { chatId, senderId, text } = req.body
         const newMessage = new Message({ chatId, senderId, text })
+
         const result = await newMessage.save()
         const chat = await Chat.findById(chatId)
+
         if (chat !== undefined) {
             chat.messages = chat.messages.concat(text)
         }
         await chat.save()
-        const reciverId = chat?.members[1]
+        const reciverId = chat?.members[0]
         const userReciverId = await User.findById(reciverId)
         await transporter.sendMail({
             from: 'joeljuliandurand@gmail.com', 
             to: `${userReciverId?.email}`, 
-            subject: `Groob: ¡Tenés nuevos mensajes!`, 
+            subject: `Groobi: ¡Tenés nuevos mensajes!`, 
             text: `Hola ${userReciverId?.userName} tenés nuevos mensajes, ingresá para verlo.`, 
             // html: "<b>Hello world?</b>", // html body
         });

@@ -41,12 +41,8 @@ export const userChats = async (req, res, next) => {
         const chats = await Chat.find({
             members: { $in: [req.userId] }
         })
-
-
         const userName = user?.userName
         const profilePicture = user?.profilePicture?.secure_url
-        const myId = user._id.toString()
-        const role = user?.role
         const usersInMyChat = chats.map(obj => obj.members).flat()
         const usersId = usersInMyChat.filter(member => member !== myId)
 
@@ -68,10 +64,10 @@ export const userChats = async (req, res, next) => {
                 id: user._id.toString(),
                 userName: user.userName,
                 profilePicture: user.profilePicture.secure_url,
-                // updatedAt: user.updatedAt,
+                updatedAt: user.updatedAt,
             }
         })
-        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture, myId, role })
+        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture })
 
     } catch (error) {
         console.log(error)
@@ -83,16 +79,13 @@ export const userChats = async (req, res, next) => {
 
 export const findChat = async (req, res, next) => {
     try {
-        const myUser = await User.findById(req.userId)
-        const myRole = myUser?.role
-        const myId = req.userId?.toString()
         const chat = await Chat.findOne({
             members: { $all: [req.userId, req.params.secondId] }
         })
         const user = await User.findById(req.params.secondId)
         const userName = user?.userName
         const profilePicture = user?.profilePicture?.secure_url
-        res.status(200).json({ chat, userName, profilePicture, myId, myRole })
+        res.status(200).json({ chat, userName, profilePicture})
 
     } catch (error) {
         console.log(error)
