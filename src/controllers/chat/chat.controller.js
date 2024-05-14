@@ -69,6 +69,7 @@ export const userChats = async (req, res, next) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Ha ocurrido un error al procesar los chats", errorDetail: error });
+        next(error)
     }
 };
 
