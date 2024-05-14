@@ -37,44 +37,44 @@ export const createChat = async (req, res, next) => {
 
 export const userChats = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId)
+        const user = await User.findById(req.userId);
         const chats = await Chat.find({
             members: { $in: [req.userId] }
-        })
-        const userName = user?.userName
-        const profilePicture = user?.profilePicture?.secure_url
-        const usersInMyChat = chats.map(obj => obj.members).flat()
-        const usersId = usersInMyChat.filter(member => member !== myId)
+        });
+        const usersInMyChat = chats.map(obj => obj.members).flat();
+        const usersId = usersInMyChat.filter(member => member !== user._id);
 
-        const allMyChats = await User.find({ // busco los usuarios con los que tengo chats
+        const allMyChats = await User.find({
             _id: {
                 $in: usersId
             }
-        })
+        });
 
-        const chatIdAndUserId = chats.map(user => { // para saber con quien es el chat
+        const chatIdAndUserId = chats.map(user => {
             return {
                 id: user._id.toString(),
                 member: user.members,
             }
-        })
+        });
 
-        const usersDataInTheChat = allMyChats.map(user => { // para renderizar los datos
+        const usersDataInTheChat = allMyChats.map(user => {
             return {
                 id: user._id.toString(),
                 userName: user.userName,
                 profilePicture: user.profilePicture.secure_url,
                 updatedAt: user.updatedAt,
             }
-        })
-        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, userName, profilePicture })
+        });
+        res.status(200).json({ chatIdAndUserId, usersDataInTheChat });
 
     } catch (error) {
-        console.log(error)
-        res.status(400).json({ error: error })
-        next(error)
+        console.log(error);
+        res.status(400).json({ error: error });
+        // Eliminar la siguiente línea si no hay más middleware de error que necesite procesar este error.
+        // next(error);
     }
-}
+};
+
 
 
 export const findChat = async (req, res, next) => {
