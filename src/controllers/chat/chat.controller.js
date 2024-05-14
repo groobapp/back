@@ -59,7 +59,7 @@ export const userChats = async (req, res, next) => {
                 chatId: chat._id.toString(),
                 id: user._id.toString(),
                 userName: user.userName,
-                profilePicture: user.profilePicture.secure_url,
+                profilePicture: user.profilePicture.secure_url || null,
                 updatedAt: user.updatedAt,
             };
         });
@@ -82,7 +82,7 @@ export const findChat = async (req, res, next) => {
         })
         const user = await User.findById(req.params.secondId)
         const userName = user?.userName
-        const profilePicture = user?.profilePicture?.secure_url
+        const profilePicture = user?.profilePicture?.secure_url || null
         res.status(200).json({ chat, userName, profilePicture})
 
     } catch (error) {
