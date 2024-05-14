@@ -38,40 +38,37 @@ export const createChat = async (req, res, next) => {
 export const userChats = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+
         const chats = await Chat.find({
             members: { $in: [req.userId] }
-        });
-        const usersInMyChat = chats.map(obj => obj.members).flat();
-        const usersId = usersInMyChat.filter(member => member !== user._id);
+        }).lean();
+
+        const usersId = [...new Set(chats.flatMap(chat => chat.members.filter(member => member !== req.userId)))];
 
         const allMyChats = await User.find({
-            _id: {
-                $in: usersId
-            }
-        });
-
-        const chatIdAndUserId = chats.map(user => {
-            return {
-                id: user._id.toString(),
-                member: user.members,
-            }
-        });
+            _id: { $in: usersId }
+        }).lean();
 
         const usersDataInTheChat = allMyChats.map(user => {
+            const chat = chats.find(chat => chat.members.includes(user._id.toString()));
             return {
+                chatId: chat._id.toString(),
                 id: user._id.toString(),
                 userName: user.userName,
                 profilePicture: user.profilePicture.secure_url,
                 updatedAt: user.updatedAt,
-            }
+            };
         });
-        res.status(200).json({ chatIdAndUserId, usersDataInTheChat });
+
+        res.status(200).json({ usersDataInTheChat });
 
     } catch (error) {
-        console.log(error);
-        res.status(400).json({ error: error });
-        // Eliminar la siguiente línea si no hay más middleware de error que necesite procesar este error.
-        // next(error);
+        console.error(error);
+        res.status(500).json({ error: "Ha ocurrido un error al procesar los chats", errorDetail: error });
     }
 };
 
