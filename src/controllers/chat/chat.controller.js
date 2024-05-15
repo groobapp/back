@@ -46,12 +46,15 @@ export const userChats = async (req, res, next) => {
         const chats = await Chat.find({
             members: { $in: [req.userId] }
         }).lean();
+        console.log("1 chats", chats)
 
         const usersId = [...new Set(chats.flatMap(chat => chat.members.filter(member => member !== req.userId)))];
 
         const allMyChats = await User.find({
             _id: { $in: usersId }
         }).lean();
+
+        console.log("2 allMyChats", allMyChats)
 
         const usersDataInTheChat = allMyChats.map(user => {
             const chat = chats.find(chat => chat.members.includes(user._id.toString()));
@@ -60,10 +63,12 @@ export const userChats = async (req, res, next) => {
                 id: user._id.toString(),
                 userName: user.userName,
                 profilePicture: user.profilePicture.secure_url || null,
+                receiveVideocall: user.receiveVideocall,
                 updatedAt: user.updatedAt,
             };
         });
 
+        console.log("3 usersDataInTheChat", usersDataInTheChat)
         res.status(200).json({ usersDataInTheChat });
 
     } catch (error) {
