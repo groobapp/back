@@ -35,49 +35,51 @@ export const createChat = async (req, res, next) => {
 }
 
 
+
 export const userChats = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId);
-
-        if (!user) {
-            return res.status(404).json({ message: "Usuario no encontrado" });
-        }
-
+        const user = await User.findById(req.userId)
         const chats = await Chat.find({
             members: { $in: [req.userId] }
-        }).lean();
-        console.log("1 chats", chats)
+        })
 
-        const usersId = [...new Set(chats.flatMap(chat => chat.members.filter(member => member !== req.userId)))];
+        const usersInMyChat = chats.map(obj => obj.members).flat()
+        const usersId = usersInMyChat.filter(member => member !== user._id)
 
-        const allMyChats = await User.find({
-            _id: { $in: usersId }
-        }).lean();
+        const usersExistingOnAllMyChats = await User.find({ // busco los usuarios con los que tengo chats
+            _id: {
+                $in: usersId
+            }
+        })
+        console.log("1 usersExistingOnAllMyChats", usersExistingOnAllMyChats)
 
-        console.log("2 allMyChats", allMyChats)
-
-        const usersDataInTheChat = allMyChats.map(user => {
-            const chat = chats.find(chat => chat.members.includes(user._id.toString()));
+        const chatIdAndUserId = chats.map(user => { // para saber con quien es el chat
             return {
-                chatId: chat._id.toString(),
+                id: user._id.toString(),
+                member: user.members,
+            }
+        })
+        console.log("2 chatIdAndUserId", chatIdAndUserId)
+
+        const usersDataInTheChat = usersExistingOnAllMyChats.map(user => { // para renderizar los datos
+            return {
                 id: user._id.toString(),
                 userName: user.userName,
-                profilePicture: user.profilePicture.secure_url || null,
+                profilePicture: user.profilePicture.secure_url,
                 receiveVideocall: user.receiveVideocall,
                 updatedAt: user.updatedAt,
-            };
-        });
+            }
+        })
+        console.log("3 usersDataInTheChat", chatIdAndUserId)
 
-        console.log("3 usersDataInTheChat", usersDataInTheChat)
-        res.status(200).json({ usersDataInTheChat });
+        res.status(200).json({ chatIdAndUserId, usersDataInTheChat, })
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Ha ocurrido un error al procesar los chats", errorDetail: error });
+        console.log(error)
+        res.status(400).json({ message: "Error al obtener el listado de chats", error: error })
         next(error)
     }
-};
-
+}
 
 
 export const findChat = async (req, res, next) => {
