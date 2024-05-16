@@ -51,9 +51,7 @@ export const userChats = async (req, res, next) => {
                 $in: usersId
             }
         });
-        console.log("1 usersExistingOnAllMyChats", usersExistingOnAllMyChats);
 
-        // Crear un mapa para asociar cada usuario con sus respectivos chats
         const userIdToChatsMap = {};
         chats.forEach(chat => {
             chat.members.forEach(memberId => {
@@ -64,23 +62,16 @@ export const userChats = async (req, res, next) => {
             });
         });
 
-        const chatIdAndUserId = chats.map(chat => ({
-            id: chat._id.toString(),
-            member: chat.members,
-        }));
-        console.log("2 chatIdAndUserId", chatIdAndUserId);
-
         const usersDataInTheChat = usersExistingOnAllMyChats.map(user => ({
             id: user._id.toString(),
             userName: user.userName,
-            profilePicture: user.profilePicture?.secure_url, // Asumiendo que profilePicture puede ser undefined
+            profilePicture: user.profilePicture?.secure_url || null, 
             receiveVideocall: user.receiveVideocall,
             updatedAt: user.updatedAt,
             chatIds: userIdToChatsMap[user._id.toString()] || [] // Añadir los IDs de chat encontrados
         }));
-        console.log("3 usersDataInTheChat", usersDataInTheChat);
 
-        res.status(200).json({ chatIdAndUserId, usersDataInTheChat });
+        res.status(200).json(usersDataInTheChat);
 
     } catch (error) {
         console.log(error);
