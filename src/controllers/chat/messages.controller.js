@@ -1,36 +1,48 @@
-import Message from "../../models/Message.js";
 import User from "../../models/User.js"
 import Chat from "../../models/Chat.js"
 import { transporter } from "../../libs/nodemailer.js";
 
 export const addMessage = async (req, res, next) => {
     try {
-        const { chatId, senderId, text } = req.body
-        const newMessage = new Message({ chatId, senderId, text })
+        const { chatId, senderId, text, remitterId } = req.body;
 
-        const result = await newMessage.save()
-        const chat = await Chat.findById(chatId)
+        const newMessage = {
+            sender: {
+                senderId,
+                texts: [{ text, date: new Date() }]
+            },
+            remitter: {
+                remitterId,
+                texts: [{ text, date: new Date() }]
+            }
+        };
 
-        if (chat !== undefined) {
-            chat.messages = chat.messages.concat(text)
+        const updatedChat = await Chat.findByIdAndUpdate(
+            chatId,
+            { $push: { messages: newMessage } },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedChat) {
+            return res.status(404).json({ error: 'Chat not found' });
         }
-        await chat.save()
-        const reciverId = chat?.members[0]
-        const userReciverId = await User.findById(reciverId)
-        await transporter.sendMail({
-            from: 'joeljuliandurand@gmail.com', 
-            to: `${userReciverId?.email}`, 
-            subject: `Groobi: ¡Tenés nuevos mensajes!`, 
-            text: `Hola ${userReciverId?.userName} tenés nuevos mensajes, ingresá para verlo.`, 
-            // html: "<b>Hello world?</b>", // html body
-        });
-        
-        res.status(200).json(result)
+
+        const receiver = await User.findById(remitterId);
+        if (receiver) {
+            await transporter.sendMail({
+                from: 'joeljuliandurand@gmail.com',
+                to: `${receiver.email}`,
+                subject: `Groobi: ¡Tienes nuevos mensajes!`,
+                text: `Hola ${receiver.userName}, tienes nuevos mensajes, ingresa para verlos.`,
+            });
+        }
+
+        res.status(200).json(newMessage);
 
     } catch (error) {
-        console.error(error)
-        res.status(500).json({error: error})
-        next(error)
+        console.error(error);
+        res.status(500).json({ error: error.message });
+        next(error);
     }
 }
 
