@@ -30,13 +30,13 @@ export const signup = async (req, res, next) => {
             userSaved.wallet = walletSaved._id;
             await userSaved.save();
 
-            await transporter.sendMail({
-                from: 'joeljuliandurand@gmail.com',
-                to: `${email}`,
-                subject: `Hola ${userName}, registro exitoso!`,
-                text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand. Ante cualquier duda puedes consultar por este medio.", // plain text body
-                // html: "<b>Hello world?</b>", // html body
-            });
+            // await transporter.sendMail({
+            //     from: 'joeljuliandurand@gmail.com',
+            //     to: `${email}`,
+            //     subject: `Hola ${userName}, registro exitoso!`,
+            //     text: "Gracias por registrarte. Groob es una plataforma creada por Joel Durand. Ante cualquier duda puedes consultar por este medio.", // plain text body
+            //     // html: "<b>Hello world?</b>", // html body
+            // });
             res.status(200).json({ token })
         }
 
