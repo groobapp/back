@@ -10,11 +10,10 @@ const router = Router()
 router.post('/post', TokenValidator, multer.fields([{
     name: 'images',
     maxCount: 7
-}]), createPost)
-router.post('/video-post', TokenValidator, multer.fields([{
+}, {   
     name: 'video',
     maxCount: 1
-}]), uploadVideoPost)
+}]), createPost)
 router.post('/like/:id', TokenValidator, likePost)
 router.post('/dislike/:id', TokenValidator, dislikePost)
 router.post('/comment-post', TokenValidator, commentPost)
