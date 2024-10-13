@@ -36,6 +36,20 @@ export const createPost = async (req, res, next) => {
                 }
             }
             publication.images = data
+            const video = req.files['video']
+            console.log("VIDEO FILE: ", video)
+            const videoData = [];
+
+            if (video) {
+                for (const file of video) {
+                    const result = await uploadVideo({ filePath: file.path })
+                    console.log("result", result)
+
+                    videoData.push({ public_id: result.public_id, secure_url: result.secure_url })
+                    await fs.unlink(video[0].path)
+                }
+            }
+            publication.video = videoData
         }
         const publicationSaved = await publication.save()
         const postIdForTheUser = publicationSaved?._id
