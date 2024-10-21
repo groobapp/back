@@ -33,7 +33,7 @@ export const notification = async (req, res, next) => {
                     date: new Date(),
                     read: false,
                 };
-                await addNotification(post.user, notificationData);
+                await addNotification(post.userIdCreatorPost, notificationData);
             }
         }
 
@@ -48,7 +48,7 @@ export const notification = async (req, res, next) => {
                     date: new Date(),
                     read: false,
                 };
-                await addNotification(post.user, notificationData);
+                await addNotification(post.userIdCreatorPost, notificationData);
             }
         }
 
