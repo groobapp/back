@@ -37,6 +37,7 @@ export const getProfileById = async (req, res, next) => {
             notifications: 0,
             phone: 0,
         })
+        if(!data) return res.status(404).json({ message: 'No se encontrado el usuario' });
 
         // if (profileData && myId) {
         //     profileData.visits = profileData.visits.concat(myId)
