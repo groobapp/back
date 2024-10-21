@@ -89,28 +89,28 @@ export const getNotificationsLength = async (req, res, next) => {
         const user = await User.findById(req.userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const unreadNotifications = user.notifications.filter(notification => !notification.read);
-        res.status(200).json(unreadNotifications.length);
+        const unreadCount = user.notifications.filter(notification => !notification.read).length;
+        res.status(200).json(unreadCount);
     } catch (error) {
         console.error(error);
         next(error);
     }
 };
 
+
 export const getNotifications = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const unreadNotifications = user.notifications
-            .filter(notification => !notification.read)
-            .sort((a, b) => b.date - a.date); 
-        res.status(200).json(unreadNotifications);
+        const notifications = user.notifications.sort((a, b) => b.date - a.date);
 
         user.notifications.forEach(notification => {
             notification.read = true;
         });
+
         await user.save();
+        res.status(200).json(notifications);
     } catch (error) {
         console.error(error);
         next(error);
