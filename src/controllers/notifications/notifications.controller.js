@@ -1,113 +1,118 @@
 import Publication from "../../models/Publication.js"
 import User from "../../models/User.js"
 
+const addNotification = async (userId, notificationData) => {
+    const user = await User.findById(userId);
+    if (user) {
+        user.notifications.push(notificationData);
+        await user.save();
+    }
+};
+
+
+
 export const notification = async (req, res, next) => {
     try {
-        const { postCommentedId, postLikedId, userFollowId, userUnfollowId } = req.body
+        const { postCommentedId, postLikedId, userFollowId, userUnfollowId } = req.body;
 
-        const myUser = await User.findById(req.userId)
-        const myUserId = myUser?._id.toString()
-        const profilePic = myUser?.profilePicture.secure_url
-        const userName = myUser?.userName
+        const myUser = await User.findById(req.userId);
+        if (!myUser) return res.status(404).json({ message: 'User not found' });
+
+        const myUserId = myUser._id.toString();
+        const profilePic = myUser.profilePicture.secure_url;
+        const userName = myUser.userName;
 
         if (postCommentedId) {
-            const post = await Publication.findById({ _id: postCommentedId })
-            const userId = post?.user
-            const user = await User.findById({ _id: userId })
-            user.notifications = user.notifications.concat({
-                userName: userName,
-                profilePic: profilePic,
-                event: "ha dejado un comentario",
-                link: post._id,
-                date: new Date(),
-                read: false,
-            })
-            await user.save()
+            const post = await Publication.findById(postCommentedId);
+            if (post) {
+                const notificationData = {
+                    userName,
+                    profilePic,
+                    event: "ha dejado un comentario",
+                    link: post._id,
+                    date: new Date(),
+                    read: false,
+                };
+                await addNotification(post.user, notificationData);
+            }
         }
-        if (postLikedId) {
-            const post = await Publication.findById({ _id: postLikedId })
-            const userId = post?.user
-            const user = await User.findById({ _id: userId })
-            user.notifications = user.notifications.concat({
-                profilePic: profilePic,
-                userName: userName,
-                event: "le ha gustado tu post",
-                link: post._id,
-                date: new Date(),
-                read: false,
 
-            })
-            await user.save()
+        if (postLikedId) {
+            const post = await Publication.findById(postLikedId);
+            if (post) {
+                const notificationData = {
+                    userName,
+                    profilePic,
+                    event: "le ha gustado tu post",
+                    link: post._id,
+                    date: new Date(),
+                    read: false,
+                };
+                await addNotification(post.user, notificationData);
+            }
         }
+
         if (userFollowId) {
-            const user = await User.findById({ _id: userFollowId })
-            user.notifications = user.notifications.concat({
-                profilePic: profilePic,
-                userName: userName,
+            const notificationData = {
+                userName,
+                profilePic,
                 event: "te ha seguido!",
                 link: myUserId,
                 date: new Date(),
                 read: false,
-            })
-            await user.save()
+            };
+            await addNotification(userFollowId, notificationData);
         }
+
         if (userUnfollowId) {
-            const user = await User.findById({ _id: userUnfollowId })
-            user.notifications = user.notifications.concat({
-                userName: userName,
-                profilePic: profilePic,
+            const notificationData = {
+                userName,
+                profilePic,
                 event: "ya no te sigue.",
                 link: myUserId,
                 date: new Date(),
                 read: false,
-            })
-            await user.save()
+            };
+            await addNotification(userUnfollowId, notificationData);
         }
-        res.status(200).send({ message: 'Success' })
+
+        res.status(200).json({ message: 'Success' });
     } catch (error) {
-        console.log(error)
-        next(error)
+        console.error(error);
+        next(error);
     }
-}
+};
+
 
 export const getNotificationsLength = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId)
-        const notifications = user?.notifications.filter(notification => {
-            if (notification.read === false) {
-                return notification
-            }
-        })
-        if (notifications.length > 0) {
-            res.status(200).json(notifications.length)
-        }
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const unreadNotifications = user.notifications.filter(notification => !notification.read);
+        res.status(200).json(unreadNotifications.length);
     } catch (error) {
-        console.log(error)
-        next()
+        console.error(error);
+        next(error);
     }
-}
+};
 
 export const getNotifications = async (req, res, next) => {
     try {
-        const user = await User.findById(req.userId)
-        const notifications = user?.notifications
-        const notificationsSorted = notifications.filter(notification => {
-            if (notification.read === false) {
-                return notification
-            }
-        }).sort((a, b) => {
-            if (a.date - b.date) return 1;
-            return -1;
-        })
-        console.log(notificationsSorted)
-        res.status(200).json(notificationsSorted)
-        const notificationsRead = user.notifications.map(notification => {
-            notification.read = true
-        })
-        console.log("notificaciones leidas deben estar en true", notificationsRead)
-        await user.save()
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const unreadNotifications = user.notifications
+            .filter(notification => !notification.read)
+            .sort((a, b) => b.date - a.date); 
+        res.status(200).json(unreadNotifications);
+
+        user.notifications.forEach(notification => {
+            notification.read = true;
+        });
+        await user.save();
     } catch (error) {
-        console.log(error)
-        next()
+        console.error(error);
+        next(error);
     }
-}
+};
