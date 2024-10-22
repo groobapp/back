@@ -23,22 +23,32 @@ dotenv.config()
 
 // Inicialization
 const app = express()
-// const server = http.createServer(app)
+const server = http.createServer(app)
 
-// // export instance for new sockets in endpoints
-// const io = new SocketServer(server, {
-//     cors: {
-//         origin: ['http://localhost:19000', 'http://localhost:19006', 'https://groob.app', 'https://www.groob.app'],
-//         methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//         credentials: true,
-//         optionsSuccessStatus: 200,
-
-//     }
-// })
+// export instance for new sockets in endpoints
+const io = new SocketServer(server, {
+    cors: {
+        origin:  ['http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        credentials: true,
+        optionsSuccessStatus: 200,
+        allowedHeaders: [
+            'Origin',
+            'X-Requested-With',
+            'Content-Type',
+            'Access-Control-Allow-Origin',
+            'Access-Control-Allow-Headers',
+            'Access-Control-Allow-Credentials',
+            'Accept',
+            'X-Access-Token',
+            'authtoken'
+        ],
+    }
+})
 
 
 var corsOptions = {
-    origin: ['https://groobi.app', 'https://www.groobi.app', 'http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
+    origin: ['http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
@@ -81,6 +91,9 @@ app.use(moderationRoute)
 app.use(notificationsRoute)
 app.use(adminRoute)
 
+// WebSocket con Socket.io
+app.set('websocket', io);
+
 const errorHandler = (error, req, res, next) => {
     console.error(error)
     res.status(500).json(`Algo ha salido mal: ${error}`)
@@ -93,28 +106,23 @@ app.use('/uploads', express.static(path.resolve('uploads')));
 // const {pathname: root} = new URL('public', import.meta.url)
 // app.use(express.static(path.join(__dirname, 'public')))
 
+io.on('connection', (socket) => { 
+    console.log("conectado dentro de io", {socket: socket})
+    socket.emit("usuario conectado", "hola")
+    socket.on("enviar-mensaje", (message) => {
+        console.log(message, socket.id)
 
+        socket.broadcast.emit("mensaje-desde-server", message) //manda a todos menos a mi
+    })
+    socket.on("escribiendo", () => {
 
+        socket.broadcast.emit("escribiendo-desde-server") //manda a todos menos a mi
+    })
 
-// global.onlineUsers = new Map()
-
-// io.on('connection', (socket) => { // conexión del WebSocket.
-//     global.chatSocket = socket
-
-//     socket.on("enviar-mensaje", (message) => {
-//         console.log(message, socket.id)
-
-//         socket.broadcast.emit("mensaje-desde-server", message) //manda a todos menos a mi
-//     })
-//     socket.on("escribiendo", () => {
-
-//         socket.broadcast.emit("escribiendo-desde-server") //manda a todos menos a mi
-//     })
-
-//     socket.on('disconnect', () => {
-//         console.log('Cliente desconectado:', socket.id);
-//     });
-// })
+    socket.on('disconnect', () => {
+        console.log('Cliente desconectado:', socket.id);
+    });
+})
 
 
 
