@@ -5,40 +5,23 @@ const chatSchema = new Schema({
         type: [String]
     },
     messages: [{
-        sender: {
-            senderId: {
-                type: String,
-                required: true
-            },
-            texts: [{
-                text: {
-                    type: String,
-                    required: true
-                },
-                date: {
-                    type: Date,
-                    default: Date.now
-                }
-            }]
+        senderId: {
+            type: String,
+            required: true
         },
-        remitter: {
-            remitterId: {
-                type: String,
-                required: false,
-                trim: true
-            },
-            texts: [{
-                text: {
-                    type: String,
-                    required: false
-                },
-                date: {
-                    type: Date,
-                    default: Date.now
-                }
-            }]
+        remitterId: {
+            type: String,
+            required: true
+        },
+        text: {
+            type: String,
+            required: true
+        },
+        date: {
+            type: Date,
+            default: Date.now
         }
-    }],
+    }],    
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
