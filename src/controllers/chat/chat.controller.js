@@ -38,6 +38,7 @@ export const createChat = async (req, res, next) => {
 
 export const userChats = async (req, res, next) => {
     try {
+
         const user = await User.findById(req.userId);
         const chats = await Chat.find({
             members: { $in: [req.userId] }
@@ -68,7 +69,7 @@ export const userChats = async (req, res, next) => {
             profilePicture: user.profilePicture?.secure_url || null, 
             receiveVideocall: user.receiveVideocall,
             updatedAt: user.updatedAt,
-            chatIds: userIdToChatsMap[user._id.toString()] || [] // Añadir los IDs de chat encontrados
+            chatIds: userIdToChatsMap[user._id.toString()] || [] 
         }));
 
         res.status(200).json(usersDataInTheChat);
@@ -83,6 +84,9 @@ export const userChats = async (req, res, next) => {
 
 
 export const findChat = async (req, res, next) => {
+    // Recibe el segundo id como params, que es quien recibe los msjs
+    // Con esos datos se pinta el Header de la conversación
+    // y se renderizan los msjs
     try {
         const chat = await Chat.findOne({
             members: { $all: [req.userId, req.params.secondId] }

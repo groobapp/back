@@ -2,7 +2,7 @@ import Chat from "../../models/Chat.js"
 
 export const addMessage = async (req, res, next) => {
     try {
-        const { chatId, senderId, text, remitterId } = req.body;
+        const { chatId, senderId, remitterId, text } = req.body;
 
         const newMessage = {
             senderId,
