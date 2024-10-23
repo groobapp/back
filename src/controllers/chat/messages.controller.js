@@ -8,7 +8,8 @@ export const addMessage = async (req, res, next) => {
             senderId,
             remitterId,
             text,
-            date: new Date()
+            date: new Date(),
+            read: false
         };
 
         const updatedChat = await Chat.findByIdAndUpdate(
@@ -40,6 +41,10 @@ export const getMessages = async (req, res, next) => {
         }
 
         const messages = chat.messages;
+        chat.messages.forEach(message => {
+            message.read = true;
+        });
+        await chat.save()
         const myId = req.userId?.toString();
         
         res.status(200).json({ messages, myId });

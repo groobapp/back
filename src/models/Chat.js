@@ -20,6 +20,10 @@ const chatSchema = new Schema({
     date: {
         type: Date,
         default: Date.now
+    },
+    read: {
+        type: Boolean,
+        default: false
     }
 }, { _id: false }],
     user: {
