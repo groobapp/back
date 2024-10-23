@@ -47,7 +47,7 @@ const userSchema = new Schema({
   priceVideocall: {
     type: Number, required: false
   },
-  receivePaidMessages: { type: Boolean, default: false },
+  receivePaidMessage: { type: Boolean, default: false },
   priceMessage: {
     type: Number, required: false, default: 1
   },
