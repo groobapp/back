@@ -11,10 +11,14 @@ import Wallet from '../../models/Wallet.js';
 
 export const getProfile = async (req, res, next) => {
     try {
+        if (!req.userId) {
+            return res.status(400).json({ message: 'User ID is missing' });
+        }
         const io = req.app.get('websocket');
         if(!io) {
             console.error("No se logró obtener la instancia *websocket*")
         }
+        console.log("instancia io de socket io parece funcionar")
         const profileData = await User.findById(req.userId, { password: 0, notifications: 0, chats: 0, visits: 0 })
         res.status(200).json(profileData)
 
