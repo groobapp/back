@@ -109,6 +109,15 @@ export const buyContentById = async (req, res, next) => {
     }
 }
 
+export const sendPaidMessage = () => {
+    // Primero obtengo el usuario al que se quiere enviar el mensaje
+    // Verifico si tiene activa la monetización de mensajes
+    // En caso de que no, pasa directamente a enviarse.
+    // En caso de que sí:
+    // - Busco mi usuario y traigo la wallet
+    // - Compruebo el balance
+}
+
 export const getWallet = async (req, res, next) => {
     try {
         if (!req.userId) return res.status(401).json("No ha iniciado sesión")

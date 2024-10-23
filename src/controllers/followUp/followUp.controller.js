@@ -79,7 +79,7 @@ export const getFollowings = async (req, res, next) => {
         const myUser = await User.findById(req.userId)
         if (myUser !== undefined) {
             let allMyIds = myUser.followings.map((id) => id)
-            const result = await User.find({ // retorna un array con los seguidores (objetos con data)
+            const result = await User.find({ 
                 _id: {
                     $in: allMyIds
                 }

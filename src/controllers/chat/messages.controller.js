@@ -9,12 +9,14 @@ export const addMessage = async (req, res, next) => {
             remitterId,
             text,
             date: new Date(),
-            read: false
         };
-
+        const chat = await Chat.findById(chatId)
+        if(!chat) {
+            return res.status(404).json({ error: 'Chat no encontrado' });
+        }
         const updatedChat = await Chat.findByIdAndUpdate(
             chatId,
-            { $push: { messages: newMessage } },
+            { $push: { messages: newMessage, messagesUnread: chat.messagesUnread + 1 } },
             { new: true, runValidators: true }
         );
 
@@ -37,7 +39,7 @@ export const getMessages = async (req, res, next) => {
         const { chatId } = req.params;
         const chat = await Chat.findById(chatId);
         if (!chat) {
-            return res.status(404).json({ error: 'Chat not found' });
+            return res.status(404).json({ error: 'Chat no encontrado' });
         }
 
         const messages = chat.messages;

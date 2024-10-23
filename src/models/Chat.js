@@ -16,16 +16,13 @@ const chatSchema = new Schema({
     text: {
         type: String,
         required: true
+    }}, { 
+    _id: false
+     }],
+    messagesUnread: {
+        type: Number,
+        default: 0
     },
-    date: {
-        type: Date,
-        default: Date.now
-    },
-    read: {
-        type: Boolean,
-        default: false
-    }
-}, { _id: false }],
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
