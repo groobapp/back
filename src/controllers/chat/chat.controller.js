@@ -93,8 +93,13 @@ export const findChat = async (req, res, next) => {
         })
         const user = await User.findById(req.params.secondId)
         const userName = user?.userName
+        const receiveVideocall = user?.receiveVideocall
+        const priceVideocall = user?.priceVideocall
+        const receivePaidMessage = user?.receivePaidMessage
+        const priceMessage = user?.priceMessage
         const profilePicture = user?.profilePicture?.secure_url || null
-        res.status(200).json({ chat, userName, profilePicture})
+
+        res.status(200).json({ chat, userName, profilePicture, receiveVideocall, priceVideocall, receivePaidMessage, priceMessage})
 
     } catch (error) {
         console.log(error)
