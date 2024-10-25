@@ -1,7 +1,7 @@
 import Publication from "../../models/Publication.js"
 import User from "../../models/User.js"
 
-const addNotification = async (userId, notificationData) => {
+export const addNotification = async (userId, notificationData) => {
     const user = await User.findById(userId);
     if (user) {
         user.notifications.push(notificationData);

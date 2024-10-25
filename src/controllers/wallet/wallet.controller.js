@@ -1,6 +1,7 @@
 import User from '../../models/User.js'
 import Wallet from '../../models/Wallet.js'
 import Publication from '../../models/Publication.js'
+import { addNotification } from '../notifications/notifications.controller.js'
 
 export const createWithdrawalRequest = async (req, res, next) => {
     try {
@@ -102,6 +103,7 @@ export const buyContentById = async (req, res, next) => {
 
         await Promise.all([userBuyer.save(), postToBuy.save(), walletBuyer.save(), walletCreatorContent.save()])
         res.status(200).json({ message: "Contenido desbloqueado!" })
+
     } catch (error) {
         res.status(500).json({ error: error });
         console.log(error)
@@ -109,13 +111,85 @@ export const buyContentById = async (req, res, next) => {
     }
 }
 
-export const sendPaidMessage = () => {
-    // Primero obtengo el usuario al que se quiere enviar el mensaje
-    // Verifico si tiene activa la monetización de mensajes
-    // En caso de que no, pasa directamente a enviarse.
-    // En caso de que sí:
-    // - Busco mi usuario y traigo la wallet
-    // - Compruebo el balance
+export const sendPaidMessage = async (req, res, next) => {
+  try {
+      const userSenderPaidMessage = await User.findById(req.userId)
+      if(!userSenderPaidMessage) {
+          return res.status(401).json({message: "No ha iniciado sesión"})
+      }
+    
+      const {userId, priceMessage, receivePaidMessage} = req.body
+
+    if(receivePaidMessage === false) {
+        res.status(400).json({message: "Mensaje sin costo!"})
+        next()
+    }
+
+    if(!userId) {
+        return res.status(403).json({message:"No se ha recibido un id"})
+    }
+
+    const walletSenderPaidMessage = await Wallet.findOne({ user: req.userId })
+    if (!walletSenderPaidMessage) {
+        return res.status(400).json({message: "No se ha encontrado mi billetera"})
+    }
+
+    if(priceMessage > walletSenderPaidMessage.balance) {
+        return res.status(400).json({message: "No tienes fondos suficientes"})
+    }
+        
+    const userReceiveCoinsForMessage = await User.findById({ _id: userId })
+    if(!userReceiveCoinsForMessage) {
+        return res.status(400).json({message: "No se ha encontrado al usuario recibidor de las monedas"})
+    }
+
+    if(priceMessage !== userReceiveCoinsForMessage.priceMessage) {
+        return res.status(400).json({message: "Los precios por mensaje no coinciden."})
+    }
+
+    const ReceivingUserWallet = await Wallet.findOne({ user: userId })
+    if (!ReceivingUserWallet) {
+        return res.status(400).json({message: "No se ha encontrado la billetera del usuario receptor de monedas"})
+    }
+
+        walletSenderPaidMessage.balance = walletSenderPaidMessage.balance - priceMessage
+        ReceivingUserWallet.balance = ReceivingUserWallet.balance + priceMessage
+
+        const coinsTransferred = {
+            amount: priceMessage,
+            receiver: userReceiveCoinsForMessage.userName,
+        };
+        const coinsReceived = {
+            amount: priceMessage,
+            sender: userSenderPaidMessage.userName,
+        };
+
+        walletSenderPaidMessage.coinsTransferred = coinsTransferred;
+        ReceivingUserWallet.coinsReceived = coinsReceived;
+
+        const notificationData = {
+            userName: userSenderPaidMessage.userName,
+            profilePic: userSenderPaidMessage.profilePicture,
+            event: `te ha enviado ${priceMessage} moneda${priceMessage === 1
+                ? null
+                : "s"}`,
+            link: userSenderPaidMessage._id,
+            date: new Date(),
+            read: false,
+        };
+        await Promise.all([
+            userSenderPaidMessage.save(), 
+            walletSenderPaidMessage.save(), 
+            userReceiveCoinsForMessage.save(), 
+            ReceivingUserWallet.save(), 
+            addNotification(userReceiveCoinsForMessage._id, notificationData)
+        ])
+        next()
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: error });
+    next(error)
+  }
 }
 
 export const getWallet = async (req, res, next) => {
