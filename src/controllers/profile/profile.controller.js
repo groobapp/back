@@ -92,7 +92,7 @@ export const updateProfile = async (req, res, next) => {
             viewExplicitContent, phone, gender, expoPushToken, receiveVideocall, priceVideocall, 
             receivePaidMessage, priceMessage
         })
-        await Publication.updateMany({ userName: user.userName }, { userName: userName })
+        await Publication.updateMany({ userName: user.userName }, { userName: userName }, {userReceiveVideocall: receiveVideocall})
         res.status(200).json({ message: "User updated!" });
 
     } catch (error) {

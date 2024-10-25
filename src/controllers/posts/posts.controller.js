@@ -23,6 +23,7 @@ export const createPost = async (req, res, next) => {
             userName: user?.userName,
             profilePicture: user?.profilePicture.secure_url,
             userVerified: user?.verified,
+            userReceiveVideocall: user?.receiveVideocall
         })
         if (req.files) {
             const files = req.files['images']
@@ -84,6 +85,7 @@ export const uploadVideoPost = async (req, res, next) => {
             userName: user?.userName,
             profilePicture: user?.profilePicture.secure_url,
             userVerified: user?.verified,
+            userReceiveVideocall: user?.receiveVideocall,
         })
         if (req.files) {
             const video = req.files['video']

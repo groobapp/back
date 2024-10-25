@@ -36,6 +36,9 @@ const publicationSchema = new Schema({
         type: Date,
         default: new Date()
     },
+    userReceiveVideocall: {
+        type: Boolean, required: false
+    },
     userIdCreatorPost: {
         type: Schema.Types.ObjectId,
         ref: "User",
