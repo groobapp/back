@@ -33,7 +33,7 @@ export const getProfile = async (req, res, next) => {
 export const getProfileById = async (req, res, next) => {
     try {
         const { id } = req.params
-        if (!id) return res.status(404).json({ message: 'No se ha recibido un ID.' });
+        if (!id) return res.status(404).json({ message: 'No se ha recibido el id del usuario a visitar.' });
         const data = await User.findById({ _id: id }, {
             password: 0,
             firstName: 0,

@@ -119,7 +119,8 @@ export const sendPaidMessage = async (req, res, next) => {
       }
     
       const {userId, priceMessage, receivePaidMessage} = req.body
-
+      console.log({userId, priceMessage, receivePaidMessage})
+      
     if(receivePaidMessage === false) {
         res.status(200).json({message: "Mensaje sin costo!"})
         return next()
@@ -131,7 +132,7 @@ export const sendPaidMessage = async (req, res, next) => {
 
     const walletSenderPaidMessage = await Wallet.findOne({ user: req.userId })
     if (!walletSenderPaidMessage) {
-        return res.status(400).json({message: "No se ha encontrado mi billetera"})
+        return res.status(400).json({message: "No se ha encontrado tu billetera"})
     }
 
     if(priceMessage > walletSenderPaidMessage.balance) {
