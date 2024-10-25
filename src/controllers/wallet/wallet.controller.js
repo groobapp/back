@@ -121,7 +121,7 @@ export const sendPaidMessage = async (req, res, next) => {
       const {userId, priceMessage, receivePaidMessage} = req.body
 
     if(receivePaidMessage === false) {
-        res.status(400).json({message: "Mensaje sin costo!"})
+        res.status(200).json({message: "Mensaje sin costo!"})
         next()
     }
 
