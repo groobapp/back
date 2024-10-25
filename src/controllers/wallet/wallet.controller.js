@@ -122,7 +122,7 @@ export const sendPaidMessage = async (req, res, next) => {
 
     if(receivePaidMessage === false) {
         res.status(200).json({message: "Mensaje sin costo!"})
-        next()
+        return next()
     }
 
     if(!userId) {
