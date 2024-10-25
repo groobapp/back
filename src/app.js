@@ -9,7 +9,6 @@ import authRoute from './routes/auth.routes.js'
 import chatRoute from './routes/chat.routes.js'
 import feedRoute from './routes/feed.routes.js'
 import followRoute from './routes/follow.routes.js'
-import messagesRoute from './routes/messages.routes.js'
 import mercadopagoRoute from './routes/mercadopago.routes.js'
 import profileRoute from './routes/profile.routes.js'
 import searchRoute from './routes/search.routes.js'
@@ -48,7 +47,7 @@ const io = new SocketServer(server, {
 
 
 var corsOptions = {
-    origin: ['http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
+    origin: ['exp://192.168.56.58:8081', 'http://localhost:8080', 'http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006', 'http://localhost:19000'],
     credentials: true,
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
     allowedHeaders: [
@@ -84,7 +83,6 @@ app.use(feedRoute)
 app.use(searchRoute)
 app.use(followRoute)
 app.use(chatRoute)
-app.use(messagesRoute)
 app.use(walletRoute)
 app.use(mercadopagoRoute)
 app.use(moderationRoute)

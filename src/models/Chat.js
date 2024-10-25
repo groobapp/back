@@ -16,7 +16,11 @@ const chatSchema = new Schema({
     text: {
         type: String,
         required: true
-    }}, { 
+    },
+    read: {
+        type: Boolean, default: false
+    }
+}, { 
     _id: false
      }],
     messagesUnread: {
