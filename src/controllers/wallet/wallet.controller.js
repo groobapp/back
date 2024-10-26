@@ -113,37 +113,38 @@ export const buyContentById = async (req, res, next) => {
 
 export const sendPaidMessage = async (req, res, next) => {
   try {
+      const {userId, priceMessage, receivePaidMessage} = req.body
+      console.log({userId, priceMessage, receivePaidMessage})
+
       const userSenderPaidMessage = await User.findById(req.userId)
       if(!userSenderPaidMessage) {
           return res.status(401).json({message: "No ha iniciado sesión"})
       }
-    
-      const {userId, priceMessage, receivePaidMessage} = req.body
-      console.log({userId, priceMessage, receivePaidMessage})
       
     if(receivePaidMessage === false) {
         res.status(200).json({message: "Mensaje sin costo!"})
-        return next()
-    }
+        next()
+    } else {
 
-    if(!userId) {
-        return res.status(403).json({message:"No se ha recibido un id"})
-    }
-
-    const walletSenderPaidMessage = await Wallet.findOne({ user: req.userId })
-    if (!walletSenderPaidMessage) {
-        return res.status(400).json({message: "No se ha encontrado tu billetera"})
-    }
-
-    if(priceMessage > walletSenderPaidMessage.balance) {
-        return res.status(400).json({message: "No tienes fondos suficientes"})
-    }
         
-    const userReceiveCoinsForMessage = await User.findById({ _id: userId })
-    if(!userReceiveCoinsForMessage) {
+        if(!userId) {
+            return res.status(403).json({message:"No se ha recibido un id"})
+        }
+        
+        const walletSenderPaidMessage = await Wallet.findOne({ user: req.userId })
+        if (!walletSenderPaidMessage) {
+            return res.status(400).json({message: "No se ha encontrado tu billetera"})
+        }
+        
+        if(priceMessage > walletSenderPaidMessage.balance) {
+            return res.status(400).json({message: "No tienes fondos suficientes"})
+        }
+        
+        const userReceiveCoinsForMessage = await User.findById({ _id: userId })
+        if(!userReceiveCoinsForMessage) {
         return res.status(400).json({message: "No se ha encontrado al usuario recibidor de las monedas"})
     }
-
+    
     if(priceMessage !== userReceiveCoinsForMessage.priceMessage) {
         return res.status(400).json({message: "Los precios por mensaje no coinciden."})
     }
@@ -152,28 +153,28 @@ export const sendPaidMessage = async (req, res, next) => {
     if (!ReceivingUserWallet) {
         return res.status(400).json({message: "No se ha encontrado la billetera del usuario receptor de monedas"})
     }
-
-        walletSenderPaidMessage.balance = walletSenderPaidMessage.balance - priceMessage
-        ReceivingUserWallet.balance = ReceivingUserWallet.balance + priceMessage
-
-        const coinsTransferred = {
-            amount: priceMessage,
-            receiver: userReceiveCoinsForMessage.userName,
-        };
-        const coinsReceived = {
-            amount: priceMessage,
-            sender: userSenderPaidMessage.userName,
-        };
-
-        walletSenderPaidMessage.coinsTransferred = coinsTransferred;
-        ReceivingUserWallet.coinsReceived = coinsReceived;
-
-        const notificationData = {
-            userName: userSenderPaidMessage.userName,
-            profilePic: userSenderPaidMessage.profilePicture,
-            event: `te ha enviado ${priceMessage} moneda${priceMessage === 1
-                ? null
-                : "s"}`,
+    
+    walletSenderPaidMessage.balance = walletSenderPaidMessage.balance - priceMessage
+    ReceivingUserWallet.balance = ReceivingUserWallet.balance + priceMessage
+    
+    const coinsTransferred = {
+        amount: priceMessage,
+        receiver: userReceiveCoinsForMessage.userName,
+    };
+    const coinsReceived = {
+        amount: priceMessage,
+        sender: userSenderPaidMessage.userName,
+    };
+    
+    walletSenderPaidMessage.coinsTransferred = coinsTransferred;
+    ReceivingUserWallet.coinsReceived = coinsReceived;
+    
+    const notificationData = {
+        userName: userSenderPaidMessage.userName,
+        profilePic: userSenderPaidMessage.profilePicture,
+        event: `te ha enviado ${priceMessage} moneda${priceMessage === 1
+            ? null
+            : "s"}`,
             link: userSenderPaidMessage._id,
             date: new Date(),
             read: false,
@@ -186,11 +187,12 @@ export const sendPaidMessage = async (req, res, next) => {
             addNotification(userReceiveCoinsForMessage._id, notificationData)
         ])
         next()
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({ message: error });
-    next(error)
-  }
+    }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: error });
+        next(error)
+    }
 }
 
 export const getWallet = async (req, res, next) => {
