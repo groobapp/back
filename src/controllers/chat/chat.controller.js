@@ -37,6 +37,23 @@ export const createChat = async (req, res, next) => {
 export const addMessage = async (req, res, next) => {
     try {
         const { chatId, senderId, remitterId, text } = req.body;
+        console.log({ chatId, senderId, remitterId, text })
+
+        if(!chatId) {
+            return res.status(403).json({message: "No se recibió el chatId para agregar el mensaje"})
+        }
+
+        if(!text) {
+            return res.status(403).json({message: "No se puede enviar un mensaje vacío"})
+        }
+
+        if(!senderId) {
+            return res.status(403).json({message: "No se recibió el id del usuario que envía el mensaje"})
+        }
+
+        if(!remitterId) {
+            return res.status(403).json({message: "No se recibió el id del usuario receptor para agregar el mensaje"})
+        }
 
         const newMessage = {
             senderId,
@@ -45,19 +62,33 @@ export const addMessage = async (req, res, next) => {
             read: false,
             date: new Date(),
         };
-        const chat = await Chat.findById(chatId)
-        if(!chat) {
-            return res.status(404).json({ error: 'Chat no encontrado' });
+
+        let chat = await Chat.findById({_id: chatId})
+        if (!chat) {
+            console.log("Chat no encontrado, creando uno nuevo...");
+
+            const newChat = new Chat({ members: [senderId, remitterId] });
+            chat = await newChat.save();
+
+            // Opcional: Agregar el chat a la lista de chats del usuario
+            const user = await User.findById(senderId);
+            if (user) {
+                user.chats = user.chats.concat(chat._id);
+                await user.save();
+            }
+
+            const userRemmiter = await User.findById(remitterId);
+            if (userRemmiter) {
+                userRemmiter.chats = userRemmiter.chats.concat(chat._id);
+                await userRemmiter.save();
+            }
         }
-        const updatedChat = await Chat.findByIdAndUpdate(
+
+        await Chat.findByIdAndUpdate(
             chatId,
             { $push: { messages: newMessage, messagesUnread: chat.messagesUnread + 1 } },
             { new: true, runValidators: true }
         );
-
-        if (!updatedChat) {
-            return res.status(404).json({ error: 'Chat not found' });
-        }
 
         res.status(200).json(newMessage);
 
