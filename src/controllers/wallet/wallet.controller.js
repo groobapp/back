@@ -116,7 +116,6 @@ export const buyContentById = async (req, res, next) => {
 export const sendPaidMessage = async (req, res, next) => {
   try {
       const {userId, priceMessage, receivePaidMessage, chatId, senderId, remitterId, text} = req.body
-      console.log({userId, priceMessage, receivePaidMessage})
 
       const userSenderPaidMessage = await User.findById(req.userId)
       if(!userSenderPaidMessage) {

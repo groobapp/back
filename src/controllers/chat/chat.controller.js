@@ -33,10 +33,8 @@ export const createChat = async (req, res, next) => {
     }
 }
 
-export const addMessage = async (chatId, senderId, remitterId, text) => {
+export const addMessage = async (chatId, senderId, remitterId, text, res) => {
     try {
-        console.log({ chatId, senderId, remitterId, text })
-
         if(!chatId) {
             return res.status(403).json({message: "No se recibió el chatId para agregar el mensaje"})
         }
