@@ -1,6 +1,8 @@
 import User from '../../models/User.js'
 import Wallet from '../../models/Wallet.js'
 import Publication from '../../models/Publication.js'
+
+import { addMessage } from '../chat/chat.controller.js'
 import { addNotification } from '../notifications/notifications.controller.js'
 
 export const createWithdrawalRequest = async (req, res, next) => {
@@ -113,7 +115,7 @@ export const buyContentById = async (req, res, next) => {
 
 export const sendPaidMessage = async (req, res, next) => {
   try {
-      const {userId, priceMessage, receivePaidMessage} = req.body
+      const {userId, priceMessage, receivePaidMessage, chatId, senderId, remitterId, text} = req.body
       console.log({userId, priceMessage, receivePaidMessage})
 
       const userSenderPaidMessage = await User.findById(req.userId)
@@ -123,10 +125,9 @@ export const sendPaidMessage = async (req, res, next) => {
       
     if(receivePaidMessage === false) {
         res.status(200).json({message: "Mensaje sin costo!"})
-        next()
+        await addMessage({ chatId, senderId, remitterId, text })
     } else {
-
-        
+    
         if(!userId) {
             return res.status(403).json({message:"No se ha recibido un id"})
         }
@@ -179,14 +180,17 @@ export const sendPaidMessage = async (req, res, next) => {
             date: new Date(),
             read: false,
         };
-        await Promise.all([
+       const transactionSuccess = await Promise.all([
             userSenderPaidMessage.save(), 
             walletSenderPaidMessage.save(), 
             userReceiveCoinsForMessage.save(), 
             ReceivingUserWallet.save(), 
             addNotification(userReceiveCoinsForMessage._id, notificationData)
         ])
-        next()
+        if(transactionSuccess) {
+            console.log({transactionSuccess})
+            await addMessage({ chatId, senderId, remitterId, text })
+        }
     }
     } catch (error) {
         console.log(error)

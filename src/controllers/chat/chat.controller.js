@@ -4,7 +4,6 @@ import User from "../../models/User.js"
 export const createChat = async (req, res, next) => {
     try {
         const {recivedId, senderId} = req.body
-        console.log("id usuarios", {recivedId, senderId})
         const user = await User.findById(req.userId);
 
         if (!user) {
@@ -34,9 +33,8 @@ export const createChat = async (req, res, next) => {
     }
 }
 
-export const addMessage = async (req, res, next) => {
+export const addMessage = async (chatId, senderId, remitterId, text) => {
     try {
-        const { chatId, senderId, remitterId, text } = req.body;
         console.log({ chatId, senderId, remitterId, text })
 
         if(!chatId) {
@@ -70,7 +68,6 @@ export const addMessage = async (req, res, next) => {
             const newChat = new Chat({ members: [senderId, remitterId] });
             chat = await newChat.save();
 
-            // Opcional: Agregar el chat a la lista de chats del usuario
             const user = await User.findById(senderId);
             if (user) {
                 user.chats = user.chats.concat(chat._id);
