@@ -79,10 +79,10 @@ export const addMessage = async (chatId, senderId, remitterId, text, res) => {
             }
         }
 
-        await Chat.findByIdAndUpdate(
-            chatId,
-            { $push: { messages: newMessage, messagesUnread: chat.messagesUnread + 1 } },
-            { new: true, runValidators: true }
+        await Chat.findByIdAndUpdate(chatId, { 
+                $push: { messages: newMessage}, 
+                $inc: { messagesUnread: 1 } 
+            }, { new: true, runValidators: true }
         );
 
         res.status(200).json(newMessage);

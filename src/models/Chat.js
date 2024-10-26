@@ -4,7 +4,7 @@ const chatSchema = new Schema({
     members: {
         type: [String]
     },
-   messages: [{
+    messages: [{
     senderId: {
         type: String,
         required: true
@@ -20,7 +20,7 @@ const chatSchema = new Schema({
     read: {
         type: Boolean, default: false
     }
-}, { 
+    }, { 
     _id: false
      }],
     messagesUnread: {
