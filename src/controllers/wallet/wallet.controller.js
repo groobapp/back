@@ -123,8 +123,7 @@ export const sendPaidMessage = async (req, res, next) => {
       }
       
     if(receivePaidMessage === false) {
-        res.status(200).json({message: "Mensaje sin costo!"})
-        await addMessage({ chatId, senderId, remitterId, text })
+        await addMessage(chatId, senderId, remitterId, text, res)
     } else {
     
         if(!userId) {
@@ -188,7 +187,7 @@ export const sendPaidMessage = async (req, res, next) => {
         ])
         if(transactionSuccess) {
             console.log({transactionSuccess})
-            await addMessage({ chatId, senderId, remitterId, text })
+            await addMessage(chatId, senderId, remitterId, text, res)
         }
     }
     } catch (error) {
